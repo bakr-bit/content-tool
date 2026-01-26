@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MoreHorizontal, Eye, Copy, Trash2, Check } from 'lucide-react';
+import { MoreHorizontal, Eye, Copy, Trash2, Check, FileText, Clock, Hash } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -83,21 +83,99 @@ export function ArticleRowActions({ article, onDelete }: ArticleRowActionsProps)
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* View Dialog */}
+      {/* View Dialog - Editor Style */}
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh]">
-          <DialogHeader>
-            <DialogTitle>{article.title}</DialogTitle>
-            <DialogDescription>
-              {article.metadata.wordCount.toLocaleString()} words | {article.metadata.readingTimeMinutes} min read
-            </DialogDescription>
-          </DialogHeader>
-          <ScrollArea className="h-[60vh] pr-4">
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {article.content}
-              </ReactMarkdown>
+        <DialogContent className="max-w-5xl h-[90vh] p-0 gap-0 flex flex-col">
+          <DialogTitle className="sr-only">{article.title}</DialogTitle>
+
+          {/* Editor Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b bg-muted/30">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg font-semibold truncate">{article.title}</h2>
+              <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Hash className="h-3.5 w-3.5" />
+                  {article.keyword}
+                </span>
+                <span className="flex items-center gap-1">
+                  <FileText className="h-3.5 w-3.5" />
+                  {article.metadata.wordCount.toLocaleString()} words
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5" />
+                  {article.metadata.readingTimeMinutes} min read
+                </span>
+              </div>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCopy}
+              className="ml-4"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4 mr-2 text-green-500" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Editor Content */}
+          <ScrollArea className="flex-1">
+            <article className="max-w-3xl mx-auto pl-16 pr-8 py-8">
+              <div className="prose prose-neutral dark:prose-invert prose-headings:font-semibold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-7 prose-li:leading-7 max-w-none">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h1: ({ children }) => (
+                      <h1 className="relative">
+                        <span className="absolute -left-12 top-1 text-[10px] px-1.5 py-0.5 font-mono font-medium bg-white text-gray-700 border border-gray-200 rounded">H1</span>
+                        {children}
+                      </h1>
+                    ),
+                    h2: ({ children }) => (
+                      <h2 className="relative">
+                        <span className="absolute -left-12 top-1 text-[10px] px-1.5 py-0.5 font-mono font-medium bg-white text-gray-700 border border-gray-200 rounded">H2</span>
+                        {children}
+                      </h2>
+                    ),
+                    h3: ({ children }) => (
+                      <h3 className="relative">
+                        <span className="absolute -left-12 top-0.5 text-[10px] px-1.5 py-0.5 font-mono font-medium bg-white text-gray-700 border border-gray-200 rounded">H3</span>
+                        {children}
+                      </h3>
+                    ),
+                    h4: ({ children }) => (
+                      <h4 className="relative">
+                        <span className="absolute -left-12 top-0.5 text-[10px] px-1.5 py-0.5 font-mono font-medium bg-white text-gray-700 border border-gray-200 rounded">H4</span>
+                        {children}
+                      </h4>
+                    ),
+                    h5: ({ children }) => (
+                      <h5 className="relative">
+                        <span className="absolute -left-12 top-0 text-[10px] px-1.5 py-0.5 font-mono font-medium bg-white text-gray-700 border border-gray-200 rounded">H5</span>
+                        {children}
+                      </h5>
+                    ),
+                    h6: ({ children }) => (
+                      <h6 className="relative">
+                        <span className="absolute -left-12 top-0 text-[10px] px-1.5 py-0.5 font-mono font-medium bg-white text-gray-700 border border-gray-200 rounded">H6</span>
+                        {children}
+                      </h6>
+                    ),
+                  }}
+                >
+                  {article.content}
+                </ReactMarkdown>
+              </div>
+            </article>
           </ScrollArea>
         </DialogContent>
       </Dialog>

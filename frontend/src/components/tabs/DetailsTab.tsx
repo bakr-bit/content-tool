@@ -13,6 +13,7 @@ import {
 import { X, Sparkles, Loader2 } from 'lucide-react';
 import { COUNTRY_NAMES, LANGUAGE_NAMES, type TargetCountry, type Language } from '@/types/article';
 import type { UseArticleFormReturn } from '@/hooks/useArticleForm';
+import { Flag } from '@/components/ui/flag';
 import { generateKeywords } from '@/services/api';
 
 interface DetailsTabProps {
@@ -112,12 +113,18 @@ export function DetailsTab({ form }: DetailsTabProps) {
             onValueChange={(value) => form.setTargetCountry(value as TargetCountry)}
           >
             <SelectTrigger>
-              <SelectValue />
+              <span className="flex items-center gap-2">
+                <Flag country={form.formState.targetCountry} size="sm" />
+                {COUNTRY_NAMES[form.formState.targetCountry]}
+              </span>
             </SelectTrigger>
             <SelectContent>
               {Object.entries(COUNTRY_NAMES).map(([value, label]) => (
                 <SelectItem key={value} value={value}>
-                  {label}
+                  <span className="flex items-center gap-2">
+                    <Flag country={value} size="sm" />
+                    {label}
+                  </span>
                 </SelectItem>
               ))}
             </SelectContent>

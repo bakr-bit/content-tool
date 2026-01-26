@@ -43,6 +43,7 @@ import {
   type Formality,
   type HeadingCase,
 } from '@/types/article';
+import { Flag } from '@/components/ui/flag';
 
 const HEADING_CASE_NAMES: Record<HeadingCase, string> = {
   'title-case': 'Title Case',
@@ -390,12 +391,18 @@ export function AuthorModal({ open, onOpenChange, onAuthorChange }: AuthorModalP
                         onValueChange={(v) => setFormData({ ...formData, targetCountry: v as TargetCountry })}
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <span className="flex items-center gap-2">
+                            <Flag country={formData.targetCountry} size="sm" />
+                            {COUNTRY_NAMES[formData.targetCountry]}
+                          </span>
                         </SelectTrigger>
                         <SelectContent>
                           {Object.entries(COUNTRY_NAMES).map(([value, label]) => (
                             <SelectItem key={value} value={value}>
-                              {label}
+                              <span className="flex items-center gap-2">
+                                <Flag country={value} size="sm" />
+                                {label}
+                              </span>
                             </SelectItem>
                           ))}
                         </SelectContent>

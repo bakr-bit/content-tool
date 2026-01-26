@@ -142,7 +142,11 @@ export function ArticlesPage() {
       </main>
 
       {/* Article Modal */}
-      <ArticleModal open={modalOpen} onOpenChange={setModalOpen} />
+      <ArticleModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onArticleCreated={fetchArticles}
+      />
     </div>
   );
 }

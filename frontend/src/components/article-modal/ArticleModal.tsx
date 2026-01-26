@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -22,16 +22,26 @@ import type { Article, WorkflowState } from '@/types/article';
 interface ArticleModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onArticleCreated?: () => void;
 }
 
 const TAB_ORDER: TabId[] = ['details', 'structure', 'outline', 'content', 'knowledge', 'formatting'];
 
-export function ArticleModal({ open, onOpenChange }: ArticleModalProps) {
+export function ArticleModal({ open, onOpenChange, onArticleCreated }: ArticleModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>('details');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationStatus, setGenerationStatus] = useState<string>('');
   const [article, setArticle] = useState<Article | null>(null);
   const form = useArticleForm();
+
+  // Reset to details tab when modal opens
+  useEffect(() => {
+    if (open) {
+      setActiveTab('details');
+      setArticle(null);
+      setGenerationStatus('');
+    }
+  }, [open]);
 
   const currentTabIndex = TAB_ORDER.indexOf(activeTab);
   const isLastTab = currentTabIndex === TAB_ORDER.length - 1;
@@ -95,6 +105,7 @@ export function ArticleModal({ open, onOpenChange }: ArticleModalProps) {
       if (workflow.article) {
         setArticle(workflow.article);
         setActiveTab('result');
+        onArticleCreated?.();
       }
     } catch (error) {
       console.error('Generation failed:', error);
