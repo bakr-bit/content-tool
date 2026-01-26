@@ -58,6 +58,14 @@ export function ArticlesPage() {
     }
   };
 
+  const handleUpdate = (updatedArticle: ArticleWithStatus) => {
+    setArticles((prev) =>
+      prev.map((article) =>
+        article.articleId === updatedArticle.articleId ? updatedArticle : article
+      )
+    );
+  };
+
   const handleSearch = (keyword: string) => {
     setQuery((prev) => ({ ...prev, keyword: keyword || undefined, page: 1 }));
   };
@@ -127,6 +135,7 @@ export function ArticlesPage() {
             sortOrder={query.sortOrder}
             onSort={handleSort}
             onDelete={handleDelete}
+            onUpdate={handleUpdate}
           />
 
           {pagination.totalPages > 1 && (

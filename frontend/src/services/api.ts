@@ -320,3 +320,13 @@ export async function deleteArticle(id: string): Promise<void> {
     throw new Error(result.error?.message || 'Failed to delete article');
   }
 }
+
+export async function updateArticle(
+  id: string,
+  data: { title?: string; content?: string }
+): Promise<ApiResponse<import('@/types/article').ArticleWithStatus>> {
+  return fetchApi<import('@/types/article').ArticleWithStatus>(`/article/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}

@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { articleService } from '../../services/article';
 import { ArticleStatus } from '../../services/article/article.storage';
 import { validate } from '../middleware/validate';
-import { articleGenerateRequestSchema, ArticleGenerateRequestBody } from '../validators/schemas';
+import { articleGenerateRequestSchema, ArticleGenerateRequestBody, articleUpdateRequestSchema, ArticleUpdateRequestBody } from '../validators/schemas';
 
 const router = Router();
 
@@ -74,6 +74,42 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 });
+
+// Update article
+router.put(
+  '/:id',
+  validate(articleUpdateRequestSchema),
+  (req: Request<{ id: string }, {}, ArticleUpdateRequestBody>, res: Response, next: NextFunction) => {
+    try {
+      const { title, content } = req.body;
+
+      if (!title && !content) {
+        res.status(400).json({
+          success: false,
+          error: { message: 'At least one of title or content must be provided', code: 400 },
+        });
+        return;
+      }
+
+      const updated = articleService.updateArticle(req.params.id, { title, content });
+
+      if (!updated) {
+        res.status(404).json({
+          success: false,
+          error: { message: 'Article not found', code: 404 },
+        });
+        return;
+      }
+
+      res.json({
+        success: true,
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 // Delete article
 router.delete('/:id', (req: Request, res: Response, next: NextFunction) => {

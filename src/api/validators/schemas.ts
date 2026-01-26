@@ -335,6 +335,11 @@ export const fullWorkflowRequestSchema = z.object({
   preferences: generationPreferencesSchema,
 });
 
+export const articleUpdateRequestSchema = z.object({
+  title: z.string().min(1).max(500).optional(),
+  content: z.string().min(1).optional(),
+});
+
 // Author schemas
 const formattingTogglesSchemaFull = z.object({
   bold: z.boolean(),
@@ -379,6 +384,7 @@ export type ResearchRequestBody = z.infer<typeof researchRequestSchema>;
 export type OutlineGenerateRequestBody = z.infer<typeof outlineGenerateRequestSchema>;
 export type OutlineUpdateRequestBody = z.infer<typeof outlineUpdateRequestSchema>;
 export type ArticleGenerateRequestBody = z.infer<typeof articleGenerateRequestSchema>;
+export type ArticleUpdateRequestBody = z.infer<typeof articleUpdateRequestSchema>;
 export type FullWorkflowRequestBody = z.infer<typeof fullWorkflowRequestSchema>;
 export type CreateAuthorBody = z.infer<typeof createAuthorSchema>;
 export type UpdateAuthorBody = z.infer<typeof updateAuthorSchema>;

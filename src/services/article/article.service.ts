@@ -22,6 +22,11 @@ interface ArticleGenerateOptions {
   allSources?: VerifiedSource[];
 }
 
+interface ArticleUpdateInput {
+  title?: string;
+  content?: string;
+}
+
 export class ArticleService {
   async generateArticle(input: ArticleGenerateOptions): Promise<Article> {
     const { outlineId, options, sectionResearch, allSources } = input;
@@ -144,6 +149,44 @@ export class ArticleService {
 
   updateArticleStatus(articleId: string, status: ArticleStatus): boolean {
     return articleStorage.updateArticleStatus(articleId, status);
+  }
+
+  updateArticle(articleId: string, updates: ArticleUpdateInput): ArticleWithStatus | null {
+    logger.info({ articleId, hasTitle: !!updates.title, hasContent: !!updates.content }, 'Updating article');
+
+    // Fetch existing article from database
+    const existing = articleStorage.getArticleById(articleId);
+    if (!existing) {
+      return null;
+    }
+
+    // Apply updates
+    const updatedArticle: Article = {
+      ...existing,
+      title: updates.title ?? existing.title,
+      content: updates.content ?? existing.content,
+    };
+
+    // Recalculate metadata if content changed
+    if (updates.content) {
+      const wordCount = updates.content.split(/\s+/).filter(Boolean).length;
+      const readingTimeMinutes = Math.ceil(wordCount / ARTICLE_DEFAULTS.READING_TIME_WPM);
+      updatedArticle.metadata = {
+        ...existing.metadata,
+        wordCount,
+        readingTimeMinutes,
+      };
+    }
+
+    // Save to database (preserves existing status)
+    const saved = articleStorage.saveArticle(updatedArticle, existing.status);
+
+    // Update in-memory cache
+    articleStore.set(articleId, saved);
+
+    logger.info({ articleId, wordCount: saved.metadata.wordCount }, 'Article updated successfully');
+
+    return saved;
   }
 
   private buildResearchContext(scrapedContent: { content: string; title?: string }[]): string {

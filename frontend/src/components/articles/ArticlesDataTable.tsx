@@ -26,6 +26,7 @@ interface ArticlesDataTableProps {
   sortOrder?: ListArticlesQuery['sortOrder'];
   onSort: (sortBy: ListArticlesQuery['sortBy'], sortOrder: ListArticlesQuery['sortOrder']) => void;
   onDelete: (articleId: string) => void;
+  onUpdate: (updatedArticle: ArticleWithStatus) => void;
 }
 
 function formatDate(dateString: string): string {
@@ -60,6 +61,7 @@ export function ArticlesDataTable({
   sortOrder,
   onSort,
   onDelete,
+  onUpdate,
 }: ArticlesDataTableProps) {
   const handleSortClick = (column: ListArticlesQuery['sortBy']) => {
     if (sortBy === column) {
@@ -150,6 +152,7 @@ export function ArticlesDataTable({
         <ArticleRowActions
           article={row.original}
           onDelete={() => onDelete(row.original.articleId)}
+          onUpdate={onUpdate}
         />
       ),
     },
