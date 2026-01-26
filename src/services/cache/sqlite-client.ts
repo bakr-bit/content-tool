@@ -7,7 +7,7 @@ const logger = createChildLogger('SQLiteClient');
 
 let db: Database.Database | null = null;
 
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 4;
 
 const MIGRATIONS: Record<number, string[]> = {
   1: [
@@ -56,6 +56,25 @@ const MIGRATIONS: Record<number, string[]> = {
     `CREATE INDEX IF NOT EXISTS idx_articles_keyword ON articles(keyword)`,
     `CREATE INDEX IF NOT EXISTS idx_articles_created_at ON articles(created_at)`,
     `CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status)`,
+  ],
+  3: [
+    // Add site column to articles
+    `ALTER TABLE articles ADD COLUMN site TEXT`,
+    `CREATE INDEX IF NOT EXISTS idx_articles_site ON articles(site)`,
+  ],
+  4: [
+    // Projects table
+    `CREATE TABLE IF NOT EXISTS projects (
+      project_id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_projects_name ON projects(name)`,
+    // Add project_id column to articles
+    `ALTER TABLE articles ADD COLUMN project_id TEXT REFERENCES projects(project_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_articles_project_id ON articles(project_id)`,
   ],
 };
 

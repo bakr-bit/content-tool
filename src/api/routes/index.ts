@@ -6,3 +6,4 @@ export * from './workflow.routes';
 export * from './keywords.routes';
 export * from './components.routes';
 export * from './authors.routes';
+export * from './project.routes';

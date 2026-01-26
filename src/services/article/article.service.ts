@@ -10,6 +10,11 @@ import { createChildLogger } from '../../utils/logger';
 import { ARTICLE_DEFAULTS } from '../../config/constants';
 import { articleStorage, ArticleWithStatus, ListArticlesOptions, ListArticlesResult, ArticleStatus } from './article.storage';
 
+interface ArticleSaveOptions {
+  site?: string;
+  projectId?: string;
+}
+
 const logger = createChildLogger('ArticleService');
 
 // In-memory storage for quick access during generation
@@ -89,14 +94,15 @@ export class ArticleService {
       content: editedContent,
       sections,
       metadata,
+      site: options?.site,
       createdAt: new Date().toISOString(),
     };
 
     // Store the article in memory for quick access
     articleStore.set(article.articleId, article);
 
-    // Persist to database
-    articleStorage.saveArticle(article, 'draft');
+    // Persist to database with site and projectId
+    articleStorage.saveArticle(article, 'draft', options?.site, options?.projectId);
 
     logger.info(
       {

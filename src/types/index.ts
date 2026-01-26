@@ -105,7 +105,22 @@ export interface Article {
   content: string;
   sections: GeneratedSection[];
   metadata: ArticleMetadata;
+  site?: string;
+  projectId?: string;
   createdAt: string;
+}
+
+// Project Types
+export interface Project {
+  projectId: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface ProjectWithCount extends Project {
+  articleCount: number;
 }
 
 // Workflow Types

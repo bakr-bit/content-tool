@@ -379,6 +379,17 @@ export const updateAuthorSchema = z.object({
   headingCase: headingCaseSchemaRequired.optional(),
 });
 
+// Project schemas
+export const projectCreateSchema = z.object({
+  name: z.string().min(1, 'Project name is required').max(100),
+  description: z.string().max(500).optional(),
+});
+
+export const projectUpdateSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  description: z.string().max(500).optional(),
+});
+
 // Type exports
 export type ResearchRequestBody = z.infer<typeof researchRequestSchema>;
 export type OutlineGenerateRequestBody = z.infer<typeof outlineGenerateRequestSchema>;
@@ -388,3 +399,5 @@ export type ArticleUpdateRequestBody = z.infer<typeof articleUpdateRequestSchema
 export type FullWorkflowRequestBody = z.infer<typeof fullWorkflowRequestSchema>;
 export type CreateAuthorBody = z.infer<typeof createAuthorSchema>;
 export type UpdateAuthorBody = z.infer<typeof updateAuthorSchema>;
+export type ProjectCreateBody = z.infer<typeof projectCreateSchema>;
+export type ProjectUpdateBody = z.infer<typeof projectUpdateSchema>;

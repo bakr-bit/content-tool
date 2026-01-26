@@ -9,6 +9,7 @@ import type {
   ListArticlesQuery,
   ListArticlesResult,
 } from '@/types/article';
+import type { ProjectWithCount } from '@/types/project';
 
 const API_BASE = '/api/v1';
 
@@ -294,6 +295,7 @@ export async function getArticles(query: ListArticlesQuery = {}): Promise<ListAr
 
   if (query.keyword) params.append('keyword', query.keyword);
   if (query.status) params.append('status', query.status);
+  if (query.projectId !== undefined) params.append('projectId', query.projectId);
   if (query.sortBy) params.append('sortBy', query.sortBy);
   if (query.sortOrder) params.append('sortOrder', query.sortOrder);
   if (query.page) params.append('page', String(query.page));
@@ -328,5 +330,45 @@ export async function updateArticle(
   return fetchApi<import('@/types/article').ArticleWithStatus>(`/article/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),
+  });
+}
+
+// Project endpoints
+export interface ProjectsResponse {
+  projects: ProjectWithCount[];
+  count: number;
+}
+
+export async function getProjects(): Promise<ApiResponse<ProjectsResponse>> {
+  return fetchApi<ProjectsResponse>('/project');
+}
+
+export async function createProject(data: {
+  name: string;
+  description?: string;
+}): Promise<ApiResponse<ProjectWithCount>> {
+  return fetchApi<ProjectWithCount>('/project', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getProject(id: string): Promise<ApiResponse<ProjectWithCount>> {
+  return fetchApi<ProjectWithCount>(`/project/${id}`);
+}
+
+export async function updateProject(
+  id: string,
+  data: { name?: string; description?: string }
+): Promise<ApiResponse<ProjectWithCount>> {
+  return fetchApi<ProjectWithCount>(`/project/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteProject(id: string): Promise<ApiResponse<{ message: string }>> {
+  return fetchApi<{ message: string }>(`/project/${id}`, {
+    method: 'DELETE',
   });
 }

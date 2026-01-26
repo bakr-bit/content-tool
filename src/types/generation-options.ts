@@ -238,6 +238,8 @@ export interface GenerationOptionsInput {
   authorProfileId?: string;
   title?: string;                   // User-provided article title to guide outline structure
   includeKeywords?: string[];       // Additional keywords to include in the outline
+  site?: string;                    // Website this content belongs to
+  projectId?: string;               // Project this article belongs to
 }
 
 // Maps for display names

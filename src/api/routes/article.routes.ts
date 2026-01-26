@@ -12,6 +12,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
     const {
       keyword,
       status,
+      projectId,
       sortBy,
       sortOrder,
       page,
@@ -21,6 +22,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
     const result = articleService.listArticles({
       keyword: keyword as string | undefined,
       status: status as ArticleStatus | undefined,
+      projectId: projectId as string | undefined,
       sortBy: sortBy as 'created_at' | 'updated_at' | 'title' | 'keyword' | undefined,
       sortOrder: sortOrder as 'asc' | 'desc' | undefined,
       page: page ? parseInt(page as string, 10) : undefined,

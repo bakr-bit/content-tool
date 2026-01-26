@@ -23,25 +23,29 @@ interface ArticleModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onArticleCreated?: () => void;
+  defaultProjectId?: string;
 }
 
 const TAB_ORDER: TabId[] = ['details', 'structure', 'outline', 'content', 'knowledge', 'formatting'];
 
-export function ArticleModal({ open, onOpenChange, onArticleCreated }: ArticleModalProps) {
+export function ArticleModal({ open, onOpenChange, onArticleCreated, defaultProjectId }: ArticleModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>('details');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationStatus, setGenerationStatus] = useState<string>('');
   const [article, setArticle] = useState<Article | null>(null);
   const form = useArticleForm();
 
-  // Reset to details tab when modal opens
+  // Reset to details tab when modal opens and set default project
   useEffect(() => {
     if (open) {
       setActiveTab('details');
       setArticle(null);
       setGenerationStatus('');
+      if (defaultProjectId) {
+        form.setProjectId(defaultProjectId);
+      }
     }
-  }, [open]);
+  }, [open, defaultProjectId, form.setProjectId]);
 
   const currentTabIndex = TAB_ORDER.indexOf(activeTab);
   const isLastTab = currentTabIndex === TAB_ORDER.length - 1;

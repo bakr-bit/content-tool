@@ -9,6 +9,7 @@ import {
   keywordsRoutes,
   componentsRoutes,
   authorsRoutes,
+  projectRoutes,
 } from './api/routes';
 import { logger } from './utils/logger';
 
@@ -34,6 +35,7 @@ export function createApp(): Application {
   app.use('/api/v1/keywords', keywordsRoutes);
   app.use('/api/v1/components', componentsRoutes);
   app.use('/api/v1/authors', authorsRoutes);
+  app.use('/api/v1/project', projectRoutes);
 
   // 404 handler
   app.use((_req, res) => {

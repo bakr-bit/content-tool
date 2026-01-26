@@ -18,6 +18,7 @@ const DEFAULT_FORM_STATE: ArticleFormState = {
   // Details Tab
   focusKeyword: '',
   articleTitle: '',
+  projectId: '',
   includeKeywords: [],
 
   // Content Tab
@@ -76,6 +77,10 @@ export function useArticleForm() {
 
   const setArticleTitle = useCallback((title: string) => {
     setFormState((prev) => ({ ...prev, articleTitle: title }));
+  }, []);
+
+  const setProjectId = useCallback((projectId: string) => {
+    setFormState((prev) => ({ ...prev, projectId }));
   }, []);
 
   const setIncludeKeywords = useCallback((keywords: string[]) => {
@@ -214,6 +219,7 @@ export function useArticleForm() {
         deepResearch: formState.deepResearch.enabled ? formState.deepResearch : undefined,
         title: formState.articleTitle || undefined,
         includeKeywords: formState.includeKeywords.length > 0 ? formState.includeKeywords : undefined,
+        projectId: formState.projectId || undefined,
       },
     };
   }, [formState]);
@@ -225,6 +231,7 @@ export function useArticleForm() {
     // Details
     setFocusKeyword,
     setArticleTitle,
+    setProjectId,
     setIncludeKeywords,
     addKeyword,
     removeKeyword,

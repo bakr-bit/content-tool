@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,8 @@ import { X, Sparkles, Loader2 } from 'lucide-react';
 import { COUNTRY_NAMES, LANGUAGE_NAMES, type TargetCountry, type Language } from '@/types/article';
 import type { UseArticleFormReturn } from '@/hooks/useArticleForm';
 import { Flag } from '@/components/ui/flag';
-import { generateKeywords } from '@/services/api';
+import { generateKeywords, getProjects } from '@/services/api';
+import type { ProjectWithCount } from '@/types/project';
 
 interface DetailsTabProps {
   form: UseArticleFormReturn;
@@ -23,6 +24,24 @@ interface DetailsTabProps {
 export function DetailsTab({ form }: DetailsTabProps) {
   const [newKeyword, setNewKeyword] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [projects, setProjects] = useState<ProjectWithCount[]>([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const result = await getProjects();
+        if (result.success && result.data) {
+          setProjects(result.data.projects);
+        }
+      } catch (error) {
+        console.error('Failed to fetch projects:', error);
+      } finally {
+        setProjectsLoading(false);
+      }
+    }
+    fetchProjects();
+  }, []);
 
   const handleAddKeyword = () => {
     if (newKeyword.trim() && !form.formState.includeKeywords.includes(newKeyword.trim())) {
@@ -143,6 +162,31 @@ export function DetailsTab({ form }: DetailsTabProps) {
         />
         <p className="text-xs text-muted-foreground">
           Optional. If left empty, the AI will generate an optimized title.
+        </p>
+      </div>
+
+      {/* Project */}
+      <div className="space-y-2">
+        <Label>Project</Label>
+        <Select
+          value={form.formState.projectId || 'none'}
+          onValueChange={(value) => form.setProjectId(value === 'none' ? '' : value)}
+          disabled={projectsLoading}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder={projectsLoading ? 'Loading...' : 'Select a project'} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">No Project</SelectItem>
+            {projects.map((project) => (
+              <SelectItem key={project.projectId} value={project.projectId}>
+                {project.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground">
+          Optional. Assign this article to a project.
         </p>
       </div>
 

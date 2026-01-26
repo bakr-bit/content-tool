@@ -17,18 +17,23 @@ export interface ArticleRow {
   sections: string;
   metadata: string;
   status: ArticleStatus;
+  site: string | null;
+  project_id: string | null;
   created_at: string;
   updated_at: string | null;
 }
 
 export interface ArticleWithStatus extends Article {
   status: ArticleStatus;
+  site?: string;
+  projectId?: string;
   updatedAt?: string;
 }
 
 export interface ListArticlesOptions {
   keyword?: string;
   status?: ArticleStatus;
+  projectId?: string;
   sortBy?: 'created_at' | 'updated_at' | 'title' | 'keyword';
   sortOrder?: 'asc' | 'desc';
   page?: number;
@@ -53,6 +58,8 @@ function rowToArticle(row: ArticleRow): ArticleWithStatus {
     sections: JSON.parse(row.sections) as GeneratedSection[],
     metadata: JSON.parse(row.metadata) as ArticleMetadata,
     status: row.status,
+    site: row.site ?? undefined,
+    projectId: row.project_id ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at ?? undefined,
   };
@@ -65,17 +72,19 @@ export class ArticleStorage {
     this.db = getDatabase(env.CACHE_DB_PATH);
   }
 
-  saveArticle(article: Article, status: ArticleStatus = 'draft'): ArticleWithStatus {
+  saveArticle(article: Article, status: ArticleStatus = 'draft', site?: string, projectId?: string): ArticleWithStatus {
     const now = new Date().toISOString();
 
     try {
       // Check if article exists
       const existing = this.db.prepare(
-        'SELECT article_id FROM articles WHERE article_id = ?'
-      ).get(article.articleId) as { article_id: string } | undefined;
+        'SELECT article_id, site, project_id FROM articles WHERE article_id = ?'
+      ).get(article.articleId) as { article_id: string; site: string | null; project_id: string | null } | undefined;
 
       if (existing) {
-        // Update existing article
+        // Update existing article (preserve site and projectId if not provided)
+        const siteValue = site !== undefined ? site : existing.site;
+        const projectIdValue = projectId !== undefined ? projectId : existing.project_id;
         this.db.prepare(`
           UPDATE articles SET
             outline_id = ?,
@@ -85,6 +94,8 @@ export class ArticleStorage {
             sections = ?,
             metadata = ?,
             status = ?,
+            site = ?,
+            project_id = ?,
             updated_at = ?
           WHERE article_id = ?
         `).run(
@@ -95,18 +106,27 @@ export class ArticleStorage {
           JSON.stringify(article.sections),
           JSON.stringify(article.metadata),
           status,
+          siteValue,
+          projectIdValue,
           now,
           article.articleId
         );
 
         logger.info({ articleId: article.articleId }, 'Article updated in database');
+        return {
+          ...article,
+          status,
+          site: siteValue ?? undefined,
+          projectId: projectIdValue ?? undefined,
+          updatedAt: now,
+        };
       } else {
         // Insert new article
         this.db.prepare(`
           INSERT INTO articles (
             article_id, outline_id, keyword, title, content,
-            sections, metadata, status, created_at, updated_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            sections, metadata, status, site, project_id, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).run(
           article.articleId,
           article.outlineId,
@@ -116,18 +136,20 @@ export class ArticleStorage {
           JSON.stringify(article.sections),
           JSON.stringify(article.metadata),
           status,
+          site ?? null,
+          projectId ?? null,
           article.createdAt,
           null
         );
 
         logger.info({ articleId: article.articleId }, 'Article saved to database');
+        return {
+          ...article,
+          status,
+          site: site ?? undefined,
+          projectId: projectId ?? undefined,
+        };
       }
-
-      return {
-        ...article,
-        status,
-        updatedAt: existing ? now : undefined,
-      };
     } catch (error) {
       logger.error({ error, articleId: article.articleId }, 'Error saving article');
       throw error;
@@ -155,6 +177,7 @@ export class ArticleStorage {
     const {
       keyword,
       status,
+      projectId,
       sortBy = 'created_at',
       sortOrder = 'desc',
       page = 1,
@@ -172,6 +195,16 @@ export class ArticleStorage {
     if (status) {
       conditions.push('status = ?');
       params.push(status);
+    }
+
+    if (projectId !== undefined) {
+      if (projectId === '') {
+        // Filter for articles without a project
+        conditions.push('project_id IS NULL');
+      } else {
+        conditions.push('project_id = ?');
+        params.push(projectId);
+      }
     }
 
     const whereClause = conditions.length > 0

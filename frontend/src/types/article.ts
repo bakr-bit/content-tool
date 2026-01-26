@@ -234,6 +234,8 @@ export interface Article {
   content: string;
   sections: GeneratedSection[];
   metadata: ArticleMetadata;
+  site?: string;
+  projectId?: string;
   createdAt: string;
 }
 
@@ -242,6 +244,7 @@ export type ArticleStatus = 'draft' | 'published' | 'archived';
 
 export interface ArticleWithStatus extends Article {
   status: ArticleStatus;
+  projectId?: string;
   updatedAt?: string;
 }
 
@@ -256,6 +259,7 @@ export interface ListArticlesResult {
 export interface ListArticlesQuery {
   keyword?: string;
   status?: ArticleStatus;
+  projectId?: string;
   sortBy?: 'created_at' | 'updated_at' | 'title' | 'keyword';
   sortOrder?: 'asc' | 'desc';
   page?: number;
@@ -288,6 +292,7 @@ export interface ArticleFormState {
   // Details Tab
   focusKeyword: string;
   articleTitle: string;
+  projectId: string;
   includeKeywords: string[];
 
   // Content Tab
@@ -333,6 +338,8 @@ export interface FullWorkflowRequest {
     deepResearch?: Partial<DeepResearchOptions>;
     title?: string;
     includeKeywords?: string[];
+    site?: string;
+    projectId?: string;
   };
 }
 
