@@ -1,0 +1,223 @@
+{
+  "meta": {
+    "market_code": "de",
+    "language_code": "de",
+    "language_name": "German",
+    "country_name": "Germany",
+    "currency": "EUR",
+    "date_format": "%d. %B %Y"
+  },
+
+  "regulatory": {
+    "primary_authority": {
+      "id": "ggl",
+      "name": "Gemeinsame Glücksspielbehörde der Länder (GGL)",
+      "name_en": "Joint Gambling Authority of the Federal States",
+      "url": "https://www.ggl.de/",
+      "description": "Deutsche Glücksspielaufsichtsbehörde"
+    },
+    "self_exclusion_system": {
+      "id": "oasis",
+      "name": "OASIS",
+      "url": "https://www.oasis-spielersperre.de/",
+      "description": "Bundesweites Sperrsystem für Glücksspiel",
+      "periods": ["1 Jahr", "3 Jahre", "unbefristet"]
+    },
+    "help_resources": [
+      {
+        "id": "bzga",
+        "name": "BZgA - Bundeszentrale für gesundheitliche Aufklärung",
+        "url": "https://www.bzga.de/",
+        "phone": "0800-1 37 27 00",
+        "description": "Kostenlose Beratung zu Glücksspielsucht"
+      },
+      {
+        "id": "gambling_therapy",
+        "name": "Gambling Therapy",
+        "url": "https://www.gamblingtherapy.org/",
+        "description": "Internationale Hilfe bei Spielproblemen"
+      }
+    ],
+    "tax_rules": {
+      "eu_licensed": "Gewinne aus EU-lizenzierten Casinos (MGA, Estland) sind für deutsche Spieler steuerfrei",
+      "non_eu_licensed": "Gewinne aus Nicht-EU-Casinos (Curaçao) unterliegen der Einkommensteuer",
+      "declaration_note": "Es liegt in DEINER Verantwortung, Gewinne aus nicht lizenzierten Casinos zu versteuern",
+      "example": "Du gewinnst 50.000 € in einem Curaçao-Casino. Einkommensteuer kann fällig werden."
+    },
+    "legal_framework": {
+      "gambling_act_year": 2021,
+      "gambling_act_name": "Glücksspielstaatsvertrag (GlüStV)",
+      "deposit_limit": "Monatliches Einzahlungslimit von 1.000 € bei deutschen Lizenzen",
+      "spin_limit": "Maximaler Einsatz von 1 € pro Spin bei Slots",
+      "player_responsibility": "Das Spielen bei nicht lizenzierten Casinos ist für Spieler nicht strafbar"
+    }
+  },
+
+  "ui_labels": {
+    "toc_title": "Inhaltsverzeichnis",
+    "sources_title": "Quellen",
+    "sources_intro": "Dieser Artikel basiert auf Informationen aus folgenden autoritativen Quellen:",
+    "disclaimer_title": "18+ Warnung",
+    "disclaimer_text": "Glücksspiel ist nur für Personen ab 18 Jahren erlaubt. Spiele verantwortungsvoll und setze dir Limits.",
+    "disclaimer_full": "Glücksspiel ist nur für Personen ab 18 Jahren erlaubt. Spiele verantwortungsvoll und setze dir Limits. Wenn du das Gefühl hast, dass dein Spielverhalten problematisch wird, kontaktiere die BZgA unter 0800-1 37 27 00 oder besuche OASIS-Spielersperre.de.",
+    "last_updated": "Zuletzt aktualisiert",
+    "generated": "Erstellt",
+    "flair_label": "Flair",
+    "word_count": "Wortanzahl",
+    "best_for": "Am besten für",
+    "pros": "Vorteile",
+    "cons": "Nachteile",
+    "rating": "Bewertung",
+    "license": "Lizenz",
+    "welcome_bonus": "Willkommensbonus",
+    "wagering_requirement": "Umsatzbedingungen",
+    "withdrawal_time": "Auszahlungszeit",
+    "payment_methods": "Zahlungsmethoden",
+    "games": "Spiele",
+    "slots": "Slots",
+    "live_tables": "Live",
+    "play_responsibly": "Spiele verantwortungsvoll",
+    "age_restriction": "18+",
+    "key_metric": "Kennzahl",
+    "why_top_3": "Warum Top 3?"
+  },
+
+  "section_titles": {
+    "intro": "{keyword} {year} – Top {casino_count} ohne OASIS",
+    "methodology": "So bewerten wir Casinos ohne Limit",
+    "top_table": "Top {casino_count} Casino ohne Limit {year}",
+    "casino_reviews": "Detaillierte Bewertungen",
+    "payments": "Zahlungen & Auszahlungen",
+    "legal_rg": "Rechtliches & verantwortungsvolles Spielen",
+    "faq": "Häufige Fragen zu Casinos ohne Limit",
+    "category_best_licensed": "Beste lizenzierte Casinos",
+    "category_best_crypto": "Beste Krypto-Casinos",
+    "category_fastest_withdrawals": "Schnellste Auszahlungen",
+    "category_lowest_wagering": "Niedrigste Umsatzbedingungen",
+    "category_easiest_signup": "Einfachste Registrierung",
+    "deep_dive_license_verification": "So verifizierst du eine Casino-Lizenz",
+    "deep_dive_crypto_payments": "Krypto-Zahlungen im Casino",
+    "deep_dive_bonus_mechanics": "Wie Boni funktionieren (das Kleingedruckte)",
+    "deep_dive_getting_started": "Erste Schritte im Casino ohne Limit",
+    "deep_dive_safety_checklist": "Sicherheits-Checkliste: Grüne und rote Flaggen",
+    "deep_dive_tax_explanation": "Steuern auf Casino-Gewinne: EU vs Nicht-EU",
+    "comparison_licensed_vs_offshore": "Deutsche Casinos vs Casinos ohne Lizenz",
+    "comparison_crypto_vs_fiat": "Krypto vs traditionelle Zahlungsmethoden",
+    "comparison_eu_vs_non_eu": "EU-lizenzierte vs Offshore-Casinos"
+  },
+
+  "flair_translations": {
+    "safety_focused": {
+      "name": "Sicherheit & Vertrauen",
+      "description": "Fokus auf Lizenzierung, Verifizierung und Spielerschutz",
+      "keywords": ["Sicherheit", "Lizenz", "Verifizierung", "Schutz", "zuverlässig"],
+      "avoid": ["risikofrei", "garantiert", "100% sicher"],
+      "intro_angle": "Die Wahl des richtigen Casinos beginnt mit Sicherheit. Wir prüfen Lizenzen, Zahlungssicherheit und Spielerschutz, um dir sichere Alternativen zu zeigen."
+    },
+    "crypto_first": {
+      "name": "Krypto-Fokus",
+      "description": "Fokus auf Kryptowährungen und schnelle Auszahlungen",
+      "keywords": ["Krypto", "BTC", "USDT", "schnell", "Blockchain", "Wallet"],
+      "avoid": ["traditionell", "altmodisch"],
+      "intro_angle": "Für Spieler, die maximale Kontrolle über ihr Geld und blitzschnelle Auszahlungen wollen, sind Krypto-Casinos die klare Wahl."
+    },
+    "eu_licensing": {
+      "name": "EU-Lizenz-Fokus",
+      "description": "Fokus auf EU-lizenzierte Casinos und steuerfreie Gewinne",
+      "keywords": ["MGA", "EU", "reguliert", "steuerfrei", "Verbraucherschutz"],
+      "avoid": ["Grauzone", "unreguliert"],
+      "intro_angle": "EU-lizenzierte Casinos bieten stärkeren Verbraucherschutz und steuerfreie Gewinne für deutsche Spieler."
+    },
+    "bonus_hunter": {
+      "name": "Bonus-Jäger",
+      "description": "Fokus auf Boni, Umsatzbedingungen und Wert",
+      "keywords": ["Umsatzbedingungen", "Bonus", "Wert", "EV", "Bedingungen"],
+      "avoid": ["kostenloses Geld", "garantierter Gewinn"],
+      "intro_angle": "Ein großer Bonus ist wertlos mit schlechten Bedingungen. Wir analysieren Umsatzanforderungen und Bonuswert, um die besten Angebote zu finden."
+    },
+    "step_by_step": {
+      "name": "Anfänger-Guide",
+      "description": "Schritt-für-Schritt-Anleitungen für neue Spieler",
+      "keywords": ["so geht's", "Schritt für Schritt", "einfach", "Guide", "Tipps"],
+      "avoid": ["Experte", "fortgeschritten"],
+      "intro_angle": "Neu bei Casinos ohne Limit? Kein Problem – wir führen dich durch den gesamten Prozess, von der Registrierung bis zu deiner ersten Auszahlung."
+    }
+  },
+
+  "month_names": [
+    "Januar", "Februar", "März", "April", "Mai", "Juni",
+    "Juli", "August", "September", "Oktober", "November", "Dezember"
+  ],
+
+  "table_headers": {
+    "rank": "#",
+    "casino": "Casino",
+    "license": "Lizenz",
+    "welcome_bonus": "Willkommensbonus",
+    "wagering": "Umsatz",
+    "withdrawal_time": "Auszahlung",
+    "payment_methods": "Zahlungen",
+    "games": "Spiele",
+    "best_for": "Am besten für",
+    "rating": "Bewertung"
+  },
+
+  "methodology_criteria": {
+    "license_safety": {
+      "name": "Lizenz & Sicherheit",
+      "weight": "30%",
+      "description": "Welche Lizenz hat das Casino? MGA gilt als sicherer als Curaçao."
+    },
+    "payments": {
+      "name": "Zahlungen & Auszahlungen",
+      "weight": "25%",
+      "description": "Welche Methoden werden unterstützt? Wie schnell sind Auszahlungen in der Praxis?"
+    },
+    "games": {
+      "name": "Spielangebot & Anbieter",
+      "weight": "20%",
+      "description": "Anzahl der Slots, Live-Spiele und welche Anbieter sind verfügbar?"
+    },
+    "bonuses": {
+      "name": "Boni & Bedingungen",
+      "weight": "15%",
+      "description": "Die Bonusgröße ist NICHT alles – die Bedingungen entscheiden."
+    },
+    "ux_rg": {
+      "name": "Nutzererfahrung & verantwortungsvolles Spielen",
+      "weight": "10%",
+      "description": "Webdesign, Mobil, Kundendienst und Verantwortungs-Tools."
+    }
+  },
+
+  "common_phrases": {
+    "tax_free": "steuerfrei",
+    "tax_required": "steuerpflichtig",
+    "our_test": "unser Test",
+    "in_our_experience": "nach unserer Erfahrung",
+    "we_recommend": "wir empfehlen",
+    "read_more": "Mehr erfahren",
+    "see_all": "Alle anzeigen",
+    "why_ranked": "Warum ist {casino} auf Platz #{rank}?",
+    "things_to_consider": "Zu beachten:",
+    "best_for_template": "Am besten für: {description}. 18+. Spiele verantwortungsvoll."
+  },
+
+  "payment_methods": {
+    "crypto_note": "Kryptowährungen bieten die schnellsten Auszahlungen – oft in Minuten",
+    "no_sofort": "Deutsche Sofortüberweisung funktioniert bei vielen Offshore-Casinos NICHT",
+    "kyc_note": "KYC-Verifizierung ist normalerweise bei der ersten Auszahlung erforderlich",
+    "currency_note": "Du spielst meist in EUR – keine Einschränkungen wie bei deutschen Lizenzen"
+  },
+
+  "faq_common_questions": [
+    "Ist es legal für mich als Deutscher, in Casinos ohne Limit zu spielen?",
+    "Haben diese Casinos gar keine Lizenz?",
+    "Muss ich Steuern auf Gewinne zahlen?",
+    "Kann ich Sofortüberweisung oder PayPal nutzen?",
+    "Muss ich eine KYC-Verifizierung durchführen?",
+    "Wie schnell sind Auszahlungen in der Praxis?",
+    "Funktioniert OASIS bei Offshore-Casinos?",
+    "Was ist der Unterschied zwischen MGA- und Curaçao-Lizenz?"
+  ]
+}

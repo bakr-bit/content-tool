@@ -1,0 +1,64 @@
+{
+  "gambling_authorities": [
+    {
+      "name": "Kansspelautoriteit (KSA)",
+      "name_citation": "https://kansspelautoriteit.nl/english/",
+      "role": "Independent administrative body and regulator of gambling services in the Netherlands. Its primary tasks include granting licenses, supervising operators, combating illegal gambling, and protecting players from gambling addiction.",
+      "role_citation": "https://kansspelautoriteit.nl/english/",
+      "current_regulations": "The KSA oversees the 'Wet op de kansspelen' (Wok) and the 'Wet Kansspelen op afstand' (Koa), or Remote Gambling Act. Current regulations include strict player protection measures (enforced from Oct 2024) which require online operators to monitor player behavior and intervene when risks arise. It also manages the Central Register for Exclusion from Games of Chance (Cruks).",
+      "current_regulations_citation": "https://www.government.nl/latest/news/2024/10/01/measures-introduced-to-ensure-better-protection-for-online-gamblers",
+      "upcoming_legislative_changes": "Effective January 1, 2026, the KSA operates under a new governance structure with a revised board. Its 2026 agenda focuses on an 'intensified crackdown' on the illegal gambling ecosystem and strengthening the protection of vulnerable groups, particularly through enhanced compliance requirements for licensed operators.",
+      "upcoming_legislative_changes_citation": "https://igamingexpert.com/regions/europe/ksa-changes-announced/",
+      "official_source_links": [
+        {
+          "value": "https://kansspelautoriteit.nl/",
+          "value_citation": "https://kansspelautoriteit.nl/"
+        },
+        {
+          "value": "https://wetten.overheid.nl/BWBR0002469/",
+          "value_citation": "https://wetten.overheid.nl/BWBR0002469/"
+        }
+      ]
+    },
+    {
+      "name": "Ministerie van Justitie en Veiligheid (Ministry of Justice and Security)",
+      "name_citation": "https://www.rijksoverheid.nl/ministeries/ministerie-van-justitie-en-veiligheid",
+      "role": "Responsible for the primary legislation and overarching gambling policy in the Netherlands. The Minister for Legal Protection (within the Ministry) manages the legal framework to ensure a safe and responsible gambling environment.",
+      "role_citation": "https://www.government.nl/topics/games-of-chance/rules-for-games-of-chance",
+      "current_regulations": "The Ministry is responsible for the 'Wet op de kansspelen' and the 'Besluit orka' (Besluit ongetargete reclame kansspelen op afstand), which prohibits untargeted advertising for online gambling on television, radio, and in public spaces. It sets the legal standards for the KSA to enforce.",
+      "current_regulations_citation": "https://www.rijksoverheid.nl/onderwerpen/kansspelen/regels-kansspelen",
+      "upcoming_legislative_changes": "Continuous evaluation of the Remote Gambling Act (Koa) is underway, with potential policy updates expected in 2025 and 2026 to further refine player protection rules and tighten advertising restrictions if the current measures are deemed insufficient.",
+      "upcoming_legislative_changes_citation": "https://cdcgaming.com/brief/dutch-minister-plans-new-gambling-policy-by-march-2025/",
+      "official_source_links": [
+        {
+          "value": "https://www.rijksoverheid.nl/onderwerpen/kansspelen",
+          "value_citation": "https://www.rijksoverheid.nl/onderwerpen/kansspelen"
+        },
+        {
+          "value": "https://www.government.nl/topics/games-of-chance",
+          "value_citation": "https://www.government.nl/topics/games-of-chance"
+        }
+      ]
+    },
+    {
+      "name": "Belastingdienst (Tax and Customs Administration)",
+      "name_citation": "https://www.belastingdienst.nl/",
+      "role": "Responsible for the levying and collection of the 'Kansspelbelasting' (Gambling Tax) in the Netherlands. It ensures that both operators and individual winners comply with tax obligations according to the 'Wet op de kansspelbelasting'.",
+      "role_citation": "https://wetten.overheid.nl/BWBR0002359/",
+      "current_regulations": "The gambling tax is regulated under the 'Wet op de kansspelbelasting'. As of January 1, 2026, the gambling tax rate has increased to 37.8% of Gross Gaming Revenue (GGR) for domestic operators. For prizes won at foreign games of chance, players must pay tax if the prize exceeds 449 euros.",
+      "current_regulations_citation": "https://business.gov.nl/amendments/betting-lottery-tax-increase/",
+      "upcoming_legislative_changes": "The rate was raised in a two-step process: from 30.5% to 34.2% in 2025, and finally to 37.8% on January 1, 2026. The government is monitoring the impact of this increase on the legal market's competitiveness ('channeling rate') against illegal operators.",
+      "upcoming_legislative_changes_citation": "https://www.twobirds.com/en/insights/2024/netherlands/dutch-betting-and-gaming-tax-gradually-increases-in-two-steps",
+      "official_source_links": [
+        {
+          "value": "https://www.belastingdienst.nl/wps/wcm/connect/nl/kansspelbelasting/",
+          "value_citation": "https://www.belastingdienst.nl/wps/wcm/connect/nl/kansspelbelasting/"
+        },
+        {
+          "value": "https://wetten.overheid.nl/BWBR0002359/",
+          "value_citation": "https://wetten.overheid.nl/BWBR0002359/"
+        }
+      ]
+    }
+  ]
+}

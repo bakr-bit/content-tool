@@ -1,0 +1,214 @@
+{
+  "meta": {
+    "market_code": "au",
+    "language_code": "en",
+    "language_name": "English",
+    "country_name": "Australia",
+    "currency": "AUD",
+    "date_format": "%d %B %Y"
+  },
+
+  "regulatory": {
+    "primary_authority": {
+      "id": "acma",
+      "name": "Australian Communications and Media Authority (ACMA)",
+      "name_en": "Australian Communications and Media Authority",
+      "url": "https://www.acma.gov.au/",
+      "description": "Australian regulator for online gambling"
+    },
+    "self_exclusion_system": {
+      "id": "national_self_exclusion",
+      "name": "National Self-Exclusion Register",
+      "url": "https://www.acma.gov.au/",
+      "description": "National self-exclusion system for online gambling",
+      "periods": ["6 months", "1 year", "5 years", "lifetime"]
+    },
+    "help_resources": [
+      {
+        "id": "gambling_help",
+        "name": "Gambling Help Online",
+        "url": "https://www.gamblinghelponline.org.au/",
+        "phone": "1800 858 858",
+        "description": "Free 24/7 gambling support and counselling"
+      },
+      {
+        "id": "gamblers_anonymous",
+        "name": "Gamblers Anonymous Australia",
+        "url": "https://www.gaaustralia.org.au/",
+        "description": "Support groups for problem gamblers"
+      }
+    ],
+    "tax_rules": {
+      "eu_licensed": "Gambling winnings are generally tax-free for recreational Australian players",
+      "non_eu_licensed": "Gambling winnings are generally not taxable for casual players",
+      "declaration_note": "Professional gamblers may need to declare winnings as income",
+      "example": "You win $50,000 at any casino. Generally no tax is due for recreational players."
+    },
+    "legal_framework": {
+      "gambling_act_year": 2001,
+      "gambling_act_name": "Interactive Gambling Act 2001",
+      "player_responsibility": "Playing at offshore casinos is not illegal for players, but operators cannot legally target Australians"
+    }
+  },
+
+  "ui_labels": {
+    "toc_title": "Table of Contents",
+    "sources_title": "Sources",
+    "sources_intro": "This article is based on information from the following authoritative sources:",
+    "disclaimer_title": "18+ Warning",
+    "disclaimer_text": "Gambling is only permitted for persons aged 18 and over. Gamble responsibly and set limits.",
+    "disclaimer_full": "Gambling is only permitted for persons aged 18 and over. Gamble responsibly and set limits. If you feel your gambling is becoming problematic, contact Gambling Help on 1800 858 858.",
+    "last_updated": "Last updated",
+    "generated": "Generated",
+    "flair_label": "Flair",
+    "word_count": "Word count",
+    "best_for": "Best for",
+    "pros": "Pros",
+    "cons": "Cons",
+    "rating": "Rating",
+    "license": "Licence",
+    "welcome_bonus": "Welcome Bonus",
+    "wagering_requirement": "Wagering Requirement",
+    "withdrawal_time": "Withdrawal Time",
+    "payment_methods": "Payment Methods",
+    "games": "Games",
+    "slots": "pokies",
+    "live_tables": "live",
+    "play_responsibly": "Gamble responsibly",
+    "age_restriction": "18+",
+    "key_metric": "Key Metric",
+    "why_top_3": "Why Top 3?"
+  },
+
+  "section_titles": {
+    "intro": "{keyword} {year} – Top {casino_count} Sites",
+    "methodology": "How We Rank Online Casinos",
+    "top_table": "Top {casino_count} Online Casinos for Aussies {year}",
+    "casino_reviews": "Detailed Reviews",
+    "payments": "Payments & Withdrawals",
+    "legal_rg": "Legal & Responsible Gambling",
+    "faq": "Frequently Asked Questions",
+    "category_best_licensed": "Best Licensed Casinos",
+    "category_best_crypto": "Best Crypto Casinos",
+    "category_fastest_withdrawals": "Fastest Withdrawals",
+    "category_lowest_wagering": "Lowest Wagering Requirements",
+    "category_easiest_signup": "Easiest Registration",
+    "deep_dive_license_verification": "How to Verify a Casino Licence",
+    "deep_dive_crypto_payments": "Crypto Payments at Casinos",
+    "deep_dive_bonus_mechanics": "How Bonuses Work (The Fine Print)",
+    "deep_dive_getting_started": "Getting Started with Online Casinos",
+    "deep_dive_safety_checklist": "Safety Checklist: Green and Red Flags",
+    "deep_dive_tax_explanation": "Tax on Casino Winnings: What You Need to Know",
+    "comparison_licensed_vs_offshore": "Australian vs Offshore Casinos",
+    "comparison_crypto_vs_fiat": "Crypto vs Traditional Payment Methods",
+    "comparison_pokies_vs_table": "Pokies vs Table Games"
+  },
+
+  "flair_translations": {
+    "safety_focused": {
+      "name": "Safety & Trust",
+      "description": "Focus on licensing, verification and player protection",
+      "keywords": ["safety", "licence", "verification", "protection", "reliable"],
+      "avoid": ["risk-free", "guaranteed", "100% safe"],
+      "intro_angle": "Choosing the right casino starts with safety. We review licences, payment security and player protection to help you find secure options."
+    },
+    "crypto_first": {
+      "name": "Crypto Focus",
+      "description": "Focus on cryptocurrencies and fast withdrawals",
+      "keywords": ["crypto", "BTC", "USDT", "fast", "blockchain", "wallet"],
+      "avoid": ["traditional", "old-fashioned"],
+      "intro_angle": "For players who want maximum control over their money and lightning-fast withdrawals, crypto casinos are the clear choice."
+    },
+    "bonus_hunter": {
+      "name": "Bonus Hunter",
+      "description": "Focus on bonuses, wagering requirements and value",
+      "keywords": ["wagering", "bonus", "value", "EV", "terms"],
+      "avoid": ["free money", "guaranteed win"],
+      "intro_angle": "A big bonus is worthless with bad terms. We analyse wagering requirements and bonus value to find the best offers."
+    },
+    "step_by_step": {
+      "name": "Beginner's Guide",
+      "description": "Step-by-step guides for new players",
+      "keywords": ["how to", "step by step", "easy", "guide", "tips"],
+      "avoid": ["expert", "advanced"],
+      "intro_angle": "New to online casinos? No worries – we'll guide you through the entire process, from registration to your first withdrawal."
+    }
+  },
+
+  "month_names": [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ],
+
+  "table_headers": {
+    "rank": "#",
+    "casino": "Casino",
+    "license": "Licence",
+    "welcome_bonus": "Welcome Bonus",
+    "wagering": "Wagering",
+    "withdrawal_time": "Withdrawal",
+    "payment_methods": "Payments",
+    "games": "Games",
+    "best_for": "Best For",
+    "rating": "Rating"
+  },
+
+  "methodology_criteria": {
+    "license_safety": {
+      "name": "Licence & Safety",
+      "weight": "30%",
+      "description": "Which licence does the casino hold? MGA and Curaçao are common for Australian players."
+    },
+    "payments": {
+      "name": "Payments & Withdrawals",
+      "weight": "25%",
+      "description": "Which methods are supported? How fast are withdrawals in practice?"
+    },
+    "games": {
+      "name": "Game Selection & Providers",
+      "weight": "20%",
+      "description": "Number of pokies, live games, and which providers are available?"
+    },
+    "bonuses": {
+      "name": "Bonuses & Terms",
+      "weight": "15%",
+      "description": "The bonus size is NOT everything – the terms determine the value."
+    },
+    "ux_rg": {
+      "name": "User Experience & Responsible Gambling",
+      "weight": "10%",
+      "description": "Web design, mobile, customer service and responsibility tools."
+    }
+  },
+
+  "common_phrases": {
+    "tax_free": "tax-free",
+    "tax_required": "taxable",
+    "our_test": "our test",
+    "in_our_experience": "in our experience",
+    "we_recommend": "we recommend",
+    "read_more": "Read more",
+    "see_all": "See all",
+    "why_ranked": "Why is {casino} ranked #{rank}?",
+    "things_to_consider": "Things to consider:",
+    "best_for_template": "Best for: {description}. 18+. Gamble responsibly."
+  },
+
+  "payment_methods": {
+    "crypto_note": "Cryptocurrencies offer the fastest withdrawals – often within minutes",
+    "bank_note": "Australian bank transfers may take 1-3 business days",
+    "kyc_note": "KYC verification is usually required on first withdrawal",
+    "currency_note": "Most offshore casinos accept AUD or crypto"
+  },
+
+  "faq_common_questions": [
+    "Is online gambling legal in Australia?",
+    "What licences should I look for?",
+    "Do I have to pay tax on winnings?",
+    "Can I use POLi or bank transfer?",
+    "Do I need to complete KYC verification?",
+    "How fast are withdrawals in practice?",
+    "What's the difference between offshore and local casinos?",
+    "Are pokies available at offshore casinos?"
+  ]
+}

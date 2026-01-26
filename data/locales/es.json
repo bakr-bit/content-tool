@@ -1,0 +1,221 @@
+{
+  "meta": {
+    "market_code": "es",
+    "language_code": "es",
+    "language_name": "Spanish",
+    "country_name": "Spain",
+    "currency": "EUR",
+    "date_format": "%d de %B de %Y"
+  },
+
+  "regulatory": {
+    "primary_authority": {
+      "id": "dgoj",
+      "name": "Dirección General de Ordenación del Juego (DGOJ)",
+      "name_en": "Directorate General for the Regulation of Gambling",
+      "url": "https://www.ordenacionjuego.es/",
+      "description": "Autoridad española reguladora del juego"
+    },
+    "self_exclusion_system": {
+      "id": "rgiaj",
+      "name": "RGIAJ (Registro General de Interdicciones de Acceso al Juego)",
+      "url": "https://www.ordenacionjuego.es/es/rgiaj",
+      "description": "Registro de autoexclusión del juego en España",
+      "periods": ["6 meses", "1 año", "5 años", "indefinido"]
+    },
+    "help_resources": [
+      {
+        "id": "fejar",
+        "name": "FEJAR - Federación Española de Jugadores de Azar Rehabilitados",
+        "url": "https://fejar.org/",
+        "phone": "900 200 225",
+        "description": "Ayuda gratuita para problemas con el juego"
+      },
+      {
+        "id": "gambling_therapy",
+        "name": "Gambling Therapy",
+        "url": "https://www.gamblingtherapy.org/",
+        "description": "Apoyo internacional para problemas de juego"
+      }
+    ],
+    "tax_rules": {
+      "eu_licensed": "Las ganancias de casinos con licencia EU (MGA, Estonia) están exentas de impuestos para jugadores españoles",
+      "non_eu_licensed": "Las ganancias de casinos no-EU (Curaçao) podrían estar sujetas a impuestos",
+      "declaration_note": "Es TU responsabilidad declarar las ganancias de casinos no autorizados",
+      "example": "Ganas 50.000 € en un casino de Curaçao. Podría aplicarse el impuesto sobre la renta."
+    },
+    "legal_framework": {
+      "gambling_act_year": 2011,
+      "gambling_act_name": "Ley 13/2011, de regulación del juego",
+      "player_responsibility": "Jugar en casinos sin licencia DGOJ no es un delito para los jugadores"
+    }
+  },
+
+  "ui_labels": {
+    "toc_title": "Índice",
+    "sources_title": "Fuentes",
+    "sources_intro": "Este artículo se basa en información de las siguientes fuentes autorizadas:",
+    "disclaimer_title": "Aviso 18+",
+    "disclaimer_text": "El juego solo está permitido para mayores de 18 años. Juega responsablemente y establece límites.",
+    "disclaimer_full": "El juego solo está permitido para mayores de 18 años. Juega responsablemente y establece límites. Si sientes que tu juego se está volviendo problemático, contacta a FEJAR al 900 200 225 o visita RGIAJ para autoexcluirte.",
+    "last_updated": "Última actualización",
+    "generated": "Generado",
+    "flair_label": "Flair",
+    "word_count": "Número de palabras",
+    "best_for": "Mejor para",
+    "pros": "Ventajas",
+    "cons": "Desventajas",
+    "rating": "Valoración",
+    "license": "Licencia",
+    "welcome_bonus": "Bono de bienvenida",
+    "wagering_requirement": "Requisitos de apuesta",
+    "withdrawal_time": "Tiempo de retiro",
+    "payment_methods": "Métodos de pago",
+    "games": "Juegos",
+    "slots": "tragaperras",
+    "live_tables": "en vivo",
+    "play_responsibly": "Juega responsablemente",
+    "age_restriction": "18+",
+    "key_metric": "Métrica clave",
+    "why_top_3": "¿Por qué top 3?"
+  },
+
+  "section_titles": {
+    "intro": "{keyword} {year} – Top {casino_count} Sitios",
+    "methodology": "Cómo evaluamos los casinos sin licencia",
+    "top_table": "Top {casino_count} casinos sin licencia española {year}",
+    "casino_reviews": "Reseñas detalladas",
+    "payments": "Pagos y retiros",
+    "legal_rg": "Aspectos legales y juego responsable",
+    "faq": "Preguntas frecuentes sobre casinos sin licencia española",
+    "category_best_licensed": "Mejores casinos con licencia",
+    "category_best_crypto": "Mejores casinos crypto",
+    "category_fastest_withdrawals": "Retiros más rápidos",
+    "category_lowest_wagering": "Requisitos de apuesta más bajos",
+    "category_easiest_signup": "Registro más fácil",
+    "deep_dive_license_verification": "Cómo verificar una licencia de casino",
+    "deep_dive_crypto_payments": "Pagos crypto en casinos",
+    "deep_dive_bonus_mechanics": "Cómo funcionan los bonos (la letra pequeña)",
+    "deep_dive_getting_started": "Empezar con casinos sin licencia española",
+    "deep_dive_safety_checklist": "Lista de seguridad: banderas verdes y rojas",
+    "deep_dive_tax_explanation": "Impuestos sobre ganancias: EU vs no-EU",
+    "comparison_licensed_vs_offshore": "Casinos españoles vs casinos sin licencia",
+    "comparison_crypto_vs_fiat": "Crypto vs métodos de pago tradicionales",
+    "comparison_eu_vs_non_eu": "Casinos con licencia EU vs offshore"
+  },
+
+  "flair_translations": {
+    "safety_focused": {
+      "name": "Seguridad y confianza",
+      "description": "Enfoque en licencias, verificación y protección del jugador",
+      "keywords": ["seguridad", "licencia", "verificación", "protección", "fiable"],
+      "avoid": ["sin riesgo", "garantizado", "100% seguro"],
+      "intro_angle": "Elegir el casino correcto comienza con la seguridad. Revisamos licencias, seguridad de pagos y protección del jugador para ayudarte a encontrar alternativas seguras."
+    },
+    "crypto_first": {
+      "name": "Enfoque crypto",
+      "description": "Enfoque en criptomonedas y retiros rápidos",
+      "keywords": ["crypto", "BTC", "USDT", "rápido", "blockchain", "wallet"],
+      "avoid": ["tradicional", "anticuado"],
+      "intro_angle": "Para jugadores que quieren máximo control sobre su dinero y retiros ultrarrápidos, los casinos crypto son la elección clara."
+    },
+    "eu_licensing": {
+      "name": "Enfoque licencia EU",
+      "description": "Enfoque en casinos con licencia EU y ganancias libres de impuestos",
+      "keywords": ["MGA", "EU", "regulado", "sin impuestos", "protección consumidor"],
+      "avoid": ["zona gris", "no regulado"],
+      "intro_angle": "Los casinos con licencia EU ofrecen mayor protección al consumidor y ganancias potencialmente libres de impuestos para jugadores españoles."
+    },
+    "bonus_hunter": {
+      "name": "Cazador de bonos",
+      "description": "Enfoque en bonos, requisitos de apuesta y valor",
+      "keywords": ["requisitos apuesta", "bono", "valor", "EV", "términos"],
+      "avoid": ["dinero gratis", "ganancia garantizada"],
+      "intro_angle": "Un gran bono es inútil con malas condiciones. Analizamos requisitos de apuesta y valor del bono para encontrar las mejores ofertas."
+    },
+    "step_by_step": {
+      "name": "Guía para principiantes",
+      "description": "Guías paso a paso para nuevos jugadores",
+      "keywords": ["cómo hacerlo", "paso a paso", "fácil", "guía", "consejos"],
+      "avoid": ["experto", "avanzado"],
+      "intro_angle": "¿Nuevo en casinos sin licencia española? No te preocupes – te guiaremos a través de todo el proceso, desde el registro hasta tu primer retiro."
+    }
+  },
+
+  "month_names": [
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+  ],
+
+  "table_headers": {
+    "rank": "#",
+    "casino": "Casino",
+    "license": "Licencia",
+    "welcome_bonus": "Bono bienvenida",
+    "wagering": "Apuesta",
+    "withdrawal_time": "Retiro",
+    "payment_methods": "Pagos",
+    "games": "Juegos",
+    "best_for": "Mejor para",
+    "rating": "Nota"
+  },
+
+  "methodology_criteria": {
+    "license_safety": {
+      "name": "Licencia y seguridad",
+      "weight": "30%",
+      "description": "¿Qué licencia tiene el casino? MGA se considera más segura que Curaçao."
+    },
+    "payments": {
+      "name": "Pagos y retiros",
+      "weight": "25%",
+      "description": "¿Qué métodos están disponibles? ¿Qué tan rápidos son los retiros en la práctica?"
+    },
+    "games": {
+      "name": "Selección de juegos y proveedores",
+      "weight": "20%",
+      "description": "Número de tragaperras, juegos en vivo y qué proveedores están disponibles?"
+    },
+    "bonuses": {
+      "name": "Bonos y condiciones",
+      "weight": "15%",
+      "description": "El tamaño del bono NO lo es todo – las condiciones determinan el valor."
+    },
+    "ux_rg": {
+      "name": "Experiencia de usuario y juego responsable",
+      "weight": "10%",
+      "description": "Diseño web, móvil, atención al cliente y herramientas de responsabilidad."
+    }
+  },
+
+  "common_phrases": {
+    "tax_free": "libre de impuestos",
+    "tax_required": "sujeto a impuestos",
+    "our_test": "nuestra prueba",
+    "in_our_experience": "según nuestra experiencia",
+    "we_recommend": "recomendamos",
+    "read_more": "Leer más",
+    "see_all": "Ver todos",
+    "why_ranked": "¿Por qué {casino} está en el #{rank}?",
+    "things_to_consider": "A tener en cuenta:",
+    "best_for_template": "Mejor para: {description}. 18+. Juega responsablemente."
+  },
+
+  "payment_methods": {
+    "crypto_note": "Las criptomonedas ofrecen los retiros más rápidos – a menudo en minutos",
+    "no_bizum": "Bizum NO funciona en la mayoría de los casinos extranjeros",
+    "kyc_note": "La verificación KYC suele requerirse en el primer retiro",
+    "currency_note": "Jugarás normalmente en EUR – sin restricciones como con las licencias españolas"
+  },
+
+  "faq_common_questions": [
+    "¿Es legal para mí como español jugar en casinos sin licencia?",
+    "¿Estos casinos no tienen ninguna licencia?",
+    "¿Tengo que pagar impuestos sobre las ganancias?",
+    "¿Puedo usar Bizum o transferencia bancaria?",
+    "¿Tengo que completar la verificación KYC?",
+    "¿Qué tan rápidos son los retiros en la práctica?",
+    "¿El RGIAJ funciona en casinos extranjeros?",
+    "¿Cuál es la diferencia entre licencia MGA y Curaçao?"
+  ]
+}

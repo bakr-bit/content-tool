@@ -1,0 +1,52 @@
+I'm building an AI content generator for SEO content/webpages.
+
+I will use the following APIs: SERPER, Firecrawl, Gemini, OpenAI.
+
+High level overview: 
+
+User enters keyword + GEO for the keyword that the article is aimed towards 
+
+SERPER returns top 10 results for that Keyword+GEO combination. These 
+results are scraped with Firecrawl (to markdown, maincontent only). Based 
+on this, an LLM creates a proposal for a structure/outline/list of 
+headers. User can edit this, either by removing headers, rewriting them, 
+etc. manually Add Headings or use the Generate Outline feature. If left 
+blank, the AI generates a structure automatically. This ensures the 
+article follows a logical flow that covers all necessary sub-topics for 
+search engines.
+
+Target Country: Crucial for SEO, as it ensures the AI uses local spelling (e.g., "color" vs. "colour") and references region-specific data or brands.
+
+Tone of Voice & Point of View: Allows you to set a brand voice (e.g., "authoritative," "witty") and choose between First Person ("I"), Second Person ("You"), or Third Person perspectives.
+
+Formality: Controls the level of professional language used.
+
+This is one of the tool's most powerful sections. It defines where the AI gets its facts:
+
+Connect to Web: A Deep Research tool is called to make an investigation into the subject. 
+
+Knowledge Base: Allows you to upload your own assets (PDFs, docs) so the AI writes specifically about your proprietary info or brand details.
+
+No search: No tools are used here.
+
+Readability & Engagement (Formatting & Structure)
+These settings focus on user experience (UX) and keeping readers on the page:
+
+Formatting: Toggles for Bold keywords, Italics, Tables, Quotes, and Lists. These features make the text "scannable," which is a key ranking factor for Google.
+
+Structure:
+
+Call-To-Action (CTA): Automatically inserts a link and a closing pitch to drive conversions.
+
+Key Takeaways: Adds a summary box at the start for "TL;DR" readers.
+
+FAQs: Generates a list of questions common to the topic, which helps in ranking for "People Also Ask" snippets.
+
+Article Size: Controls the depth of the article (e.g., 5–8 headings).
+
+Internal Linking: This allows you to provide a Sitemap URL. The AI crawls your site to find existing articles and automatically inserts links to them within the new draft using natural anchor text.
+
+Link Balance: A slider allows you to prioritize whether you want more internal links (to keep users on your site) or external links (to cite authoritative sources).
+
+
+Ideas: ensemble approach. One LLM for each section header. Then a editor LLM that reads it through. 

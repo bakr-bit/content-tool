@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "market_code": "se",
+    "language_code": "sv",
+    "language_name": "Swedish",
+    "country_name": "Sweden",
+    "currency": "SEK",
+    "date_format": "%d %B %Y"
+  },
+
+  "regulatory": {
+    "primary_authority": {
+      "id": "spelinspektionen",
+      "name": "Spelinspektionen",
+      "name_en": "Swedish Gambling Authority",
+      "url": "https://www.spelinspektionen.se/",
+      "description": "Sveriges tillsynsmyndighet för spel"
+    },
+    "self_exclusion_system": {
+      "id": "spelpaus",
+      "name": "Spelpaus",
+      "url": "https://www.spelpaus.se/",
+      "description": "Nationellt självavstängningsregister",
+      "periods": ["1 månad", "3 månader", "6 månader", "tills vidare"]
+    },
+    "help_resources": [
+      {
+        "id": "stodlinjen",
+        "name": "Stödlinjen",
+        "url": "https://www.stodlinjen.se/",
+        "phone": "020-81 91 00",
+        "description": "Gratis stöd och rådgivning för spelproblem"
+      },
+      {
+        "id": "gambling_therapy",
+        "name": "Gambling Therapy",
+        "url": "https://www.gamblingtherapy.org/",
+        "description": "Internationellt stöd för spelproblem"
+      }
+    ],
+    "tax_authority": {
+      "id": "skatteverket",
+      "name": "Skatteverket",
+      "url": "https://www.skatteverket.se/",
+      "description": "Svensk skattemyndighet"
+    },
+    "tax_rules": {
+      "eu_licensed": "Vinster från EU-licensierade casinon (MGA, Estland) är skattefria för svenskar",
+      "non_eu_licensed": "Vinster från casinon utanför EU (Curaçao) beskattas med 30% på nettovinsten",
+      "declaration_note": "Det är DITT ansvar att deklarera vinster från olicensierade casinon",
+      "example": "Du vinner 50 000 kr på Curaçao-casino. Skatt: 15 000 kr (30%)"
+    },
+    "legal_framework": {
+      "gambling_act_year": 2019,
+      "gambling_act_name": "Spellagen",
+      "one_bonus_rule": "Svenska casinon får endast ge EN välkomstbonus per spelare",
+      "player_responsibility": "Att spela på olicensierade casinon är lagligt för individen, men operatören bryter mot svensk lag"
+    }
+  },
+
+  "ui_labels": {
+    "toc_title": "Innehållsförteckning",
+    "sources_title": "Källor",
+    "sources_intro": "Denna artikel är baserad på information från följande auktoritativa källor:",
+    "disclaimer_title": "18+ Varning",
+    "disclaimer_text": "Spel om pengar är endast tillåtet för personer som fyllt 18 år. Spela ansvarsfullt och sätt gränser för ditt spelande.",
+    "disclaimer_full": "Spel om pengar är endast tillåtet för personer som fyllt 18 år. Spela ansvarsfullt och sätt gränser för ditt spelande. Om du känner att spelandet blir problematiskt, kontakta Stödlinjen på 020-81 91 00 eller besök Spelpaus.se för att stänga av dig från svenskt licensierat spel.",
+    "last_updated": "Senast uppdaterad",
+    "generated": "Genererad",
+    "flair_label": "Flair",
+    "word_count": "Ordantal",
+    "best_for": "Bäst för",
+    "pros": "Fördelar",
+    "cons": "Nackdelar",
+    "rating": "Betyg",
+    "license": "Licens",
+    "welcome_bonus": "Välkomstbonus",
+    "wagering_requirement": "Omsättningskrav",
+    "withdrawal_time": "Uttagstid",
+    "payment_methods": "Betalmetoder",
+    "games": "Spel",
+    "slots": "slots",
+    "live_tables": "live",
+    "play_responsibly": "Spela ansvarsfullt",
+    "age_restriction": "18+",
+    "key_metric": "Nyckelmått",
+    "why_top_3": "Varför topp 3?"
+  },
+
+  "section_titles": {
+    "intro": "{keyword} {year} – Topp {casino_count} utan {exclusion_system}",
+    "methodology": "Så rankar vi casinon utan svensk licens",
+    "top_table": "Topp {casino_count} casino utan svensk licens {year}",
+    "casino_reviews": "Detaljerade recensioner",
+    "payments": "Betalningar & uttag",
+    "legal_rg": "Juridik & ansvarsfullt spelande",
+    "faq": "Vanliga frågor om casino utan svensk licens",
+    "category_best_licensed": "Bäst licensierade casinon",
+    "category_best_crypto": "Bästa kryptokasinon",
+    "category_fastest_withdrawals": "Snabbaste uttagen",
+    "category_lowest_wagering": "Lägst omsättningskrav",
+    "category_easiest_signup": "Enklast att komma igång",
+    "deep_dive_license_verification": "Så verifierar du en casinolicens",
+    "deep_dive_crypto_payments": "Kryptobetalningar på casino",
+    "deep_dive_bonus_mechanics": "Hur bonusar fungerar (det finstilta)",
+    "deep_dive_getting_started": "Kom igång med casino utan svensk licens",
+    "deep_dive_safety_checklist": "Säkerhetschecklista: Gröna och röda flaggor",
+    "deep_dive_tax_explanation": "Skatt på casinovinster: EU vs icke-EU",
+    "comparison_licensed_vs_offshore": "Svenska casinon vs casinon utan licens",
+    "comparison_crypto_vs_fiat": "Krypto vs traditionella betalmetoder",
+    "comparison_eu_vs_non_eu": "EU-licensierade vs offshore-casinon"
+  },
+
+  "flair_translations": {
+    "safety_focused": {
+      "name": "Säkerhet & Trygghet",
+      "description": "Fokuserar på licensiering, verifiering och spelarskydd",
+      "keywords": ["säkerhet", "licens", "verifiering", "skydd", "pålitlig"],
+      "avoid": ["riskfritt", "garanterat", "100% säkert"],
+      "intro_angle": "Att välja rätt casino handlar först och främst om säkerhet. Vi granskar licenser, betalningssäkerhet och spelarskydd för att hjälpa dig hitta trygga alternativ."
+    },
+    "crypto_first": {
+      "name": "Krypto-fokus",
+      "description": "Fokuserar på kryptovalutor och snabba uttag",
+      "keywords": ["krypto", "BTC", "USDT", "snabbt", "blockchain", "wallet"],
+      "avoid": ["traditionell", "gammaldags"],
+      "intro_angle": "För spelare som vill ha maximalt kontroll över sina pengar och blixtsnabba uttag är kryptokasinon det självklara valet."
+    },
+    "eu_licensing": {
+      "name": "EU-licensfokus",
+      "description": "Fokuserar på EU-licensierade casinon och skattefria vinster",
+      "keywords": ["MGA", "EU", "reglerad", "skattefri", "konsumentskydd"],
+      "avoid": ["grå marknad", "oreglerad"],
+      "intro_angle": "EU-licensierade casinon erbjuder starkare konsumentskydd och skattefria vinster för svenska spelare."
+    },
+    "bonus_hunter": {
+      "name": "Bonusjägare",
+      "description": "Fokuserar på bonusar, omsättningskrav och värde",
+      "keywords": ["omsättningskrav", "bonus", "värde", "EV", "villkor"],
+      "avoid": ["gratis pengar", "garanterad vinst"],
+      "intro_angle": "En stor bonus är värdelös med dåliga villkor. Vi analyserar omsättningskrav och bonusvärde för att hitta de bästa erbjudandena."
+    },
+    "step_by_step": {
+      "name": "Nybörjarguide",
+      "description": "Steg-för-steg guider för nya spelare",
+      "keywords": ["så här", "steg för steg", "enkelt", "guide", "tips"],
+      "avoid": ["expert", "avancerad"],
+      "intro_angle": "Ny på casinon utan svensk licens? Ingen fara – vi guidar dig genom hela processen, från registrering till ditt första uttag."
+    }
+  },
+
+  "month_names": [
+    "januari", "februari", "mars", "april", "maj", "juni",
+    "juli", "augusti", "september", "oktober", "november", "december"
+  ],
+
+  "table_headers": {
+    "rank": "#",
+    "casino": "Casino",
+    "license": "Licens",
+    "welcome_bonus": "Välkomstbonus",
+    "wagering": "Oms.krav",
+    "withdrawal_time": "Uttagstid",
+    "payment_methods": "Betalmetoder",
+    "games": "Spel",
+    "best_for": "Bäst för",
+    "rating": "Betyg"
+  },
+
+  "methodology_criteria": {
+    "license_safety": {
+      "name": "Licens & säkerhet",
+      "weight": "30%",
+      "description": "Vilken licens har casinot? MGA ses som säkrare än Curaçao."
+    },
+    "payments": {
+      "name": "Betalningar & uttag",
+      "weight": "25%",
+      "description": "Vilka metoder stöds? Hur snabba är uttagen i praktiken?"
+    },
+    "games": {
+      "name": "Spelutbud & leverantörer",
+      "weight": "20%",
+      "description": "Antal slots, live-spel, och vilka leverantörer finns?"
+    },
+    "bonuses": {
+      "name": "Bonusar & villkor",
+      "weight": "15%",
+      "description": "Bonusens storlek ÄR INTE allt – villkoren avgör."
+    },
+    "ux_rg": {
+      "name": "Användarupplevelse & ansvarsfullt spel",
+      "weight": "10%",
+      "description": "Webbdesign, mobil, kundtjänst och ansvarsverktyg."
+    }
+  },
+
+  "common_phrases": {
+    "tax_free": "skattefritt",
+    "tax_required": "skattepliktigt",
+    "our_test": "vårt test",
+    "in_our_experience": "i vår erfarenhet",
+    "we_recommend": "vi rekommenderar",
+    "read_more": "Läs mer",
+    "see_all": "Se alla",
+    "why_ranked": "Varför rankas {casino} som #{rank}?",
+    "things_to_consider": "Att tänka på:",
+    "best_for_template": "Bäst för: {description}. 18+. Spela ansvarsfullt."
+  },
+
+  "payment_methods": {
+    "crypto_note": "Kryptovalutor erbjuder snabbaste uttagen – ofta på minuter",
+    "no_bankid": "BankID och Trustly fungerar INTE på utländska casinon",
+    "kyc_note": "KYC-verifiering krävs vanligtvis vid första uttag",
+    "currency_note": "Du spelar oftast i EUR/USD – SEK är inte tillåtet"
+  },
+
+  "faq_common_questions": [
+    "Är det lagligt för mig som svensk att spela på casino utan licens?",
+    "Har dessa casinon ingen licens alls?",
+    "Måste jag betala skatt på vinster?",
+    "Kan jag använda Trustly eller BankID?",
+    "Behöver jag genomgå KYC-verifiering?",
+    "Hur snabba är uttagen i praktiken?",
+    "Fungerar Spelpaus på utländska casinon?",
+    "Vad är skillnaden mellan MGA och Curaçao-licens?"
+  ]
+}

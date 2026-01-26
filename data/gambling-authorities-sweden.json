@@ -1,0 +1,84 @@
+{
+  "gambling_authorities": [
+    {
+      "name": "Spelinspektionen (Swedish Gambling Authority)",
+      "name_citation": "https://www.spelinspektionen.se/en/",
+      "role": "The central regulatory body responsible for licensing, compliance, and supervision of the Swedish gambling market. Its primary mission is to ensure that the market is legal, safe, and reliable.",
+      "role_citation": "https://www.government.se/government-agencies/swedish-gambling-authority-spelinspektionen/",
+      "current_regulations": "The market is governed primarily by the Gambling Act (2018:1138) and the Gambling Ordinance (2018:1475). As of January 2026, the state-owned land-based casino operations (Casino Cosmopol) have been closed. Licensed operators must adhere to strict duty of care requirements, including monitoring player behavior and providing tools for self-exclusion (Spelpaus.se).",
+      "current_regulations_citation": "https://iclg.com/practice-areas/gambling-laws-and-regulations/sweden",
+      "upcoming_legislative_changes": "A comprehensive ban on gambling with credit cards and loans is set to take effect on April 1, 2026. This reform also includes stricter rules for slot machines and enhanced moderation requirements for gambling advertisements to protect vulnerable consumers.",
+      "upcoming_legislative_changes_citation": "https://igamingbusiness.com/legal-compliance/sweden-credit-gambling-april-2026/",
+      "official_source_links": [
+        {
+          "value": "https://www.spelinspektionen.se/en/",
+          "value_citation": "https://www.spelinspektionen.se/en/"
+        },
+        {
+          "value": "https://www.riksdagen.se/sv/dokument-lagar/dokument/svensk-forfattningssamling/spellag-20181138_sfs-2018-1138",
+          "value_citation": "https://www.riksdagen.se/sv/dokument-lagar/dokument/svensk-forfattningssamling/spellag-20181138_sfs-2018-1138"
+        }
+      ]
+    },
+    {
+      "name": "Skatteverket (Swedish Tax Agency)",
+      "name_citation": "https://www.skatteverket.se/servicelankar/otherlanguages/englishengelska/businessesandemployers/startingandrunningaswedishbusiness/payingtaxesbusinesses/gamblingtax.4.35c34f651660af3747c32c.html",
+      "role": "Responsible for the collection and administration of gambling tax in Sweden. It ensures that licensed operators report and pay the correct taxes on their gambling proceeds.",
+      "role_citation": "https://www.skatteverket.se/servicelankar/otherlanguages/englishengelska/businessesandemployers/startingandrunningaswedishbusiness/payingtaxesbusinesses/gamblingtax.4.35c34f651660af3747c32c.html",
+      "current_regulations": "Under the Gambling Tax Act (2018:1139), licensed gambling operators are taxed on the difference between stakes and payouts (Gross Gaming Revenue). As of July 2024, the tax rate was increased from 18% to 22%. Proceeds from gambling for public-interest purposes remain exempt from this tax.",
+      "current_regulations_citation": "https://www.skatteverket.se/servicelankar/otherlanguages/englishengelska/businessesandemployers/startingandrunningaswedishbusiness/payingtaxesbusinesses/gamblingtax.4.35c34f651660af3747c32c.html",
+      "upcoming_legislative_changes": "Effective January 1, 2026, the Swedish Tax Agency has introduced exemptions for certain lotteries and games of skill at public events from mandatory cash register requirements, simplifying administrative burdens for smaller-scale operators.",
+      "upcoming_legislative_changes_citation": "https://www.fiscal-requirements.com/news/4369",
+      "official_source_links": [
+        {
+          "value": "https://www.skatteverket.se/servicelankar/otherlanguages/englishengelska/businessesandemployers/startingandrunningaswedishbusiness/payingtaxesbusinesses/gamblingtax.4.35c34f651660af3747c32c.html",
+          "value_citation": "https://www.skatteverket.se/servicelankar/otherlanguages/englishengelska/businessesandemployers/startingandrunningaswedishbusiness/payingtaxesbusinesses/gamblingtax.4.35c34f651660af3747c32c.html"
+        },
+        {
+          "value": "https://www.riksdagen.se/sv/dokument-lagar/dokument/svensk-forfattningssamling/lag-20181139-om-skatt-pa-spel_sfs-2018-1139",
+          "value_citation": "https://www.riksdagen.se/sv/dokument-lagar/dokument/svensk-forfattningssamling/lag-20181139-om-skatt-pa-spel_sfs-2018-1139"
+        }
+      ]
+    },
+    {
+      "name": "Finansdepartementet (Ministry of Finance)",
+      "name_citation": "https://www.government.se/government-of-sweden/ministry-of-finance/",
+      "role": "The government ministry responsible for developing the legislative framework for the gambling market, including tax policy and the governance of the Swedish Gambling Authority.",
+      "role_citation": "https://www.government.se/government-agencies/swedish-gambling-authority-spelinspektionen/",
+      "current_regulations": "The ministry oversees the implementation of the 2018 Gambling Reform, which moved Sweden from a state monopoly to a licensing system. It ensures that the regulatory framework balances market growth with consumer protection and crime prevention.",
+      "current_regulations_citation": "https://www.government.se/government-agencies/swedish-gambling-authority-spelinspektionen/",
+      "upcoming_legislative_changes": "The ministry has been instrumental in proposing the 2026 credit ban and the closure of land-based casinos to address high-risk gambling behaviors. It continues to review B2B licensing requirements and measures to combat unlicensed gambling operators.",
+      "upcoming_legislative_changes_citation": "https://igamingbusiness.com/legal-compliance/sweden-credit-gambling-april-2026/",
+      "official_source_links": [
+        {
+          "value": "https://www.government.se/government-of-sweden/ministry-of-finance/",
+          "value_citation": "https://www.government.se/government-of-sweden/ministry-of-finance/"
+        },
+        {
+          "value": "https://www.lagrummet.se/",
+          "value_citation": "https://www.lagrummet.se/"
+        }
+      ]
+    },
+    {
+      "name": "Folkhälsomyndigheten (Public Health Agency of Sweden)",
+      "name_citation": "https://www.folkhalsomyndigheten.se/the-public-health-agency-of-sweden/living-conditions-and-lifestyle/andtg/gambling/",
+      "role": "Responsible for preventing gambling-related harm and promoting public health. It provides knowledge and coordinates national work to prevent gambling problems.",
+      "role_citation": "https://www.folkhalsomyndigheten.se/the-public-health-agency-of-sweden/living-conditions-and-lifestyle/andtg/gambling/",
+      "current_regulations": "The agency works within the framework of the Gambling Act to ensure that responsible gambling measures (e.g., duty of care and age limits) are effective from a public health perspective. It monitors the prevalence of gambling problems and supports regional prevention efforts.",
+      "current_regulations_citation": "https://www.folkhalsomyndigheten.se/the-public-health-agency-of-sweden/living-conditions-and-lifestyle/andtg/gambling/",
+      "upcoming_legislative_changes": "The agency is currently involved in evaluating the impact of the 2026 reforms, specifically how the credit ban affects the rates of gambling addiction and financial distress among Swedish players.",
+      "upcoming_legislative_changes_citation": "https://sigma.world/news/sweden-reshapes-slot-machine-rules-2026/",
+      "official_source_links": [
+        {
+          "value": "https://www.folkhalsomyndigheten.se/the-public-health-agency-of-sweden/living-conditions-and-lifestyle/andtg/gambling/",
+          "value_citation": "https://www.folkhalsomyndigheten.se/the-public-health-agency-of-sweden/living-conditions-and-lifestyle/andtg/gambling/"
+        },
+        {
+          "value": "https://www.spelpaus.se/",
+          "value_citation": "https://www.spelpaus.se/"
+        }
+      ]
+    }
+  ]
+}

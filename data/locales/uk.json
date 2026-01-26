@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "market_code": "uk",
+    "language_code": "en",
+    "language_name": "English",
+    "country_name": "United Kingdom",
+    "currency": "GBP",
+    "date_format": "%d %B %Y"
+  },
+
+  "regulatory": {
+    "primary_authority": {
+      "id": "ukgc",
+      "name": "UK Gambling Commission (UKGC)",
+      "name_en": "UK Gambling Commission",
+      "url": "https://www.gamblingcommission.gov.uk/",
+      "description": "UK gambling regulator"
+    },
+    "self_exclusion_system": {
+      "id": "gamstop",
+      "name": "GAMSTOP",
+      "url": "https://www.gamstop.co.uk/",
+      "description": "National Online Self-Exclusion Scheme",
+      "periods": ["6 months", "1 year", "5 years"]
+    },
+    "help_resources": [
+      {
+        "id": "gambleaware",
+        "name": "GambleAware",
+        "url": "https://www.begambleaware.org/",
+        "phone": "0808 8020 133",
+        "description": "Free gambling support and advice"
+      },
+      {
+        "id": "gamcare",
+        "name": "GamCare",
+        "url": "https://www.gamcare.org.uk/",
+        "phone": "0808 8020 133",
+        "description": "Support for problem gambling"
+      }
+    ],
+    "tax_rules": {
+      "eu_licensed": "Gambling winnings are tax-free for UK players regardless of where the casino is licensed",
+      "non_eu_licensed": "All gambling winnings are tax-free in the UK",
+      "declaration_note": "You do NOT need to declare gambling winnings on your tax return",
+      "example": "You win £50,000 at any casino. No tax is due."
+    },
+    "legal_framework": {
+      "gambling_act_year": 2005,
+      "gambling_act_name": "Gambling Act 2005",
+      "player_responsibility": "Playing at non-UKGC casinos is not illegal for players, but offers less protection"
+    }
+  },
+
+  "ui_labels": {
+    "toc_title": "Table of Contents",
+    "sources_title": "Sources",
+    "sources_intro": "This article is based on information from the following authoritative sources:",
+    "disclaimer_title": "18+ Warning",
+    "disclaimer_text": "Gambling is only permitted for persons aged 18 and over. Gamble responsibly and set limits.",
+    "disclaimer_full": "Gambling is only permitted for persons aged 18 and over. Gamble responsibly and set limits. If you feel your gambling is becoming problematic, contact GambleAware on 0808 8020 133 or visit GAMSTOP to self-exclude.",
+    "last_updated": "Last updated",
+    "generated": "Generated",
+    "flair_label": "Flair",
+    "word_count": "Word count",
+    "best_for": "Best for",
+    "pros": "Pros",
+    "cons": "Cons",
+    "rating": "Rating",
+    "license": "Licence",
+    "welcome_bonus": "Welcome Bonus",
+    "wagering_requirement": "Wagering Requirement",
+    "withdrawal_time": "Withdrawal Time",
+    "payment_methods": "Payment Methods",
+    "games": "Games",
+    "slots": "slots",
+    "live_tables": "live",
+    "play_responsibly": "Gamble responsibly",
+    "age_restriction": "18+",
+    "key_metric": "Key Metric",
+    "why_top_3": "Why Top 3?"
+  },
+
+  "section_titles": {
+    "intro": "{keyword} {year} – Top {casino_count} Sites",
+    "methodology": "How We Rank Non-GAMSTOP Casinos",
+    "top_table": "Top {casino_count} Casinos Not on GAMSTOP {year}",
+    "casino_reviews": "Detailed Reviews",
+    "payments": "Payments & Withdrawals",
+    "legal_rg": "Legal & Responsible Gambling",
+    "faq": "Frequently Asked Questions About Non-GAMSTOP Casinos",
+    "category_best_licensed": "Best Licensed Casinos",
+    "category_best_crypto": "Best Crypto Casinos",
+    "category_fastest_withdrawals": "Fastest Withdrawals",
+    "category_lowest_wagering": "Lowest Wagering Requirements",
+    "category_easiest_signup": "Easiest Registration",
+    "deep_dive_license_verification": "How to Verify a Casino Licence",
+    "deep_dive_crypto_payments": "Crypto Payments at Casinos",
+    "deep_dive_bonus_mechanics": "How Bonuses Work (The Fine Print)",
+    "deep_dive_getting_started": "Getting Started with Non-GAMSTOP Casinos",
+    "deep_dive_safety_checklist": "Safety Checklist: Green and Red Flags",
+    "deep_dive_tax_explanation": "Tax on Casino Winnings: What You Need to Know",
+    "comparison_licensed_vs_offshore": "UKGC Casinos vs Non-GAMSTOP Casinos",
+    "comparison_crypto_vs_fiat": "Crypto vs Traditional Payment Methods",
+    "comparison_eu_vs_non_eu": "EU-Licensed vs Offshore Casinos"
+  },
+
+  "flair_translations": {
+    "safety_focused": {
+      "name": "Safety & Trust",
+      "description": "Focus on licensing, verification and player protection",
+      "keywords": ["safety", "licence", "verification", "protection", "reliable"],
+      "avoid": ["risk-free", "guaranteed", "100% safe"],
+      "intro_angle": "Choosing the right casino starts with safety. We review licences, payment security and player protection to help you find secure alternatives."
+    },
+    "crypto_first": {
+      "name": "Crypto Focus",
+      "description": "Focus on cryptocurrencies and fast withdrawals",
+      "keywords": ["crypto", "BTC", "USDT", "fast", "blockchain", "wallet"],
+      "avoid": ["traditional", "old-fashioned"],
+      "intro_angle": "For players who want maximum control over their money and lightning-fast withdrawals, crypto casinos are the clear choice."
+    },
+    "eu_licensing": {
+      "name": "EU Licence Focus",
+      "description": "Focus on EU-licensed casinos and consumer protection",
+      "keywords": ["MGA", "EU", "regulated", "consumer protection"],
+      "avoid": ["grey market", "unregulated"],
+      "intro_angle": "EU-licensed casinos offer stronger consumer protection for UK players looking for alternatives."
+    },
+    "bonus_hunter": {
+      "name": "Bonus Hunter",
+      "description": "Focus on bonuses, wagering requirements and value",
+      "keywords": ["wagering", "bonus", "value", "EV", "terms"],
+      "avoid": ["free money", "guaranteed win"],
+      "intro_angle": "A big bonus is worthless with bad terms. We analyse wagering requirements and bonus value to find the best offers."
+    },
+    "step_by_step": {
+      "name": "Beginner's Guide",
+      "description": "Step-by-step guides for new players",
+      "keywords": ["how to", "step by step", "easy", "guide", "tips"],
+      "avoid": ["expert", "advanced"],
+      "intro_angle": "New to non-GAMSTOP casinos? No worries – we'll guide you through the entire process, from registration to your first withdrawal."
+    }
+  },
+
+  "month_names": [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ],
+
+  "table_headers": {
+    "rank": "#",
+    "casino": "Casino",
+    "license": "Licence",
+    "welcome_bonus": "Welcome Bonus",
+    "wagering": "Wagering",
+    "withdrawal_time": "Withdrawal",
+    "payment_methods": "Payments",
+    "games": "Games",
+    "best_for": "Best For",
+    "rating": "Rating"
+  },
+
+  "methodology_criteria": {
+    "license_safety": {
+      "name": "Licence & Safety",
+      "weight": "30%",
+      "description": "Which licence does the casino hold? MGA is considered safer than Curaçao."
+    },
+    "payments": {
+      "name": "Payments & Withdrawals",
+      "weight": "25%",
+      "description": "Which methods are supported? How fast are withdrawals in practice?"
+    },
+    "games": {
+      "name": "Game Selection & Providers",
+      "weight": "20%",
+      "description": "Number of slots, live games, and which providers are available?"
+    },
+    "bonuses": {
+      "name": "Bonuses & Terms",
+      "weight": "15%",
+      "description": "The bonus size is NOT everything – the terms determine the value."
+    },
+    "ux_rg": {
+      "name": "User Experience & Responsible Gambling",
+      "weight": "10%",
+      "description": "Web design, mobile, customer service and responsibility tools."
+    }
+  },
+
+  "common_phrases": {
+    "tax_free": "tax-free",
+    "tax_required": "taxable",
+    "our_test": "our test",
+    "in_our_experience": "in our experience",
+    "we_recommend": "we recommend",
+    "read_more": "Read more",
+    "see_all": "See all",
+    "why_ranked": "Why is {casino} ranked #{rank}?",
+    "things_to_consider": "Things to consider:",
+    "best_for_template": "Best for: {description}. 18+. Gamble responsibly."
+  },
+
+  "payment_methods": {
+    "crypto_note": "Cryptocurrencies offer the fastest withdrawals – often within minutes",
+    "no_paypal": "PayPal is NOT available at most non-UKGC casinos",
+    "kyc_note": "KYC verification is usually required on first withdrawal",
+    "currency_note": "You'll often play in EUR or USD – GBP may not be available"
+  },
+
+  "faq_common_questions": [
+    "Is it legal for me as a UK player to play at non-GAMSTOP casinos?",
+    "Do these casinos have no licence at all?",
+    "Do I have to pay tax on winnings?",
+    "Can I use PayPal or UK bank transfer?",
+    "Do I need to complete KYC verification?",
+    "How fast are withdrawals in practice?",
+    "Does GAMSTOP work at offshore casinos?",
+    "What's the difference between MGA and Curaçao licences?"
+  ]
+}

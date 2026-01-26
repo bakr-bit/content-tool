@@ -1,0 +1,221 @@
+{
+  "meta": {
+    "market_code": "dk",
+    "language_code": "da",
+    "language_name": "Danish",
+    "country_name": "Denmark",
+    "currency": "DKK",
+    "date_format": "%d. %B %Y"
+  },
+
+  "regulatory": {
+    "primary_authority": {
+      "id": "spillemyndigheden",
+      "name": "Spillemyndigheden",
+      "name_en": "Danish Gambling Authority",
+      "url": "https://www.spillemyndigheden.dk/",
+      "description": "Dansk tilsynsmyndighed for spil"
+    },
+    "self_exclusion_system": {
+      "id": "rofus",
+      "name": "ROFUS",
+      "url": "https://www.444444rofus.nu/",
+      "description": "Register Over Frivilligt Udelukkede Spillere",
+      "periods": ["24 timer", "1 måned", "3 måneder", "permanent"]
+    },
+    "help_resources": [
+      {
+        "id": "stopspillet",
+        "name": "StopSpillet",
+        "url": "https://www.444444444stopspillet.dk/",
+        "phone": "70 22 28 25",
+        "description": "Hjælp til ludomani"
+      },
+      {
+        "id": "gambling_therapy",
+        "name": "Gambling Therapy",
+        "url": "https://www.gamblingtherapy.org/",
+        "description": "International hjælp til spilleproblemer"
+      }
+    ],
+    "tax_rules": {
+      "eu_licensed": "Gevinster fra EU-licenserede casinoer (MGA, Estland) er skattefri for danskere",
+      "non_eu_licensed": "Gevinster fra ikke-EU casinoer (Curaçao) kan være skattepligtige",
+      "declaration_note": "Det er DIT ansvar at oplyse gevinster fra ikke-licenserede casinoer",
+      "example": "Du vinder 50.000 kr. på et Curaçao-casino. Skat kan være relevant."
+    },
+    "legal_framework": {
+      "gambling_act_year": 2012,
+      "gambling_act_name": "Spilleloven",
+      "player_responsibility": "At spille på ikke-licenserede casinoer er ikke strafbart for spillere"
+    }
+  },
+
+  "ui_labels": {
+    "toc_title": "Indholdsfortegnelse",
+    "sources_title": "Kilder",
+    "sources_intro": "Denne artikel er baseret på information fra følgende autoritative kilder:",
+    "disclaimer_title": "18+ Advarsel",
+    "disclaimer_text": "Spil om penge er kun tilladt for personer over 18 år. Spil ansvarligt og sæt grænser.",
+    "disclaimer_full": "Spil om penge er kun tilladt for personer over 18 år. Spil ansvarligt og sæt grænser. Hvis du føler, at dit spil bliver problematisk, kontakt StopSpillet på 70 22 28 25 eller besøg ROFUS for at udelukke dig selv.",
+    "last_updated": "Sidst opdateret",
+    "generated": "Genereret",
+    "flair_label": "Flair",
+    "word_count": "Antal ord",
+    "best_for": "Bedst til",
+    "pros": "Fordele",
+    "cons": "Ulemper",
+    "rating": "Vurdering",
+    "license": "Licens",
+    "welcome_bonus": "Velkomstbonus",
+    "wagering_requirement": "Omsætningskrav",
+    "withdrawal_time": "Udbetalingstid",
+    "payment_methods": "Betalingsmetoder",
+    "games": "Spil",
+    "slots": "slots",
+    "live_tables": "live",
+    "play_responsibly": "Spil ansvarligt",
+    "age_restriction": "18+",
+    "key_metric": "Nøgletal",
+    "why_top_3": "Hvorfor top 3?"
+  },
+
+  "section_titles": {
+    "intro": "{keyword} {year} – Top {casino_count} uden {exclusion_system}",
+    "methodology": "Sådan vurderer vi casinoer uden dansk licens",
+    "top_table": "Top {casino_count} casino uden ROFUS {year}",
+    "casino_reviews": "Detaljerede anmeldelser",
+    "payments": "Betalinger & udbetalinger",
+    "legal_rg": "Juridisk & ansvarligt spil",
+    "faq": "Ofte stillede spørgsmål om casinoer uden ROFUS",
+    "category_best_licensed": "Bedst licenserede casinoer",
+    "category_best_crypto": "Bedste krypto-casinoer",
+    "category_fastest_withdrawals": "Hurtigste udbetalinger",
+    "category_lowest_wagering": "Laveste omsætningskrav",
+    "category_easiest_signup": "Nemmeste registrering",
+    "deep_dive_license_verification": "Sådan verificerer du en casinolicens",
+    "deep_dive_crypto_payments": "Kryptobetalinger på casinoer",
+    "deep_dive_bonus_mechanics": "Hvordan bonusser fungerer (det med småt)",
+    "deep_dive_getting_started": "Kom i gang med casinoer uden ROFUS",
+    "deep_dive_safety_checklist": "Sikkerhedstjekliste: Grønne og røde flag",
+    "deep_dive_tax_explanation": "Skat på casinogevinster: EU vs ikke-EU",
+    "comparison_licensed_vs_offshore": "Danske casinoer vs casinoer uden licens",
+    "comparison_crypto_vs_fiat": "Krypto vs traditionelle betalingsmetoder",
+    "comparison_eu_vs_non_eu": "EU-licenserede vs offshore-casinoer"
+  },
+
+  "flair_translations": {
+    "safety_focused": {
+      "name": "Sikkerhed & Tillid",
+      "description": "Fokus på licensering, verifikation og spillerbeskyttelse",
+      "keywords": ["sikkerhed", "licens", "verifikation", "beskyttelse", "pålidelig"],
+      "avoid": ["risikofri", "garanteret", "100% sikker"],
+      "intro_angle": "At vælge det rigtige casino handler først og fremmest om sikkerhed. Vi gennemgår licenser, betalingssikkerhed og spillerbeskyttelse for at hjælpe dig med at finde sikre alternativer."
+    },
+    "crypto_first": {
+      "name": "Krypto-fokus",
+      "description": "Fokus på kryptovalutaer og hurtige udbetalinger",
+      "keywords": ["krypto", "BTC", "USDT", "hurtig", "blockchain", "wallet"],
+      "avoid": ["traditionel", "gammeldags"],
+      "intro_angle": "For spillere, der vil have maksimal kontrol over deres penge og lynhurtige udbetalinger, er krypto-casinoer det oplagte valg."
+    },
+    "eu_licensing": {
+      "name": "EU-licensfokus",
+      "description": "Fokus på EU-licenserede casinoer og skattefrie gevinster",
+      "keywords": ["MGA", "EU", "reguleret", "skattefri", "forbrugerbeskyttelse"],
+      "avoid": ["gråzone", "ureguleret"],
+      "intro_angle": "EU-licenserede casinoer tilbyder stærkere forbrugerbeskyttelse og skattefrie gevinster for danske spillere."
+    },
+    "bonus_hunter": {
+      "name": "Bonusjæger",
+      "description": "Fokus på bonusser, omsætningskrav og værdi",
+      "keywords": ["omsætningskrav", "bonus", "værdi", "EV", "vilkår"],
+      "avoid": ["gratis penge", "garanteret gevinst"],
+      "intro_angle": "En stor bonus er værdiløs med dårlige vilkår. Vi analyserer omsætningskrav og bonusværdi for at finde de bedste tilbud."
+    },
+    "step_by_step": {
+      "name": "Begynderguide",
+      "description": "Trin-for-trin guider til nye spillere",
+      "keywords": ["sådan gør du", "trin for trin", "nemt", "guide", "tips"],
+      "avoid": ["ekspert", "avanceret"],
+      "intro_angle": "Ny til casinoer uden dansk licens? Ingen fare – vi guider dig gennem hele processen, fra registrering til din første udbetaling."
+    }
+  },
+
+  "month_names": [
+    "januar", "februar", "marts", "april", "maj", "juni",
+    "juli", "august", "september", "oktober", "november", "december"
+  ],
+
+  "table_headers": {
+    "rank": "#",
+    "casino": "Casino",
+    "license": "Licens",
+    "welcome_bonus": "Velkomstbonus",
+    "wagering": "Omsætn.",
+    "withdrawal_time": "Udbetaling",
+    "payment_methods": "Betaling",
+    "games": "Spil",
+    "best_for": "Bedst til",
+    "rating": "Score"
+  },
+
+  "methodology_criteria": {
+    "license_safety": {
+      "name": "Licens & sikkerhed",
+      "weight": "30%",
+      "description": "Hvilken licens har casinoet? MGA ses som sikrere end Curaçao."
+    },
+    "payments": {
+      "name": "Betalinger & udbetalinger",
+      "weight": "25%",
+      "description": "Hvilke metoder understøttes? Hvor hurtige er udbetalinger i praksis?"
+    },
+    "games": {
+      "name": "Spiludvalg & leverandører",
+      "weight": "20%",
+      "description": "Antal slots, live-spil og hvilke leverandører er tilgængelige?"
+    },
+    "bonuses": {
+      "name": "Bonusser & vilkår",
+      "weight": "15%",
+      "description": "Bonusstørrelsen er IKKE alt – vilkårene afgør."
+    },
+    "ux_rg": {
+      "name": "Brugeroplevelse & ansvarligt spil",
+      "weight": "10%",
+      "description": "Webdesign, mobil, kundeservice og ansvarligheds-værktøjer."
+    }
+  },
+
+  "common_phrases": {
+    "tax_free": "skattefri",
+    "tax_required": "skattepligtig",
+    "our_test": "vores test",
+    "in_our_experience": "efter vores erfaring",
+    "we_recommend": "vi anbefaler",
+    "read_more": "Læs mere",
+    "see_all": "Se alle",
+    "why_ranked": "Hvorfor er {casino} rangeret som #{rank}?",
+    "things_to_consider": "Ting at overveje:",
+    "best_for_template": "Bedst til: {description}. 18+. Spil ansvarligt."
+  },
+
+  "payment_methods": {
+    "crypto_note": "Kryptovalutaer tilbyder de hurtigste udbetalinger – ofte på minutter",
+    "no_mobilepay": "MobilePay virker IKKE på udenlandske casinoer",
+    "kyc_note": "KYC-verifikation kræves normalt ved første udbetaling",
+    "currency_note": "Du spiller ofte i EUR – DKK er ikke altid tilgængeligt"
+  },
+
+  "faq_common_questions": [
+    "Er det lovligt for mig som dansker at spille på casino uden ROFUS?",
+    "Har disse casinoer slet ingen licens?",
+    "Skal jeg betale skat af gevinster?",
+    "Kan jeg bruge MobilePay eller Dankort?",
+    "Skal jeg gennemgå KYC-verifikation?",
+    "Hvor hurtige er udbetalinger i praksis?",
+    "Virker ROFUS på udenlandske casinoer?",
+    "Hvad er forskellen på MGA- og Curaçao-licens?"
+  ]
+}

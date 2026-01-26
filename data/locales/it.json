@@ -1,0 +1,221 @@
+{
+  "meta": {
+    "market_code": "it",
+    "language_code": "it",
+    "language_name": "Italian",
+    "country_name": "Italy",
+    "currency": "EUR",
+    "date_format": "%d %B %Y"
+  },
+
+  "regulatory": {
+    "primary_authority": {
+      "id": "adm",
+      "name": "Agenzia delle Dogane e dei Monopoli (ADM)",
+      "name_en": "Customs and Monopolies Agency",
+      "url": "https://www.adm.gov.it/",
+      "description": "Autorità italiana per il gioco d'azzardo"
+    },
+    "self_exclusion_system": {
+      "id": "autoesclusione",
+      "name": "Autoesclusione ADM",
+      "url": "https://www.adm.gov.it/",
+      "description": "Sistema di autoesclusione nazionale",
+      "periods": ["30 giorni", "90 giorni", "indefinito"]
+    },
+    "help_resources": [
+      {
+        "id": "telefono_verde",
+        "name": "Telefono Verde Nazionale",
+        "url": "https://www.iss.it/",
+        "phone": "800-558822",
+        "description": "Linea di aiuto gratuita per il gioco problematico"
+      },
+      {
+        "id": "gambling_therapy",
+        "name": "Gambling Therapy",
+        "url": "https://www.gamblingtherapy.org/",
+        "description": "Supporto internazionale per problemi di gioco"
+      }
+    ],
+    "tax_rules": {
+      "eu_licensed": "Le vincite da casinò con licenza EU (MGA, Estonia) sono generalmente esenti da tasse per i giocatori italiani",
+      "non_eu_licensed": "Le vincite da casinò non-EU (Curaçao) potrebbero essere tassabili",
+      "declaration_note": "È TUA responsabilità dichiarare le vincite da casinò non autorizzati",
+      "example": "Vinci 50.000 € in un casinò Curaçao. Potrebbe essere applicata l'imposta sul reddito."
+    },
+    "legal_framework": {
+      "gambling_act_year": 2011,
+      "gambling_act_name": "Decreto Balduzzi / Legge di Stabilità",
+      "player_responsibility": "Giocare su casinò senza licenza ADM non è un reato per i giocatori"
+    }
+  },
+
+  "ui_labels": {
+    "toc_title": "Indice",
+    "sources_title": "Fonti",
+    "sources_intro": "Questo articolo si basa su informazioni provenienti dalle seguenti fonti autorevoli:",
+    "disclaimer_title": "Avviso 18+",
+    "disclaimer_text": "Il gioco d'azzardo è consentito solo ai maggiori di 18 anni. Gioca responsabilmente e stabilisci dei limiti.",
+    "disclaimer_full": "Il gioco d'azzardo è consentito solo ai maggiori di 18 anni. Gioca responsabilmente e stabilisci dei limiti. Se ritieni che il tuo gioco stia diventando problematico, contatta il Telefono Verde al 800-558822.",
+    "last_updated": "Ultimo aggiornamento",
+    "generated": "Generato",
+    "flair_label": "Flair",
+    "word_count": "Conteggio parole",
+    "best_for": "Ideale per",
+    "pros": "Pro",
+    "cons": "Contro",
+    "rating": "Valutazione",
+    "license": "Licenza",
+    "welcome_bonus": "Bonus di benvenuto",
+    "wagering_requirement": "Requisiti di puntata",
+    "withdrawal_time": "Tempo di prelievo",
+    "payment_methods": "Metodi di pagamento",
+    "games": "Giochi",
+    "slots": "slot",
+    "live_tables": "live",
+    "play_responsibly": "Gioca responsabilmente",
+    "age_restriction": "18+",
+    "key_metric": "Metrica chiave",
+    "why_top_3": "Perché top 3?"
+  },
+
+  "section_titles": {
+    "intro": "{keyword} {year} – Top {casino_count} Siti",
+    "methodology": "Come valutiamo i casinò senza licenza ADM",
+    "top_table": "Top {casino_count} casinò non AAMS {year}",
+    "casino_reviews": "Recensioni dettagliate",
+    "payments": "Pagamenti e prelievi",
+    "legal_rg": "Aspetti legali e gioco responsabile",
+    "faq": "Domande frequenti sui casinò senza licenza ADM",
+    "category_best_licensed": "Migliori casinò con licenza",
+    "category_best_crypto": "Migliori casinò crypto",
+    "category_fastest_withdrawals": "Prelievi più veloci",
+    "category_lowest_wagering": "Requisiti di puntata più bassi",
+    "category_easiest_signup": "Registrazione più semplice",
+    "deep_dive_license_verification": "Come verificare una licenza casinò",
+    "deep_dive_crypto_payments": "Pagamenti crypto nei casinò",
+    "deep_dive_bonus_mechanics": "Come funzionano i bonus (le clausole)",
+    "deep_dive_getting_started": "Iniziare con i casinò senza licenza ADM",
+    "deep_dive_safety_checklist": "Checklist sicurezza: bandiere verdi e rosse",
+    "deep_dive_tax_explanation": "Tasse sulle vincite: EU vs non-EU",
+    "comparison_licensed_vs_offshore": "Casinò ADM vs casinò senza licenza",
+    "comparison_crypto_vs_fiat": "Crypto vs metodi di pagamento tradizionali",
+    "comparison_eu_vs_non_eu": "Casinò con licenza EU vs offshore"
+  },
+
+  "flair_translations": {
+    "safety_focused": {
+      "name": "Sicurezza e fiducia",
+      "description": "Focus su licenze, verifica e protezione dei giocatori",
+      "keywords": ["sicurezza", "licenza", "verifica", "protezione", "affidabile"],
+      "avoid": ["senza rischi", "garantito", "100% sicuro"],
+      "intro_angle": "Scegliere il casinò giusto inizia dalla sicurezza. Esaminiamo licenze, sicurezza dei pagamenti e protezione dei giocatori per aiutarti a trovare alternative sicure."
+    },
+    "crypto_first": {
+      "name": "Focus crypto",
+      "description": "Focus su criptovalute e prelievi veloci",
+      "keywords": ["crypto", "BTC", "USDT", "veloce", "blockchain", "wallet"],
+      "avoid": ["tradizionale", "vecchio stile"],
+      "intro_angle": "Per i giocatori che vogliono il massimo controllo sul proprio denaro e prelievi fulminei, i casinò crypto sono la scelta chiara."
+    },
+    "eu_licensing": {
+      "name": "Focus licenza EU",
+      "description": "Focus su casinò con licenza EU e vincite esentasse",
+      "keywords": ["MGA", "EU", "regolamentato", "esentasse", "protezione consumatori"],
+      "avoid": ["zona grigia", "non regolamentato"],
+      "intro_angle": "I casinò con licenza EU offrono una protezione dei consumatori più forte e vincite potenzialmente esentasse per i giocatori italiani."
+    },
+    "bonus_hunter": {
+      "name": "Cacciatore di bonus",
+      "description": "Focus su bonus, requisiti di puntata e valore",
+      "keywords": ["requisiti puntata", "bonus", "valore", "EV", "termini"],
+      "avoid": ["soldi gratis", "vincita garantita"],
+      "intro_angle": "Un grande bonus è inutile con condizioni sfavorevoli. Analizziamo requisiti di puntata e valore del bonus per trovare le migliori offerte."
+    },
+    "step_by_step": {
+      "name": "Guida per principianti",
+      "description": "Guide passo-passo per nuovi giocatori",
+      "keywords": ["come fare", "passo dopo passo", "facile", "guida", "consigli"],
+      "avoid": ["esperto", "avanzato"],
+      "intro_angle": "Nuovo ai casinò senza licenza ADM? Nessun problema – ti guideremo attraverso l'intero processo, dalla registrazione al tuo primo prelievo."
+    }
+  },
+
+  "month_names": [
+    "gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",
+    "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"
+  ],
+
+  "table_headers": {
+    "rank": "#",
+    "casino": "Casinò",
+    "license": "Licenza",
+    "welcome_bonus": "Bonus benvenuto",
+    "wagering": "Puntata",
+    "withdrawal_time": "Prelievo",
+    "payment_methods": "Pagamenti",
+    "games": "Giochi",
+    "best_for": "Ideale per",
+    "rating": "Voto"
+  },
+
+  "methodology_criteria": {
+    "license_safety": {
+      "name": "Licenza e sicurezza",
+      "weight": "30%",
+      "description": "Quale licenza ha il casinò? MGA è considerata più sicura di Curaçao."
+    },
+    "payments": {
+      "name": "Pagamenti e prelievi",
+      "weight": "25%",
+      "description": "Quali metodi sono supportati? Quanto sono veloci i prelievi in pratica?"
+    },
+    "games": {
+      "name": "Selezione giochi e provider",
+      "weight": "20%",
+      "description": "Numero di slot, giochi live e quali provider sono disponibili?"
+    },
+    "bonuses": {
+      "name": "Bonus e condizioni",
+      "weight": "15%",
+      "description": "La dimensione del bonus NON è tutto – le condizioni determinano il valore."
+    },
+    "ux_rg": {
+      "name": "Esperienza utente e gioco responsabile",
+      "weight": "10%",
+      "description": "Design web, mobile, assistenza clienti e strumenti di responsabilità."
+    }
+  },
+
+  "common_phrases": {
+    "tax_free": "esentasse",
+    "tax_required": "tassabile",
+    "our_test": "il nostro test",
+    "in_our_experience": "secondo la nostra esperienza",
+    "we_recommend": "consigliamo",
+    "read_more": "Leggi di più",
+    "see_all": "Vedi tutti",
+    "why_ranked": "Perché {casino} è al #{rank}?",
+    "things_to_consider": "Da considerare:",
+    "best_for_template": "Ideale per: {description}. 18+. Gioca responsabilmente."
+  },
+
+  "payment_methods": {
+    "crypto_note": "Le criptovalute offrono i prelievi più veloci – spesso in pochi minuti",
+    "no_postepay": "PostePay potrebbe NON funzionare su molti casinò stranieri",
+    "kyc_note": "La verifica KYC è solitamente richiesta al primo prelievo",
+    "currency_note": "Giocherai spesso in EUR – nessuna restrizione come con le licenze ADM"
+  },
+
+  "faq_common_questions": [
+    "È legale per me come italiano giocare su casinò senza licenza ADM?",
+    "Questi casinò non hanno proprio nessuna licenza?",
+    "Devo pagare le tasse sulle vincite?",
+    "Posso usare PostePay o bonifico bancario?",
+    "Devo completare la verifica KYC?",
+    "Quanto sono veloci i prelievi in pratica?",
+    "L'autoesclusione ADM funziona sui casinò stranieri?",
+    "Qual è la differenza tra licenza MGA e Curaçao?"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "gambling_authorities": [
+    {
+      "name": "Spillemyndigheden (Danish Gambling Authority)",
+      "name_citation": "https://www.spillemyndigheden.dk/en",
+      "role": "The primary regulatory body in Denmark responsible for ensuring a well-regulated gambling market. It issues licenses, supervises operators, and ensures compliance with the Danish Gambling Act. It also manages the Register of Self-Excluded Persons (ROFUS) and the StopSpillet helpline.",
+      "role_citation": "https://www.spillemyndigheden.dk/en/about-us",
+      "current_regulations": "The Danish Gambling Act (Consolidation Act no. 1182 of 22 Sep 2025) is the primary legal framework. It covers online casino, betting, land-based gaming, and lotteries. It includes player protection requirements, such as mandatory identification and duty of care for operators.",
+      "current_regulations_citation": "https://www.spillemyndigheden.dk/en/legal-framework",
+      "upcoming_legislative_changes": "New certification rules for game suppliers will take effect on July 1, 2025. Furthermore, following the 'Gambling Package 1' agreement (Oct 2025), new advertising restrictions including a 'whistle-to-whistle' ban on TV/streaming during live sports and age filters on social media are planned for implementation between 2026 and 2027. A new bill to regulate 'Banko' (bingo) is also under consideration.",
+      "upcoming_legislative_changes_citation": "https://www.lexology.com/library/detail.aspx?g=0011df32-8b4c-40ad-90c8-37631b77910f",
+      "official_source_links": [
+        {
+          "value": "https://www.spillemyndigheden.dk/en",
+          "value_citation": "https://www.spillemyndigheden.dk/en"
+        },
+        {
+          "value": "https://www.spillemyndigheden.dk/en/legal-framework",
+          "value_citation": "https://www.spillemyndigheden.dk/en/legal-framework"
+        }
+      ]
+    },
+    {
+      "name": "Skattestyrelsen (Danish Tax Agency / SKAT)",
+      "name_citation": "https://skat.dk/en-us",
+      "role": "Responsible for the collection of gambling duties and taxes in Denmark. It operates under the Ministry of Taxation and administers the Act on Gambling Duties.",
+      "role_citation": "https://skat.dk/en-us/business/tax-and-vat-rules/gambling-duty",
+      "current_regulations": "The Act on Gambling Duties (Consolidation Act no. 1324 of 12 September 2023) mandates a tax rate of 28% on Gross Gaming Revenue (GGR) for online casinos and betting. Other rates apply to land-based gaming machines and casinos.",
+      "current_regulations_citation": "https://skat.dk/en-us/business/tax-and-vat-rules/gambling-duty",
+      "upcoming_legislative_changes": "Discussions around a 'tax hike' have been noted in government proposals to reform the market. A specific 28% levy is proposed for organizers of 'Banko' (bingo) if the new Banko Bill is passed, aligning it with online casino taxation. Broader tax reforms for 2026 may also impact general corporate and individual deductions related to the sector.",
+      "upcoming_legislative_changes_citation": "https://sigma.world/news/danish-government-eyes-stricter-gambling-rules/",
+      "official_source_links": [
+        {
+          "value": "https://skat.dk/",
+          "value_citation": "https://skat.dk/"
+        },
+        {
+          "value": "https://skattestyrelsen.dk/",
+          "value_citation": "https://skattestyrelsen.dk/"
+        }
+      ]
+    },
+    {
+      "name": "Ministry of Justice (Justitsministeriet)",
+      "name_citation": "https://www.justitsministeriet.dk/en/",
+      "role": "Oversees general justice and public order. It is involved in legislation concerning the prevention of money laundering (AML) and works with the DGA and police to prosecute illegal gambling operations. It also plays a role in the court-ordered blocking of illegal gambling websites.",
+      "role_citation": "https://www.advennt.com/jurisdictions/online-gaming/denmark/",
+      "current_regulations": "Administers the Danish Criminal Code provisions relevant to illegal gambling and the Danish Anti-Money Laundering (AML) Act, which applies to gambling operators. It coordinates with the Ministry of Taxation on the broader legal framework of the Gambling Act.",
+      "current_regulations_citation": "https://iclg.com/practice-areas/gambling-laws-and-regulations/denmark",
+      "upcoming_legislative_changes": "Proposed changes include strengthening the DGA's powers to block illegal domains through simplified judicial processes and tighter controls on marketing to minors under the Marketing and Advertising Law, which falls under the broader remit of justice and consumer protection.",
+      "upcoming_legislative_changes_citation": "https://next.io/news/regulation/denmark-blocks-178-igaming-sites/",
+      "official_source_links": [
+        {
+          "value": "https://www.justitsministeriet.dk/",
+          "value_citation": "https://www.justitsministeriet.dk/"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "market_code": "nl",
+    "language_code": "nl",
+    "language_name": "Dutch",
+    "country_name": "Netherlands",
+    "currency": "EUR",
+    "date_format": "%d %B %Y"
+  },
+
+  "regulatory": {
+    "primary_authority": {
+      "id": "ksa",
+      "name": "Kansspelautoriteit (KSA)",
+      "name_en": "Netherlands Gambling Authority",
+      "url": "https://www.kansspelautoriteit.nl/",
+      "description": "Nederlandse toezichthouder op kansspelen"
+    },
+    "self_exclusion_system": {
+      "id": "cruks",
+      "name": "CRUKS",
+      "url": "https://www.crfruksspelregister.nl/",
+      "description": "Centraal Register Uitsluiting Kansspelen",
+      "periods": ["6 maanden", "1 jaar", "onbepaalde tijd"]
+    },
+    "help_resources": [
+      {
+        "id": "agog",
+        "name": "AGOG - Anonieme Gokkers",
+        "url": "https://www.agog.nl/",
+        "phone": "0900-2177721",
+        "description": "Hulp bij gokverslaving"
+      },
+      {
+        "id": "loketkansspel",
+        "name": "Loket Kansspel",
+        "url": "https://www.loketkansspel.nl/",
+        "description": "Informatie en hulp bij gokproblemen"
+      }
+    ],
+    "tax_rules": {
+      "eu_licensed": "Winsten van EU-gelicentieerde casino's (MGA, Estland) zijn belastingvrij voor Nederlanders",
+      "non_eu_licensed": "Winsten van niet-EU casino's (Curaçao) kunnen belastbaar zijn",
+      "declaration_note": "Het is JOUW verantwoordelijkheid om winsten van niet-gelicentieerde casino's aan te geven",
+      "example": "Je wint €50.000 bij een Curaçao-casino. Belasting kan van toepassing zijn."
+    },
+    "legal_framework": {
+      "gambling_act_year": 2021,
+      "gambling_act_name": "Wet op de Kansspelen (Wok)",
+      "deposit_limit": "Geen wettelijk limiet bij buitenlandse casino's",
+      "player_responsibility": "Spelen bij niet-gelicentieerde casino's is niet strafbaar voor spelers"
+    }
+  },
+
+  "ui_labels": {
+    "toc_title": "Inhoudsopgave",
+    "sources_title": "Bronnen",
+    "sources_intro": "Dit artikel is gebaseerd op informatie van de volgende gezaghebbende bronnen:",
+    "disclaimer_title": "18+ Waarschuwing",
+    "disclaimer_text": "Gokken is alleen toegestaan voor personen van 18 jaar en ouder. Gok verantwoord en stel limieten.",
+    "disclaimer_full": "Gokken is alleen toegestaan voor personen van 18 jaar en ouder. Gok verantwoord en stel limieten. Als je het gevoel hebt dat je gokgedrag problematisch wordt, neem contact op met AGOG op 0900-2177721 of bezoek CRUKS om jezelf uit te sluiten.",
+    "last_updated": "Laatst bijgewerkt",
+    "generated": "Gegenereerd",
+    "flair_label": "Flair",
+    "word_count": "Aantal woorden",
+    "best_for": "Beste voor",
+    "pros": "Voordelen",
+    "cons": "Nadelen",
+    "rating": "Beoordeling",
+    "license": "Licentie",
+    "welcome_bonus": "Welkomstbonus",
+    "wagering_requirement": "Inzetvereisten",
+    "withdrawal_time": "Opnametijd",
+    "payment_methods": "Betaalmethoden",
+    "games": "Spellen",
+    "slots": "slots",
+    "live_tables": "live",
+    "play_responsibly": "Gok verantwoord",
+    "age_restriction": "18+",
+    "key_metric": "Kerncijfer",
+    "why_top_3": "Waarom top 3?"
+  },
+
+  "section_titles": {
+    "intro": "{keyword} {year} – Top {casino_count} zonder {exclusion_system}",
+    "methodology": "Zo beoordelen wij casino's zonder vergunning",
+    "top_table": "Top {casino_count} casino zonder CRUKS {year}",
+    "casino_reviews": "Gedetailleerde reviews",
+    "payments": "Betalingen & opnames",
+    "legal_rg": "Juridisch & verantwoord gokken",
+    "faq": "Veelgestelde vragen over casino's zonder CRUKS",
+    "category_best_licensed": "Best gelicentieerde casino's",
+    "category_best_crypto": "Beste crypto casino's",
+    "category_fastest_withdrawals": "Snelste opnames",
+    "category_lowest_wagering": "Laagste inzetvereisten",
+    "category_easiest_signup": "Makkelijkste registratie",
+    "deep_dive_license_verification": "Zo verifieer je een casinolicentie",
+    "deep_dive_crypto_payments": "Cryptobetalingen bij casino's",
+    "deep_dive_bonus_mechanics": "Hoe bonussen werken (de kleine lettertjes)",
+    "deep_dive_getting_started": "Aan de slag met casino's zonder CRUKS",
+    "deep_dive_safety_checklist": "Veiligheidschecklist: Groene en rode vlaggen",
+    "deep_dive_tax_explanation": "Belasting op casinowinsten: EU vs niet-EU",
+    "comparison_licensed_vs_offshore": "Nederlandse casino's vs casino's zonder vergunning",
+    "comparison_crypto_vs_fiat": "Crypto vs traditionele betaalmethoden",
+    "comparison_eu_vs_non_eu": "EU-gelicentieerd vs offshore casino's"
+  },
+
+  "flair_translations": {
+    "safety_focused": {
+      "name": "Veiligheid & Vertrouwen",
+      "description": "Focus op licenties, verificatie en spelerbescherming",
+      "keywords": ["veiligheid", "licentie", "verificatie", "bescherming", "betrouwbaar"],
+      "avoid": ["risicovrij", "gegarandeerd", "100% veilig"],
+      "intro_angle": "Het kiezen van het juiste casino begint met veiligheid. Wij controleren licenties, betalingsveiligheid en spelerbescherming om je veilige alternatieven te tonen."
+    },
+    "crypto_first": {
+      "name": "Crypto-focus",
+      "description": "Focus op cryptovaluta en snelle opnames",
+      "keywords": ["crypto", "BTC", "USDT", "snel", "blockchain", "wallet"],
+      "avoid": ["traditioneel", "ouderwets"],
+      "intro_angle": "Voor spelers die maximale controle over hun geld en razendsnelle opnames willen, zijn crypto casino's de duidelijke keuze."
+    },
+    "eu_licensing": {
+      "name": "EU-licentiefocus",
+      "description": "Focus op EU-gelicentieerde casino's en belastingvrije winsten",
+      "keywords": ["MGA", "EU", "gereguleerd", "belastingvrij", "consumentenbescherming"],
+      "avoid": ["grijze markt", "ongereguleerd"],
+      "intro_angle": "EU-gelicentieerde casino's bieden sterkere consumentenbescherming en belastingvrije winsten voor Nederlandse spelers."
+    },
+    "bonus_hunter": {
+      "name": "Bonusjager",
+      "description": "Focus op bonussen, inzetvereisten en waarde",
+      "keywords": ["inzetvereisten", "bonus", "waarde", "EV", "voorwaarden"],
+      "avoid": ["gratis geld", "gegarandeerde winst"],
+      "intro_angle": "Een grote bonus is waardeloos met slechte voorwaarden. Wij analyseren inzetvereisten en bonuswaarde om de beste aanbiedingen te vinden."
+    },
+    "step_by_step": {
+      "name": "Beginnersgids",
+      "description": "Stap-voor-stap gidsen voor nieuwe spelers",
+      "keywords": ["zo doe je het", "stap voor stap", "makkelijk", "gids", "tips"],
+      "avoid": ["expert", "gevorderd"],
+      "intro_angle": "Nieuw bij casino's zonder CRUKS? Geen probleem – wij begeleiden je door het hele proces, van registratie tot je eerste opname."
+    }
+  },
+
+  "month_names": [
+    "januari", "februari", "maart", "april", "mei", "juni",
+    "juli", "augustus", "september", "oktober", "november", "december"
+  ],
+
+  "table_headers": {
+    "rank": "#",
+    "casino": "Casino",
+    "license": "Licentie",
+    "welcome_bonus": "Welkomstbonus",
+    "wagering": "Inzet",
+    "withdrawal_time": "Opname",
+    "payment_methods": "Betalingen",
+    "games": "Spellen",
+    "best_for": "Beste voor",
+    "rating": "Score"
+  },
+
+  "methodology_criteria": {
+    "license_safety": {
+      "name": "Licentie & veiligheid",
+      "weight": "30%",
+      "description": "Welke licentie heeft het casino? MGA wordt als veiliger beschouwd dan Curaçao."
+    },
+    "payments": {
+      "name": "Betalingen & opnames",
+      "weight": "25%",
+      "description": "Welke methoden worden ondersteund? Hoe snel zijn opnames in de praktijk?"
+    },
+    "games": {
+      "name": "Spelaanbod & leveranciers",
+      "weight": "20%",
+      "description": "Aantal slots, live spellen en welke leveranciers zijn beschikbaar?"
+    },
+    "bonuses": {
+      "name": "Bonussen & voorwaarden",
+      "weight": "15%",
+      "description": "De bonusgrootte is NIET alles – de voorwaarden bepalen de waarde."
+    },
+    "ux_rg": {
+      "name": "Gebruikerservaring & verantwoord gokken",
+      "weight": "10%",
+      "description": "Webdesign, mobiel, klantenservice en verantwoordelijkheidstools."
+    }
+  },
+
+  "common_phrases": {
+    "tax_free": "belastingvrij",
+    "tax_required": "belastbaar",
+    "our_test": "onze test",
+    "in_our_experience": "naar onze ervaring",
+    "we_recommend": "wij raden aan",
+    "read_more": "Lees meer",
+    "see_all": "Bekijk alle",
+    "why_ranked": "Waarom staat {casino} op #{rank}?",
+    "things_to_consider": "Om te overwegen:",
+    "best_for_template": "Beste voor: {description}. 18+. Gok verantwoord."
+  },
+
+  "payment_methods": {
+    "crypto_note": "Cryptovaluta bieden de snelste opnames – vaak binnen minuten",
+    "no_ideal": "iDEAL werkt NIET bij de meeste buitenlandse casino's",
+    "kyc_note": "KYC-verificatie is meestal vereist bij de eerste opname",
+    "currency_note": "Je speelt meestal in EUR – geen beperkingen zoals bij Nederlandse licenties"
+  },
+
+  "faq_common_questions": [
+    "Is het legaal voor mij als Nederlander om te spelen bij casino's zonder CRUKS?",
+    "Hebben deze casino's helemaal geen licentie?",
+    "Moet ik belasting betalen over winsten?",
+    "Kan ik iDEAL of Bancontact gebruiken?",
+    "Moet ik KYC-verificatie ondergaan?",
+    "Hoe snel zijn opnames in de praktijk?",
+    "Werkt CRUKS bij buitenlandse casino's?",
+    "Wat is het verschil tussen MGA- en Curaçao-licentie?"
+  ]
+}
