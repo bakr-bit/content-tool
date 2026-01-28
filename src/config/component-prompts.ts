@@ -36,8 +36,20 @@ const COMPONENT_DEFINITIONS: Record<ComponentType, ComponentDefinition> = {
     name: 'Top Comparison Table',
     description: 'Main ranking table with uniform columns for hero comparison',
     useCase: 'Hero comparison (above fold), main ranking sections',
-    prompt: `Write a comparison table with these EXACT columns:
+    prompt: `BEFORE WRITING THIS TABLE:
+1. What makes items #1, #2, #3 rank differently? Identify the key differentiators.
+2. What data points matter most for this audience's decision?
+3. How will you handle missing data? (Use "See Website" or "Varies" - never guess)
+
+Write a comparison table with these EXACT columns:
 | # | Name | License | Welcome Offer | Wagering | Withdrawal Time | Payment Methods | Highlights | Best For | Score |
+
+EXAMPLE (follow this cell content style):
+| # | Name | License | Welcome Offer | Wagering | Withdrawal Time | Payment Methods | Highlights | Best For | Score |
+|---|------|---------|---------------|----------|-----------------|-----------------|------------|----------|-------|
+| 1 | Casino Alpha | MGA | 100% up to $500 + 200 FS | 35x | 24-48h | Visa, Skrill, Bitcoin | Fast payouts, 3000+ games | High rollers | 9.2/10 |
+| 2 | BetMax | Curacao | $25 no deposit | 40x | 1-3 days | Mastercard, Neteller, ETH | No deposit bonus | New players | 8.8/10 |
+| 3 | SpinRoyal | Gibraltar | 150% up to $300 | 30x | Instant (e-wallets) | PayPal, Trustly, BTC | Low wagering | Bonus hunters | 8.5/10 |
 
 REQUIREMENTS:
 - Use markdown table format
@@ -49,6 +61,7 @@ REQUIREMENTS:
 - Withdrawal Time: Be specific (e.g., "24-48h", "Instant for e-wallets")
 - Score: Use X/10 format
 - Keep cell content concise but informative
+- MISSING DATA: If a specific data point is not available in the research, write "See Website" or "Varies" - NEVER guess or fabricate data. Keep the table structure intact with all columns.
 
 After the table, write 1-2 paragraphs explaining the ranking methodology briefly.`,
   },
@@ -65,12 +78,26 @@ After the table, write 1-2 paragraphs explaining the ranking methodology briefly
 **Games:** [Slot count, live tables count, top providers]
 **Best For:** [Target audience in 5-10 words]
 
+EXAMPLE (follow this structure exactly):
+**License:** Malta Gaming Authority (MGA/B2C/394/2017)
+**Welcome Offer:** 100% match up to $500 + 200 free spins (35x wagering)
+**Payments:** Visa, Skrill, Bitcoin, Bank Transfer | Withdrawals: 24-48 hours
+**Games:** 3,200+ slots, 85 live tables | Providers: NetEnt, Evolution, Pragmatic
+**Best For:** Players who prioritize fast withdrawals and live dealer games
+
+Casino Alpha earned the #1 spot for its combination of licensing credibility and payout speed. The MGA license means strict player protection rules apply, including segregated funds and dispute resolution.
+
+The welcome bonus looks generous on paper. The 35x wagering applies to the bonus amount only, not the deposit. Max bet while wagering is $5. You have 30 days to clear the requirement. Live dealer and jackpot games contribute 10% toward wagering.
+
+One drawback: customer support is only available 10am-10pm CET. No 24/7 coverage. The game library leans heavily on slots, with fewer table game variants than some competitors.
+
 Then write 2-3 paragraphs that:
 1. Explain WHY this item ranks where it does
 2. Cover the bonus terms in detail (wagering scope, max bet during bonus, time limit, excluded games)
 3. Mention any standout features or drawbacks
 
-Keep the tone balanced - highlight both strengths and limitations.`,
+Keep the tone balanced - highlight both strengths and limitations.
+- MISSING DATA: If specific information (license number, exact bonus amount, game counts) is not provided in research, write "Contact operator" or "Check website" - do not invent numbers.`,
   },
 
   category_ranking: {
@@ -86,6 +113,7 @@ REQUIREMENTS:
 - Include 3-5 items maximum - keep it scannable
 - The middle column should be specific to the category (e.g., "Fastest Method + Time" for withdrawals, "Crypto Options" for crypto casinos)
 - "Why It Wins" should be a brief, compelling reason (10-20 words)
+- MISSING DATA: Use "N/A" or "Check site" for unavailable data points. Never fabricate specifics.
 - After the table, write 1 short paragraph explaining the selection criteria for this specific category`,
   },
 
@@ -96,12 +124,22 @@ REQUIREMENTS:
     prompt: `Write a payment methods comparison table with these columns:
 | Method | Deposit Time | Withdrawal Time | Min Deposit | Min Withdrawal | Fees | Availability |
 
+EXAMPLE (follow this format):
+| Method | Deposit Time | Withdrawal Time | Min Deposit | Min Withdrawal | Fees | Availability |
+|--------|--------------|-----------------|-------------|----------------|------|--------------|
+| Visa/Mastercard | Instant | 1-3 business days | $10 | $20 | Free | All countries |
+| Skrill | Instant | 24 hours | $10 | $20 | Free | Except US, UK |
+| Bank Transfer | 1-3 days | 3-5 business days | $20 | $50 | Free | All countries |
+| Bitcoin | 10-30 min | 1-24 hours | $20 | $50 | Network fee | All countries |
+| Apple Pay | Instant | Not available | $10 | N/A | Free | iOS users only |
+
 REQUIREMENTS:
 - Cover the most common methods: Visa/Mastercard, Bank Transfer, e-wallets (Skrill, Neteller), and any region-specific methods
 - Include cryptocurrency options if relevant to the topic
 - Be specific with times (e.g., "Instant", "1-3 business days")
 - Note any fees clearly ("Free", "2.5%", etc.)
 - Availability should note any restrictions
+- MISSING DATA: If specific limits or fees are unknown, write "Varies" or "Check operator" - do not guess amounts.
 
 After the table, write 2-3 paragraphs covering:
 1. Which method is best for deposits vs withdrawals
@@ -113,8 +151,31 @@ After the table, write 2-3 paragraphs covering:
     name: 'Comparison Table',
     description: 'Two-column A vs B comparison',
     useCase: '"Offshore vs Regulated", feature comparisons',
-    prompt: `Write a side-by-side comparison table:
+    prompt: `BEFORE WRITING THIS COMPARISON:
+1. What is the reader trying to decide between these options?
+2. What 3 factors would swing the decision either way?
+3. Who should choose Option A vs. Option B?
+
+Write a side-by-side comparison table:
 | Aspect | [Option A] | [Option B] |
+
+EXAMPLE (Offshore vs Regulated Casinos):
+| Aspect | Offshore Casinos | Regulated Casinos |
+|--------|------------------|-------------------|
+| Licensing | Curacao, Anjouan | MGA, UKGC, Gibraltar |
+| Player Protection | Limited recourse | Dispute resolution, fund segregation |
+| Bonuses | Higher amounts, creative offers | Lower but clearer terms |
+| Game Selection | Crypto games, more slots | Tested RTP, certified providers |
+| Withdrawals | Faster (no strict KYC) | Slower first withdrawal (KYC required) |
+| Payment Methods | Crypto-friendly | Traditional + limited crypto |
+| Tax Reporting | None | May report to authorities |
+| Account Restrictions | Fewer limits | Responsible gambling limits |
+
+**Bottom Line: Offshore Casinos**
+Choose offshore if you prioritize privacy, crypto payments, and higher bonus amounts. Accept that you have limited recourse if something goes wrong.
+
+**Bottom Line: Regulated Casinos**
+Choose regulated if you want guaranteed player protection, verified game fairness, and don't mind slower first withdrawals. Required for players in strict jurisdictions.
 
 REQUIREMENTS:
 - Include 6-10 comparison aspects

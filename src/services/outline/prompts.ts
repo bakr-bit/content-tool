@@ -131,6 +131,15 @@ export function buildOutlineSystemPrompt(options?: GenerationOptionsInput): stri
 
   return `You are an expert SEO content strategist who writes like a native ${language} speaker. Create article outlines that sound natural and local.
 
+OUTLINE GENERATION PROCESS (follow these steps mentally before writing):
+1. INTENT ANALYSIS: What problem does the searcher want solved? What triggered this search?
+2. STRUCTURE DECISION: What format best serves this intent? (listicle for comparisons, how-to for processes, guide for education, comparison for decisions)
+3. SECTION PLANNING: What unique question does each section answer? No two sections should answer the same question.
+4. COMPONENT MATCHING: What format best presents each section's content? (table for data, steps for processes, prose for explanation)
+
+OUTPUT FORMAT REQUIREMENT:
+Your response must be valid JSON only. Begin with { and end with }. No markdown code blocks, no explanatory text.
+
 LANGUAGE: Write the outline in ${language}. All headings and descriptions must sound like they were written by someone FROM this market.
 
 ${articleSizeInstructions}
@@ -267,10 +276,45 @@ COMPONENT ASSIGNMENT GUIDE:
 - Glossary/terminology sections → "glossary"
 - References/sources sections → "sources"
 
-CRITICAL OUTPUT RULES:
-- Output ONLY valid JSON - no preamble, no commentary, no markdown code blocks
+CRITICAL OUTPUT FORMAT:
+- Your entire response must be valid JSON
+- First character must be {
+- Last character must be }
+- Do NOT wrap in \`\`\`json\`\`\` code blocks
+- Do NOT include any text before or after the JSON
 - Do NOT start with "Here is...", "Sure!", or any introductory text
-- Do NOT wrap JSON in \`\`\`json code blocks
+
+FEW-SHOT EXAMPLES:
+
+EXAMPLE 1 - Listicle Format (keyword: "best online casinos"):
+{
+  "title": "10 Best Online Casinos for Real Money in 2024",
+  "sections": [
+    {"id": "introduction", "heading": "Finding a Trustworthy Online Casino", "level": 2, "description": "Hook with the challenge of finding reliable casinos. Preview what makes our top picks stand out.", "suggestedWordCount": 150, "componentType": "prose"},
+    {"id": "top-picks", "heading": "Our Top 10 Picks at a Glance", "level": 2, "description": "Quick comparison table with all 10 casinos showing key metrics.", "suggestedWordCount": 400, "componentType": "toplist"},
+    {"id": "review-1", "heading": "1. Casino Alpha – Best Overall", "level": 2, "description": "Detailed review covering license, bonus, games, payments. Why it ranks #1.", "suggestedWordCount": 300, "componentType": "mini_review"},
+    {"id": "review-2", "heading": "2. BetMax – Best for Bonuses", "level": 2, "description": "Focus on bonus structure and wagering terms.", "suggestedWordCount": 300, "componentType": "mini_review"},
+    {"id": "how-we-rank", "heading": "How We Evaluate Online Casinos", "level": 2, "description": "Methodology with weighted criteria. EEAT signals.", "suggestedWordCount": 250, "componentType": "methodology"},
+    {"id": "faq", "heading": "Common Questions About Online Casinos", "level": 2, "description": "5-6 FAQs addressing safety, legality, withdrawals.", "suggestedWordCount": 300, "componentType": "faq"},
+    {"id": "conclusion", "heading": "Making Your Choice", "level": 2, "description": "Brief summary with clear next steps.", "suggestedWordCount": 100, "componentType": "prose"}
+  ],
+  "metadata": {"estimatedWordCount": 2500, "suggestedKeywords": ["online casinos", "real money casinos", "best casino sites"], "targetAudience": "Players looking for safe, reputable online gambling sites", "tone": "authoritative"}
+}
+
+EXAMPLE 2 - How-To Format (keyword: "how to verify casino account"):
+{
+  "title": "How to Verify Your Casino Account: Step-by-Step Guide",
+  "sections": [
+    {"id": "introduction", "heading": "Why Casinos Require Account Verification", "level": 2, "description": "Explain KYC requirements and why verification matters for withdrawals.", "suggestedWordCount": 150, "componentType": "prose"},
+    {"id": "step-1", "heading": "Step 1: Gather Your Documents", "level": 2, "description": "List required documents: ID, proof of address, payment method proof.", "suggestedWordCount": 200, "componentType": "decision_flow"},
+    {"id": "step-2", "heading": "Step 2: Upload Documents to the Casino", "level": 2, "description": "Where to find upload section, file format requirements, common mistakes.", "suggestedWordCount": 200, "componentType": "decision_flow"},
+    {"id": "step-3", "heading": "Step 3: Wait for Approval", "level": 2, "description": "Typical timeframes, what to do if rejected, how to contact support.", "suggestedWordCount": 200, "componentType": "decision_flow"},
+    {"id": "common-issues", "heading": "Troubleshooting Verification Problems", "level": 2, "description": "Blurry photos, mismatched names, expired documents.", "suggestedWordCount": 200, "componentType": "prose"},
+    {"id": "faq", "heading": "Verification FAQ", "level": 2, "description": "How long does it take? Can I withdraw without verification?", "suggestedWordCount": 200, "componentType": "faq"},
+    {"id": "conclusion", "heading": "Ready to Play", "level": 2, "description": "Confirmation of what to expect after verification.", "suggestedWordCount": 100, "componentType": "prose"}
+  ],
+  "metadata": {"estimatedWordCount": 1500, "suggestedKeywords": ["casino verification", "KYC casino", "verify gambling account"], "targetAudience": "New casino players who need to complete account verification", "tone": "helpful"}
+}
 
 Output format - raw JSON:
 {
@@ -386,14 +430,14 @@ export function buildOutlineUserPrompt(
 Target GEO: ${research.geo.toUpperCase()}
 Target Language: ${LANGUAGE_NAMES[resolved.language] || 'English (US)'}`;
 
-  // Add title-driven instructions if user provided a title (80% weight)
+  // Add title-driven instructions if user provided a title
   if (userTitle) {
     prompt += `
 
-## USER-PROVIDED TITLE (PRIMARY GUIDE - 80% WEIGHT):
+## USER-PROVIDED TITLE (MANDATORY CONSTRAINT):
 "${userTitle}"
 
-CRITICAL: The user's title is the DOMINANT driver of your outline structure. Follow these rules strictly:
+CRITICAL: The user's title is the ABSOLUTE FOUNDATION for your outline structure. Follow these rules strictly:
 
 1. **Title Format Detection**: Analyze the title to determine its implied format and structure the ENTIRE outline accordingly:
    - Listicle format (e.g., "10 Best...", "7 Ways to...", "5 Reasons...") → Create exactly that number of main list items as H2 sections
@@ -409,12 +453,14 @@ CRITICAL: The user's title is the DOMINANT driver of your outline structure. Fol
    - If the title says "Complete Guide", the outline must be comprehensive with clear progression
    - The title's promise = the outline's structure. No exceptions.
 
-3. **Weighting**: Give 80% weight to the title's implied structure, only 20% to competitor research for content ideas within that structure`;
+PRIORITY HIERARCHY:
+1. The User-Provided Title is the ABSOLUTE FOUNDATION - your outline structure MUST match what the title promises
+2. Competitor research is SUPPLEMENTARY ONLY - use it to fill content gaps within the title-driven structure, never to override it`;
   }
 
   prompt += `
 
-## COMPETITOR RESEARCH (SECONDARY REFERENCE - ${userTitle ? '20%' : '100%'} WEIGHT):
+## COMPETITOR RESEARCH (${userTitle ? 'SUPPLEMENTARY REFERENCE' : 'PRIMARY REFERENCE'}):
 
 ### Top Ranking Content:
 ${topContent}
@@ -448,7 +494,7 @@ ${userTitle
 3. Use competitor research ONLY for content ideas within your title-driven structure - competitors do NOT dictate your structure
 4. If the title specifies a number (e.g., "10 Best..."), you MUST have exactly that many main H2 sections
 5. The generated title in your JSON output MUST be exactly: "${userTitle}"
-6. Remember: 80% title-driven structure, 20% competitor-informed content`
+6. The title defines the structure; competitor research only informs the content within that structure`
   : 'Analyze the competitor content and create a detailed article outline that would rank well for this keyword.'}
 ${deepResearchContext ? '\nAddress the content gaps identified above and incorporate verified facts where relevant.\n' : ''}
 IMPORTANT: Output raw JSON only. No preamble, no explanation, no code blocks. Start directly with { and end with }`;

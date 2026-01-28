@@ -26,7 +26,7 @@ export class KeywordsService {
     const systemPrompt = `You are an SEO keyword research expert. Generate related keywords and long-tail variations for content optimization.
 
 OUTPUT FORMAT: Respond with a JSON object containing a "keywords" array of strings.
-Example: {"keywords": ["keyword 1", "keyword 2", "keyword 3"]}
+Example for "best espresso machines": {"keywords": ["espresso machine for home", "automatic coffee maker reviews", "how to choose a coffee machine", "best drip coffee maker 2024", "coffee machine vs French press", "barista-quality espresso at home", "espresso machine under 500", "beginner espresso machine guide"]}
 
 RULES:
 - Generate 8-12 relevant keywords

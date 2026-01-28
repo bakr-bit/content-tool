@@ -90,6 +90,32 @@ ${!isEnglish ? `HEADING CAPITALIZATION:
 For ${language}, use sentence case for headings (only capitalize first word and proper nouns).
 Do NOT use English-style Title Case Where Every Word Is Capitalized.` : ''}
 
+STRUCTURAL PATTERNS TO ELIMINATE:
+- Summary wrap-ups: NEVER end a section with a concluding sentence like "By following these steps..." or "This ensures a seamless experience..."
+  * END sections on a factual point, not a summary
+- "Not only... but also": This is the #1 AI transition pattern. Ban it completely.
+- Front-load information: Place the most important fact/answer in the FIRST sentence of every paragraph
+- Avoid "In order to": Just use "To" instead
+- Ban "It's worth noting that": Delete this phrase entirely
+
+BEFORE/AFTER EXAMPLES - Study these patterns:
+
+TRIPLET STRUCTURE (AI pattern to eliminate):
+✗ BAD: "This casino offers fast withdrawals, extensive game selection, and responsive customer support."
+✓ GOOD: "Withdrawals process in under 24 hours. The game library runs deep—over 3,000 slots from 40 providers."
+
+HEDGING LANGUAGE (AI pattern to eliminate):
+✗ BAD: "It is important to note that one might consider the wagering requirements before claiming any bonus."
+✓ GOOD: "Check wagering requirements before claiming. A 35x requirement means a $100 bonus needs $3,500 in bets to unlock."
+
+SUMMARY ENDINGS (AI pattern to eliminate):
+✗ BAD: "By following these steps, you can ensure a seamless registration experience and start enjoying your favorite games."
+✓ GOOD: "Verification typically takes 24-48 hours. You'll receive an email once your account is active."
+
+VAGUE GENERALIZATIONS (AI pattern to eliminate):
+✗ BAD: "The platform offers a wide variety of payment methods to suit different player preferences."
+✓ GOOD: "Deposits work via Visa, Mastercard, Skrill, Neteller, and Bitcoin. E-wallet withdrawals hit your account same-day."
+
 SENTENCE-LEVEL:
 - Remove adjectives that don't change the sentence's objective meaning
 - Read sentences aloud mentally - if you'd stumble reading it, rewrite it
@@ -254,6 +280,12 @@ NEGATIVE DIRECTIVES:
 ✗ NO "In conclusion," "To summarize," "It's worth noting that"
 ✗ NO three-part parallel structures repeatedly
 ✗ NO starting sentences with "This" referring to previous paragraph
+✗ NO "Not only... but also" constructions
+
+SECTION ENDINGS - CRITICAL:
+- NEVER end a section with a summary sentence
+- NEVER end with a forward-looking statement ("In the next section...")
+- END on your final factual point or actionable tip
 
 ANTI-REPETITION RULES - CRITICAL:
 - NEVER repeat information that was covered in previous sections
@@ -362,11 +394,14 @@ export function buildSectionWriterUserPrompt(
       })
       .join('\n\n');
 
-    // Show the FULL content of recent sections (critical for avoiding overlap)
-    const recentSectionsFull = previousSections
-      .slice(-3)
-      .map((s) => `### ${s.heading}\n${s.content}`)
-      .join('\n\n---\n\n');
+    // Only include full content of immediately preceding section (for transitions)
+    const immediatePrevSection = previousSections.length > 0
+      ? previousSections[previousSections.length - 1]
+      : null;
+
+    const immediatePrevContent = immediatePrevSection
+      ? `### IMMEDIATELY PRECEDING SECTION (for transition reference):\n**${immediatePrevSection.heading}**\n${immediatePrevSection.content}`
+      : '';
 
     prevContext = `## SECTIONS ALREADY WRITTEN - READ CAREFULLY:
 ${coveredHeadings}
@@ -377,8 +412,7 @@ ${existingTables || 'None yet'}
 ## TOPICS ALREADY COVERED IN DETAIL (DO NOT REPEAT):
 ${keyTopicsPerSection}
 
-## FULL CONTENT OF RECENT SECTIONS (STUDY TO AVOID ANY OVERLAP):
-${recentSectionsFull}
+${immediatePrevContent}
 
 CRITICAL WARNING: If ANY of the above sections already explained a concept, statistic, list, or table - DO NOT explain it again. Reference it if needed ("as discussed above") but provide NEW information only.`;
   } else {
