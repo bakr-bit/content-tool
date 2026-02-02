@@ -26,6 +26,7 @@ import {
   GripVertical,
   Plus,
   Trash2,
+  Table2,
 } from 'lucide-react';
 import { researchAndGenerateOutline, getComponents } from '@/services/api';
 import type { UseArticleFormReturn } from '@/hooks/useArticleForm';
@@ -80,27 +81,281 @@ interface OutlineTabProps {
 type GenerationStatus = 'idle' | 'researching' | 'generating' | 'complete' | 'error';
 type ViewMode = 'preview' | 'edit' | 'structured';
 
+// Toplist insertion indicator component
+interface ToplistIndicatorProps {
+  toplists: { name: string; heading?: string; headingLevel?: string; entries?: unknown[] }[];
+}
+
+function ToplistIndicator({ toplists }: ToplistIndicatorProps) {
+  if (toplists.length === 0) return null;
+
+  return (
+    <div className="border-2 border-dashed border-primary/40 rounded-lg p-3 bg-primary/5 my-2">
+      <div className="flex items-center gap-2 text-sm text-primary">
+        <Table2 className="h-4 w-4" />
+        <span className="font-medium">Toplist{toplists.length > 1 ? 's' : ''} will be inserted here</span>
+      </div>
+      <div className="mt-2 space-y-1">
+        {toplists.map((toplist, idx) => (
+          <div key={idx} className="text-xs text-muted-foreground pl-6">
+            • {toplist.headingLevel === 'h3' ? '###' : '##'} {toplist.heading || toplist.name}
+            {toplist.entries && <span className="text-muted-foreground/70"> ({toplist.entries.length} items)</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Default descriptions for each component type (used when adding or changing components)
+const COMPONENT_DEFAULT_DESCRIPTIONS: Record<string, string> = {
+  prose: 'Write engaging paragraph content that covers this topic thoroughly. Use short paragraphs, include relevant examples, and maintain natural flow.',
+
+  toplist: `Create a comparison table ranking the top options with uniform columns for each entry.
+
+EXAMPLE TABLE FORMAT:
+| # | Name | License | Welcome Offer | Wagering | Withdrawal Time | Payment Methods | Highlights | Best For | Score |
+|---|------|---------|---------------|----------|-----------------|-----------------|------------|----------|-------|
+| 1 | Instant Casino | Curaçao (CGA/LOK) | 200% up to €7,500 | x30 | 10–60 min (crypto) | USDT, BTC, SEPA | Fast withdrawals | Speed-first players | 9.8 |
+| 2 | Lizaro | MGA | 350% up to €1,000 + 200 FS | x20 | 0–2h | Visa, SEPA, USDT | Best overall balance | Most players | 9.6 |
+| 3 | BetNinja | Curaçao (CGA/LOK) | €1,000 + 100 FS | x25 | 0–3h | Crypto, Apple Pay | Missions + promos | Promo hunters | 9.4 |
+
+KEY REQUIREMENTS:
+- Same columns in same order for every entry (consistency signals quality)
+- Include "Best For" to segment user intent
+- Score should reflect actual evaluation, not just rankings
+- Include practical details (actual withdrawal times, specific methods)`,
+
+  mini_review: `Write a detailed mini-review card with consistent structured fields for each entry.
+
+EXAMPLE FORMAT:
+**License:** Malta Gaming Authority (MGA)
+**Welcome offer:** 350% up to €1,000 + 200 FS; Wagering: x20
+**Payments:** Visa/Mastercard, SEPA/Instant, USDT; typical withdrawals 0–2h
+**Games:** ~6,500 slots; ~55 live tables; providers include Evolution, Pragmatic Play, Play'n GO
+**Best for:** Most users who want a balanced option with reputable licensing
+
+**Why [Name] ranks [#X]:** Explain the specific reasons this option earns its position. Focus on operational details like withdrawal reliability, bonus fairness, and UX quality - not just marketing claims.
+
+**Bonus reality check:** Don't just repeat the headline offer. Explain wagering scope (bonus only vs deposit+bonus), game contributions, max bet limits, and time restrictions.`,
+
+  category_ranking: `Create a focused mini-ranking (3-5 items) for this specific category with columns relevant to that category.
+
+EXAMPLE - Fastest Withdrawals:
+| Name | Fastest Method | Typical Time | Why It Wins |
+|------|----------------|--------------|-------------|
+| Instant Casino | USDT | 10–60 min | Consistently fast crypto processing |
+| Lizaro | SEPA/Instant | 0–2h | Strong EU payments + automation |
+| HolyLuck | BTC | 0–3h | Fast crypto payouts for mid-sized withdrawals |
+
+EXAMPLE - Best Live Casino:
+| Name | Live Tables | Top Providers | Best For |
+|------|-------------|---------------|----------|
+| Instant Casino | ~70 | Evolution, Pragmatic Live | Game shows + roulette |
+| Uspin | ~50 | Evolution, Ezugi | Table variety |
+| Lizaro | ~55 | Evolution | Balanced live offering |
+
+Each mini-ranking should match a specific user intent (speed, game type, bonus style, etc.)`,
+
+  payment_table: `Create a payment methods comparison table with practical operational details.
+
+EXAMPLE FORMAT:
+| Method | Deposit min/max | Withdrawal min/max | Typical payout time | Fees | KYC timing | Notes |
+|--------|-----------------|-------------------|---------------------|------|------------|-------|
+| SEPA / Instant | €10–€10,000 | €20–€50,000 | 0–24h | Usually none | At first withdrawal | Best fiat option for EU users |
+| Visa / Mastercard | €10–€5,000 | €20–€10,000 | 1–3 business days | 0–2% possible | At first withdrawal | Some banks block offshore payments |
+| Apple Pay / Google Pay | €10–€2,000 | — | N/A | None | At first withdrawal | Fast deposits; withdrawals often via bank/crypto |
+| Skrill / Neteller | €10–€5,000 | €20–€10,000 | 0–24h | ~1% possible | At first withdrawal | Useful for fintech-style flows |
+| Crypto (BTC/ETH/USDT) | €20–no cap | €20–no cap | 5–60 min | Network fee | Optional / larger withdrawals | Speed and control; stablecoins avoid volatility |
+
+KEY DETAILS TO INCLUDE:
+- Separate deposit vs withdrawal info (they often differ)
+- Actual processing times (casino approval vs payment rail time)
+- Fees and restrictions
+- When KYC is triggered`,
+
+  comparison: `Create a side-by-side comparison table showing key differences between options.
+
+EXAMPLE FORMAT (Regulated vs Offshore):
+| Factor | Option A (Offshore) | Option B (Regulated) |
+|--------|---------------------|----------------------|
+| Self-exclusion check | No | Yes (mandatory) |
+| Signup process | Email/phone, sometimes wallet | DigiD/iDIN + verification |
+| KYC timing | Often at withdrawal | At signup |
+| Mandatory limits | Usually optional | Mandatory |
+| Bonus restrictions | Typically fewer restrictions | Stricter (advertising/bonus rules) |
+| Features | Bonus buy/autoplay often available | Often restricted |
+
+KEY REQUIREMENTS:
+- 6-10 comparison aspects covering safety, bonuses, selection, payments, support
+- Be factual and neutral - explain trade-offs, not just advantages
+- Help reader understand what they gain AND what they lose with each option`,
+
+  faq: `Write 5-7 FAQs that address real user objections and concerns. Focus on questions from "People Also Ask" and common support queries.
+
+EXAMPLE FORMAT:
+**Will I need KYC?**
+Usually yes, at first withdrawal or larger withdrawals. Most sites let you deposit and play with minimal friction, but verification appears when you request payouts or cross internal thresholds.
+
+**Are withdrawals instant?**
+Crypto can be minutes; SEPA/e-wallets can be hours; cards are often days. Withdrawal time has two parts: casino processing (approval) and payment rail time (bank/card/chain).
+
+**Can I use a VPN?**
+Risky; it may violate terms and lead to account closure or withheld funds. If detected, you may lose access to your balance.
+
+**Do I pay taxes on winnings?**
+Tax rules depend on jurisdiction. EU/EEA-licensed operators may be treated differently than non-EU operators. Consult official sources for your specific situation.
+
+KEY REQUIREMENTS:
+- Answer the actual question directly in 2-3 sentences
+- Include practical details (timeframes, conditions, risks)
+- Address objections honestly - don't oversell`,
+
+  how_to: `Write step-by-step instructions that are practical and actionable.
+
+EXAMPLE FORMAT:
+**Step 1: Pick your priority**
+Decide what matters most: fastest withdrawals (crypto/stablecoins) vs safest license (MGA) vs best game selection. This determines which options to consider.
+
+**Step 2: Create an account**
+Register with email/phone or wallet login where supported. Use strong passwords and avoid duplicate accounts across sites.
+
+**Step 3: Deposit smart**
+Start with a small deposit to test the flow. If using crypto, double-check addresses and networks (TRC-20 vs ERC-20 matters for speed and fees).
+
+**Step 4: Withdraw early**
+Make a small withdrawal to trigger KYC and validate processing before you scale up. This reveals any friction before you have a large balance at stake.
+
+KEY REQUIREMENTS:
+- Number each step clearly
+- Explain what to do AND why
+- Mention common pitfalls to avoid
+- Include practical tips (test with small amounts first)`,
+
+  pros_cons: `Create a balanced analysis with specific, verifiable advantages and disadvantages.
+
+EXAMPLE FORMAT - Green Flags vs Red Flags:
+| Green Flags | Red Flags |
+|-------------|-----------|
+| Clear license + operator entity | No license details or vague claims |
+| Transparent bonus terms (wagering, max bet, exclusions) | Terms hidden or contradictory |
+| Multiple withdrawal methods + realistic processing times | "Instant withdrawals" with no policy detail |
+| Responsive support with a real escalation path | Support that only answers with templates |
+| RG tools visible (limits, cool-off, self-exclusion) | No RG section or hard-to-find controls |
+
+KEY REQUIREMENTS:
+- Be specific - cite actual features, numbers, or policies
+- Include 4-6 genuine advantages and 3-5 honest disadvantages
+- Avoid generic phrases ("great service") - explain what makes it great
+- Include both operational details and user experience factors`,
+
+  methodology: `Explain the evaluation criteria and scoring methodology transparently.
+
+EXAMPLE FORMAT:
+**How We Evaluate:**
+- **Licensing & reputation (30%):** License issuer, operator transparency, enforcement history
+- **Payments & withdrawals (25%):** Methods supported, typical times, fees, KYC triggers
+- **Games & providers (20%):** Slots volume, live casino depth, top providers (Evolution, Pragmatic, etc.)
+- **Bonus value (15%):** Headline offer, wagering requirements, restrictions, time limits, fairness
+- **UX, support & RG tools (10%):** Mobile experience, navigation, support quality, responsible gambling controls
+
+**What We Test:**
+- Withdrawal process with small amounts
+- Support response time and quality
+- Bonus terms clarity and fairness
+- Mobile/app usability
+
+**Disclosure:** Rankings may be supported by commercial partnerships, but we only recommend operators that meet our minimum safety and transparency standards.
+
+KEY REQUIREMENTS:
+- Show explicit weights for each factor
+- Explain what you actually test (not just claim to evaluate)
+- Include disclosure about commercial relationships
+- Make the evaluation "auditable" - readers should understand how you reached conclusions`,
+
+  decision_flow: `Create a decision guide that helps readers choose based on their specific needs and priorities.
+
+EXAMPLE FORMAT:
+**Decision Flow:**
+1. **Start with protection level:** If you want regulated protections, choose licensed options. If you accept trade-offs for other benefits, continue.
+
+2. **Pick payment style:**
+   - Fiat (SEPA/cards) → prioritize established payment rails
+   - Crypto (stablecoins recommended) → prioritize speed and control
+
+3. **Pick game style:**
+   - Slots → look for library size and provider variety
+   - Live tables → prioritize Evolution/Pragmatic Live coverage
+   - Crash/instant → check limits and RTP transparency
+
+4. **Pick bonus tolerance:**
+   - Low wagering (x20-x30) → more realistic to clear
+   - High cap offers → only if you're a high-volume player
+
+5. **Validate with a test:** Small deposit + small withdrawal to verify the pipeline before scaling up.
+
+KEY REQUIREMENTS:
+- Use conditional logic (if X, then Y)
+- Segment by user type/priority
+- Include actionable next steps for each path
+- End with a validation step`,
+};
+
 // Section Card Component for structured view
 interface SectionCardProps {
   section: OutlineSection;
+  index: number;
   components: ComponentInfo[];
   onUpdate: (updates: Partial<OutlineSection>) => void;
   onDelete: () => void;
   onAddSubsection: () => void;
+  onDragStart: (index: number) => void;
+  onDragOver: (e: React.DragEvent, index: number) => void;
+  onDragEnd: () => void;
+  isDragging: boolean;
   depth?: number;
 }
 
-function SectionCard({ section, components, onUpdate, onDelete, onAddSubsection, depth = 0 }: SectionCardProps) {
+function SectionCard({
+  section,
+  index,
+  components,
+  onUpdate,
+  onDelete,
+  onAddSubsection,
+  onDragStart,
+  onDragOver,
+  onDragEnd,
+  isDragging,
+  depth = 0
+}: SectionCardProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const hasSubsections = section.subsections && section.subsections.length > 0;
 
+  const handleComponentChange = (componentType: ComponentType) => {
+    const updates: Partial<OutlineSection> = { componentType };
+    // If description is empty or matches a default, update it with the new component's default
+    const currentDesc = section.description || '';
+    const isDefaultOrEmpty = !currentDesc || Object.values(COMPONENT_DEFAULT_DESCRIPTIONS).includes(currentDesc);
+    if (isDefaultOrEmpty && COMPONENT_DEFAULT_DESCRIPTIONS[componentType]) {
+      updates.description = COMPONENT_DEFAULT_DESCRIPTIONS[componentType];
+    }
+    onUpdate(updates);
+  };
+
   return (
-    <div className={`border rounded-lg bg-card ${depth > 0 ? 'ml-6 border-muted' : ''}`}>
+    <div
+      draggable={depth === 0}
+      onDragStart={() => depth === 0 && onDragStart(index)}
+      onDragOver={(e) => depth === 0 && onDragOver(e, index)}
+      onDragEnd={onDragEnd}
+      className={`border rounded-lg bg-card transition-all ${depth > 0 ? 'ml-6 border-muted' : ''} ${isDragging ? 'opacity-50 border-primary border-dashed' : ''}`}
+    >
       <div className="p-3 space-y-3">
         {/* Header row */}
         <div className="flex items-start gap-2">
           <div className="flex items-center gap-1 pt-1">
-            <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+            <GripVertical className={`h-4 w-4 text-muted-foreground ${depth === 0 ? 'cursor-grab active:cursor-grabbing' : 'opacity-30'}`} />
             {hasSubsections && (
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
@@ -128,7 +383,7 @@ function SectionCard({ section, components, onUpdate, onDelete, onAddSubsection,
             <div className="flex items-center gap-2 flex-wrap">
               <Select
                 value={section.componentType || 'prose'}
-                onValueChange={(value) => onUpdate({ componentType: value as ComponentType })}
+                onValueChange={(value) => handleComponentChange(value as ComponentType)}
               >
                 <SelectTrigger className="w-[180px] h-8 text-xs">
                   <SelectValue placeholder="Component type" />
@@ -201,8 +456,13 @@ function SectionCard({ section, components, onUpdate, onDelete, onAddSubsection,
             <SectionCard
               key={sub.id || idx}
               section={sub}
+              index={idx}
               components={components}
               depth={depth + 1}
+              isDragging={false}
+              onDragStart={() => {}}
+              onDragOver={() => {}}
+              onDragEnd={() => {}}
               onUpdate={(updates) => {
                 const newSubsections = [...(section.subsections || [])];
                 newSubsections[idx] = { ...newSubsections[idx], ...updates };
@@ -218,7 +478,7 @@ function SectionCard({ section, components, onUpdate, onDelete, onAddSubsection,
                   id: `${section.id}-sub-${Date.now()}`,
                   heading: 'New subsection',
                   level: (sub.level || section.level) + 1,
-                  description: '',
+                  description: COMPONENT_DEFAULT_DESCRIPTIONS['prose'] || '',
                   componentType: 'prose',
                 });
                 onUpdate({ subsections: newSubsections });
@@ -237,6 +497,7 @@ export function OutlineTab({ form }: OutlineTabProps) {
   );
   const [statusMessage, setStatusMessage] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('preview');
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   // Initialize with fallback components so dropdown works immediately
   const [components, setComponents] = useState<ComponentInfo[]>(() =>
     Object.entries(COMPONENT_TYPE_NAMES).map(([id, name]) => ({
@@ -252,7 +513,10 @@ export function OutlineTab({ form }: OutlineTabProps) {
   const setOutlineText = form.setOutlineText;
   const outline = form.formState.outline;
 
-  const { focusKeyword, targetCountry, language, articleTitle, articleSize, includeKeywords, structure } = form.formState;
+  const { focusKeyword, targetCountry, language, articleTitle, articleSize, includeKeywords, structure, toplists } = form.formState;
+
+  // Filter toplists that are marked for inclusion
+  const includedToplists = (toplists || []).filter((t) => t.includeInArticle);
 
   const canGenerate = focusKeyword.trim().length > 0;
 
@@ -376,7 +640,7 @@ export function OutlineTab({ form }: OutlineTabProps) {
       id: `section-${Date.now()}`,
       heading: 'New section',
       level: 2,
-      description: '',
+      description: COMPONENT_DEFAULT_DESCRIPTIONS['prose'] || '',
       componentType: 'prose',
       suggestedWordCount: 300,
     };
@@ -404,13 +668,41 @@ export function OutlineTab({ form }: OutlineTabProps) {
       id: `${section.id}-sub-${Date.now()}`,
       heading: 'New subsection',
       level: 3,
-      description: '',
+      description: COMPONENT_DEFAULT_DESCRIPTIONS['prose'] || '',
       componentType: 'prose',
       suggestedWordCount: 150,
     };
 
     const newSubsections = [...(section.subsections || []), newSubsection];
     updateSection(sectionIndex, { subsections: newSubsections });
+  };
+
+  // Drag and drop handlers for reordering sections
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index || !outline) return;
+
+    // Reorder sections
+    const newSections = [...outline.sections];
+    const draggedItem = newSections[draggedIndex];
+    newSections.splice(draggedIndex, 1);
+    newSections.splice(index, 0, draggedItem);
+
+    const newOutline = { ...outline, sections: newSections };
+    form.setOutline(newOutline);
+
+    const outlineMd = outlineToMarkdown(newOutline, structure, language, articleTitle);
+    setOutlineText(outlineMd);
+
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
   };
 
   const getStatusIcon = () => {
@@ -476,6 +768,12 @@ export function OutlineTab({ form }: OutlineTabProps) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Include Keywords:</span>
             <span className="font-medium">{includeKeywords.length} keywords</span>
+          </div>
+        )}
+        {includedToplists.length > 0 && (
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Toplists:</span>
+            <span className="font-medium text-primary">{includedToplists.length} included</span>
           </div>
         )}
       </div>
@@ -565,14 +863,24 @@ export function OutlineTab({ form }: OutlineTabProps) {
 
             {/* Section cards */}
             {outline.sections.map((section, idx) => (
-              <SectionCard
-                key={section.id || idx}
-                section={section}
-                components={components}
-                onUpdate={(updates) => updateSection(idx, updates)}
-                onDelete={() => deleteSection(idx)}
-                onAddSubsection={() => addSubsection(idx)}
-              />
+              <div key={section.id || idx}>
+                <SectionCard
+                  section={section}
+                  index={idx}
+                  components={components}
+                  isDragging={draggedIndex === idx}
+                  onDragStart={handleDragStart}
+                  onDragOver={handleDragOver}
+                  onDragEnd={handleDragEnd}
+                  onUpdate={(updates) => updateSection(idx, updates)}
+                  onDelete={() => deleteSection(idx)}
+                  onAddSubsection={() => addSubsection(idx)}
+                />
+                {/* Show toplist indicator after first section */}
+                {idx === 0 && includedToplists.length > 0 && (
+                  <ToplistIndicator toplists={includedToplists} />
+                )}
+              </div>
             ))}
 
             {outline.sections.length === 0 && (
@@ -603,6 +911,10 @@ Click "Generate Outline" to research competitors and create an optimized structu
           />
         ) : (
           <div className="min-h-[350px] rounded-md border bg-background p-4 overflow-auto prose prose-sm prose-invert max-w-none">
+            {/* Show toplist indicator at top of preview if toplists are included */}
+            {includedToplists.length > 0 && (
+              <ToplistIndicator toplists={includedToplists} />
+            )}
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
