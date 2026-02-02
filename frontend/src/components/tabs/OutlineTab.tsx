@@ -502,7 +502,7 @@ export function OutlineTab({ form }: OutlineTabProps) {
   const setOutlineText = form.setOutlineText;
   const outline = form.formState.outline;
 
-  const { focusKeyword, targetCountry, language, articleTitle, articleSize, includeKeywords, structure, toplists } = form.formState;
+  const { focusKeyword, targetCountry, language, articleTitle, articleSize, includeKeywords, structure, toplists, selectedTemplateId } = form.formState;
 
   // Filter toplists that are marked for inclusion
   const includedToplists = (toplists || []).filter((t) => t.includeInArticle);
@@ -573,6 +573,8 @@ export function OutlineTab({ form }: OutlineTabProps) {
           articleSize: articleSize,
           includeKeywords: includeKeywords.length > 0 ? includeKeywords : undefined,
           structure: structure,
+          templateId: selectedTemplateId || undefined,
+          toplists: includedToplists.length > 0 ? includedToplists : undefined,
         }
       );
 
@@ -782,6 +784,12 @@ export function OutlineTab({ form }: OutlineTabProps) {
             ].filter(Boolean).join(', ') || 'Standard'}
           </span>
         </div>
+        {selectedTemplateId && (
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Template:</span>
+            <span className="font-medium text-primary">{selectedTemplateId}</span>
+          </div>
+        )}
         {includeKeywords.length > 0 && (
           <div className="flex justify-between">
             <span className="text-muted-foreground">Include Keywords:</span>

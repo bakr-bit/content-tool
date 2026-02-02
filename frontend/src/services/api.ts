@@ -104,6 +104,8 @@ export interface OutlineGenerateOptions {
     conclusion?: boolean;
     faqs?: boolean;
   };
+  templateId?: string;
+  toplists?: import('@/types/toplist').ArticleToplist[];
 }
 
 export async function generateOutline(
