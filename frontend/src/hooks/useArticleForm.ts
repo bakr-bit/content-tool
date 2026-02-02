@@ -15,6 +15,36 @@ import type {
 } from '@/types/article';
 import type { ArticleToplist } from '@/types/toplist';
 
+// Mapping from language to default target country
+const LANGUAGE_TO_COUNTRY: Record<Language, TargetCountry> = {
+  'en-US': 'us',
+  'en-GB': 'gb',
+  'en-AU': 'au',
+  'es-ES': 'es',
+  'es-MX': 'mx',
+  'fr-FR': 'fr',
+  'fr-CA': 'ca',
+  'de-DE': 'de',
+  'de-AT': 'at',
+  'it-IT': 'it',
+  'pt-BR': 'br',
+  'pt-PT': 'br',  // Portugal maps to Brazil (closest available)
+  'nl-NL': 'nl',
+  'sv-SE': 'se',
+  'no-NO': 'no',
+  'da-DK': 'dk',
+  'fi-FI': 'fi',
+  'pl-PL': 'pl',
+  'ru-RU': 'ru',
+  'ja-JP': 'jp',
+  'zh-CN': 'cn',
+  'zh-TW': 'tw',
+  'ko-KR': 'kr',
+  'ar-SA': 'sa',
+  'hi-IN': 'in',
+  'tr-TR': 'tr',
+};
+
 const DEFAULT_FORM_STATE: ArticleFormState = {
   // Details Tab
   focusKeyword: '',
@@ -116,7 +146,11 @@ export function useArticleForm() {
   }, []);
 
   const setLanguage = useCallback((language: Language) => {
-    setFormState((prev) => ({ ...prev, language }));
+    setFormState((prev) => ({
+      ...prev,
+      language,
+      targetCountry: LANGUAGE_TO_COUNTRY[language] || prev.targetCountry,
+    }));
   }, []);
 
   const setTargetCountry = useCallback((targetCountry: TargetCountry) => {
