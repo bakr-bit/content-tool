@@ -341,6 +341,7 @@ Output format - raw JSON:
       "description": "Brief description of what this section should cover",
       "suggestedWordCount": 350,
       "componentType": "prose",
+      "toplistId": "optional - only include if this section should render a provided toplist",
       "subsections": [
         {
           "id": "section-1-1",
@@ -493,6 +494,29 @@ ${deepResearchContext}`;
 ## KEYWORDS TO INCLUDE:
 The following keywords should be naturally incorporated into relevant sections:
 ${includeKeywords.map(kw => `- ${kw}`).join('\n')}`;
+  }
+
+  // Add toplist information if provided
+  const toplists = options?.toplists?.filter(t => t.includeInArticle);
+  if (toplists && toplists.length > 0) {
+    prompt += `
+
+## TOPLISTS TO INCLUDE (MANDATORY):
+The user has provided ${toplists.length} toplist(s) that MUST be included in the article. Create a section for EACH toplist with the exact toplistId.
+
+Available toplists:
+${toplists.map(t => `- toplistId: "${t.toplistId}" | Name: "${t.name}" | Entries: ${t.entries.length} brands`).join('\n')}
+
+CRITICAL RULES for toplist sections:
+1. Create a dedicated section for EACH toplist above
+2. Set the section's "toplistId" field to the exact toplistId shown above
+3. Set "componentType" to "toplist" for these sections
+4. The toplist will be rendered as a comparison table - the section description should explain what the table shows
+5. Do NOT describe the brands in the section description - the table data comes from the toplist
+6. Place toplist sections prominently (after introduction, before individual reviews)
+
+Example section with toplist:
+{"id": "top-picks", "heading": "Top 10 Casino's Zonder Cruks", "level": 2, "description": "Our comparison of the best options based on extensive testing.", "suggestedWordCount": 100, "componentType": "toplist", "toplistId": "${toplists[0]?.toplistId || 'example-id'}"}`;
   }
 
   if (resolved.customTonePrompt) {
