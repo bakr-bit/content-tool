@@ -485,6 +485,43 @@ EXAMPLE OF WHAT TO AVOID:
     })}\n`;
   }
 
+  // Build toplist brand context if toplists are provided
+  let toplistBrandContext = '';
+  if (options?.toplists && options.toplists.length > 0) {
+    const includedToplists = options.toplists.filter(t => t.includeInArticle);
+    if (includedToplists.length > 0) {
+      const brandList = includedToplists.flatMap(toplist =>
+        toplist.entries.map(entry => {
+          const brand = entry.brand;
+          if (!brand) return null;
+
+          // Extract key attributes for the LLM to reference
+          const attrs = brand.attributes || {};
+          const attrList = [
+            attrs.license ? `License: ${attrs.license}` : null,
+            attrs.welcomeOffer ? `Welcome Offer: ${attrs.welcomeOffer}` : null,
+            attrs.withdrawalTime ? `Withdrawal Time: ${attrs.withdrawalTime}` : null,
+            attrs.bestFor ? `Best For: ${attrs.bestFor}` : null,
+          ].filter(Boolean).join(', ');
+
+          return `${entry.rank}. **${brand.name}**${attrList ? ` - ${attrList}` : ''}`;
+        }).filter(Boolean)
+      );
+
+      if (brandList.length > 0) {
+        toplistBrandContext = `
+## BRANDS IN THE TOPLIST (USE THESE EXACT NAMES):
+${brandList.join('\n')}
+
+CRITICAL: When referring to brands in this article, you MUST use the exact brand names listed above.
+- Do NOT use placeholders like "[Casino Namn 1]" or "[Brand Name]"
+- Do NOT invent brand names - only mention the brands listed above
+- Use the brand's actual name (e.g., "${includedToplists[0]?.entries[0]?.brand?.name || 'BrandName'}") not generic placeholders
+`;
+      }
+    }
+  }
+
   let prompt = `Write the following section for an article about "${outline.keyword}":
 
 ## Section to Write:
@@ -495,7 +532,7 @@ ${section.componentType ? `Component type: ${section.componentType}` : ''}
 
 ## Full Article Structure:
 ${outline.sections.map((s) => `- ${s.heading}${s.componentType ? ` [${s.componentType}]` : ''}`).join('\n')}
-
+${toplistBrandContext}
 ${prevContext}
 ${siblingContext}
 ## Research Context:
