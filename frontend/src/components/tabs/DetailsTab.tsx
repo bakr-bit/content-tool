@@ -10,12 +10,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { X, Sparkles, Loader2 } from 'lucide-react';
+import { X, Sparkles, Loader2, Bug, FileText, BookOpen, Wand2 } from 'lucide-react';
 import { COUNTRY_NAMES, LANGUAGE_NAMES, type TargetCountry, type Language } from '@/types/article';
 import type { UseArticleFormReturn } from '@/hooks/useArticleForm';
 import { Flag } from '@/components/ui/flag';
-import { generateKeywords, getProjects } from '@/services/api';
+import { generateKeywords, getProjects, getTemplates } from '@/services/api';
 import type { ProjectWithCount } from '@/types/project';
+import type { ArticleTemplate } from '@/types/template';
+
+// Icon mapping for templates
+const TEMPLATE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Bug: Bug,
+  FileText: FileText,
+  BookOpen: BookOpen,
+  Wand2: Wand2,
+};
+
+function getTemplateIcon(iconName: string): React.ComponentType<{ className?: string }> {
+  return TEMPLATE_ICONS[iconName] || FileText;
+}
 
 interface DetailsTabProps {
   form: UseArticleFormReturn;
@@ -26,6 +39,8 @@ export function DetailsTab({ form }: DetailsTabProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [projects, setProjects] = useState<ProjectWithCount[]>([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
+  const [templates, setTemplates] = useState<ArticleTemplate[]>([]);
+  const [templatesLoading, setTemplatesLoading] = useState(true);
 
   useEffect(() => {
     async function fetchProjects() {
@@ -41,6 +56,22 @@ export function DetailsTab({ form }: DetailsTabProps) {
       }
     }
     fetchProjects();
+  }, []);
+
+  useEffect(() => {
+    async function fetchTemplates() {
+      try {
+        const result = await getTemplates();
+        if (result.success && result.data) {
+          setTemplates(result.data.templates);
+        }
+      } catch (error) {
+        console.error('Failed to fetch templates:', error);
+      } finally {
+        setTemplatesLoading(false);
+      }
+    }
+    fetchTemplates();
   }, []);
 
   const handleAddKeyword = () => {
@@ -102,6 +133,69 @@ export function DetailsTab({ form }: DetailsTabProps) {
         />
         <p className="text-xs text-muted-foreground">
           The main keyword you want this article to rank for.
+        </p>
+      </div>
+
+      {/* Article Template */}
+      <div className="space-y-2">
+        <Label>Article Template</Label>
+        <Select
+          value={form.formState.selectedTemplateId || 'none'}
+          onValueChange={(value) => form.setSelectedTemplateId(value === 'none' ? undefined : value)}
+          disabled={templatesLoading}
+        >
+          <SelectTrigger>
+            {form.formState.selectedTemplateId ? (
+              <span className="flex items-center gap-2">
+                {(() => {
+                  const template = templates.find(t => t.id === form.formState.selectedTemplateId);
+                  if (template) {
+                    const Icon = getTemplateIcon(template.icon);
+                    return (
+                      <>
+                        <Icon className="h-4 w-4" />
+                        <span>{template.name}</span>
+                        <Badge variant="secondary" className="ml-auto text-xs">
+                          ~{Math.round(template.targetWordCount / 1000)}k words
+                        </Badge>
+                      </>
+                    );
+                  }
+                  return <SelectValue placeholder="Select a template" />;
+                })()}
+              </span>
+            ) : (
+              <SelectValue placeholder={templatesLoading ? 'Loading...' : 'No template (AI structures freely)'} />
+            )}
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">
+              <span className="flex items-center gap-2">
+                <Wand2 className="h-4 w-4 text-muted-foreground" />
+                <span>No template</span>
+                <span className="ml-2 text-xs text-muted-foreground">AI generates structure freely</span>
+              </span>
+            </SelectItem>
+            {templates.map((template) => {
+              const Icon = getTemplateIcon(template.icon);
+              return (
+                <SelectItem key={template.id} value={template.id}>
+                  <span className="flex items-center gap-2">
+                    <Icon className="h-4 w-4" />
+                    <span>{template.name}</span>
+                    <Badge variant="secondary" className="ml-2 text-xs">
+                      ~{Math.round(template.targetWordCount / 1000)}k words
+                    </Badge>
+                  </span>
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground">
+          {form.formState.selectedTemplateId
+            ? templates.find(t => t.id === form.formState.selectedTemplateId)?.description || 'Template guides the article structure.'
+            : 'Optional. Select a template to guide the article structure, or let AI decide based on keyword.'}
         </p>
       </div>
 

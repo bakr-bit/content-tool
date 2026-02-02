@@ -221,6 +221,40 @@ export interface GenerationOptions {
   authorProfileId?: string;
 }
 
+// Toplist heading level
+export type ToplistHeadingLevel = 'h2' | 'h3';
+
+// Toplist data for article generation (imported inline to avoid circular deps)
+export interface ToplistDataForGeneration {
+  toplistId: string;
+  name: string;
+  columns: {
+    id: string;
+    label: string;
+    type: 'text' | 'number' | 'currency' | 'rating' | 'list' | 'badge';
+    brandAttribute: string;
+  }[];
+  entries: {
+    entryId: string;
+    brandId: string;
+    rank: number;
+    attributeOverrides?: Record<string, unknown>;
+    brand?: {
+      brandId: string;
+      name: string;
+      slug?: string;
+      logoUrl?: string;
+      websiteUrl?: string;
+      attributes: Record<string, unknown>;
+      createdAt: string;
+      updatedAt?: string;
+    };
+  }[];
+  includeInArticle?: boolean;
+  heading?: string;
+  headingLevel?: ToplistHeadingLevel;
+}
+
 // Input version for API requests (all fields optional, merged with defaults)
 export interface GenerationOptionsInput {
   language?: Language;
@@ -240,6 +274,8 @@ export interface GenerationOptionsInput {
   includeKeywords?: string[];       // Additional keywords to include in the outline
   site?: string;                    // Website this content belongs to
   projectId?: string;               // Project this article belongs to
+  toplists?: ToplistDataForGeneration[];  // Toplists to include in the article
+  templateId?: string;              // Template to guide outline structure
 }
 
 // Maps for display names

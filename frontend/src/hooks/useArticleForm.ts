@@ -13,6 +13,7 @@ import type {
   OutlineSection,
   FullWorkflowRequest,
 } from '@/types/article';
+import type { ArticleToplist } from '@/types/toplist';
 
 const DEFAULT_FORM_STATE: ArticleFormState = {
   // Details Tab
@@ -20,6 +21,7 @@ const DEFAULT_FORM_STATE: ArticleFormState = {
   articleTitle: '',
   projectId: '',
   includeKeywords: [],
+  selectedTemplateId: undefined,
 
   // Content Tab
   selectedAuthorId: undefined,
@@ -65,6 +67,9 @@ const DEFAULT_FORM_STATE: ArticleFormState = {
     includeCitations: true,
     researchSource: 'internet',
   },
+
+  // Toplist Tab
+  toplists: [],
 };
 
 export function useArticleForm() {
@@ -99,6 +104,10 @@ export function useArticleForm() {
       ...prev,
       includeKeywords: prev.includeKeywords.filter((_, i) => i !== index),
     }));
+  }, []);
+
+  const setSelectedTemplateId = useCallback((selectedTemplateId: string | undefined) => {
+    setFormState((prev) => ({ ...prev, selectedTemplateId }));
   }, []);
 
   // Content Tab
@@ -195,6 +204,36 @@ export function useArticleForm() {
     }));
   }, []);
 
+  // Toplist Tab
+  const setToplists = useCallback((toplists: ArticleToplist[]) => {
+    setFormState((prev) => ({ ...prev, toplists }));
+  }, []);
+
+  const addToplist = useCallback((toplist: ArticleToplist) => {
+    setFormState((prev) => ({
+      ...prev,
+      toplists: [...(prev.toplists || []), { ...toplist, position: (prev.toplists || []).length }],
+    }));
+  }, []);
+
+  const updateToplist = useCallback((toplist: ArticleToplist) => {
+    setFormState((prev) => ({
+      ...prev,
+      toplists: (prev.toplists || []).map((t) =>
+        t.toplistId === toplist.toplistId ? toplist : t
+      ),
+    }));
+  }, []);
+
+  const removeToplist = useCallback((toplistId: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      toplists: (prev.toplists || [])
+        .filter((t) => t.toplistId !== toplistId)
+        .map((t, i) => ({ ...t, position: i })),
+    }));
+  }, []);
+
   // Reset form
   const resetForm = useCallback(() => {
     setFormState(DEFAULT_FORM_STATE);
@@ -202,6 +241,9 @@ export function useArticleForm() {
 
   // Build API request from form state
   const buildRequest = useCallback((): FullWorkflowRequest => {
+    // Filter toplists that are marked for inclusion
+    const includedToplists = (formState.toplists || []).filter((t) => t.includeInArticle);
+
     return {
       keyword: formState.focusKeyword,
       geo: formState.targetCountry,
@@ -220,6 +262,8 @@ export function useArticleForm() {
         title: formState.articleTitle || undefined,
         includeKeywords: formState.includeKeywords.length > 0 ? formState.includeKeywords : undefined,
         projectId: formState.projectId || undefined,
+        toplists: includedToplists.length > 0 ? includedToplists : undefined,
+        templateId: formState.selectedTemplateId || undefined,
       },
     };
   }, [formState]);
@@ -235,6 +279,7 @@ export function useArticleForm() {
     setIncludeKeywords,
     addKeyword,
     removeKeyword,
+    setSelectedTemplateId,
 
     // Content
     setSelectedAuthorId,
@@ -262,6 +307,12 @@ export function useArticleForm() {
     // Knowledge
     setDeepResearch,
     toggleDeepResearch,
+
+    // Toplist
+    setToplists,
+    addToplist,
+    updateToplist,
+    removeToplist,
 
     // Actions
     resetForm,

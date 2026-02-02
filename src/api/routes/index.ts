@@ -7,3 +7,5 @@ export * from './keywords.routes';
 export * from './components.routes';
 export * from './authors.routes';
 export * from './project.routes';
+export * from './toplist.routes';
+export * from './template.routes';

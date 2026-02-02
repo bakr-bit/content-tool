@@ -9,6 +9,7 @@ import {
 import { getAuthorById } from '../author';
 import { mergeWithDefaults } from '../../config/defaults';
 import { getComponentPrompt } from '../../config/component-prompts';
+import { templateService } from '../template';
 
 function resolveOptions(options?: GenerationOptionsInput): GenerationOptions {
   if (options?.authorProfileId) {
@@ -188,6 +189,11 @@ export function buildSectionWriterSystemPrompt(
     authorSite = profile?.site;
   }
 
+  // Get template-specific additional system prompt if available
+  const templateAdditionalPrompt = options?.templateId
+    ? templateService.getAdditionalSystemPrompt(options.templateId)
+    : undefined;
+
   let citationInstructions = '';
   if (includeCitations) {
     citationInstructions = `
@@ -201,7 +207,13 @@ CITATION REQUIREMENTS:
 `;
   }
 
+  // Build template-specific instructions if available
+  const templateInstructions = templateAdditionalPrompt
+    ? `\n${templateAdditionalPrompt}\n`
+    : '';
+
   return `You are an expert content writer who writes like a native ${language} speaker. Write individual article sections based on the provided outline.
+${templateInstructions}
 
 LANGUAGE: Write in ${language}. The text must sound like it was written by someone FROM this market.
 

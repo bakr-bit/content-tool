@@ -295,6 +295,7 @@ export interface ArticleFormState {
   articleTitle: string;
   projectId: string;
   includeKeywords: string[];
+  selectedTemplateId?: string;  // Selected article template ID
 
   // Content Tab
   selectedAuthorId?: string;  // Selected author profile ID
@@ -345,6 +346,7 @@ export interface FullWorkflowRequest {
     site?: string;
     projectId?: string;
     toplists?: import('@/types/toplist').ArticleToplist[];
+    templateId?: string;  // Template to guide outline structure
   };
 }
 

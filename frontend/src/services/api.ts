@@ -10,6 +10,7 @@ import type {
   ListArticlesResult,
 } from '@/types/article';
 import type { ProjectWithCount } from '@/types/project';
+import type { ArticleTemplate } from '@/types/template';
 
 const API_BASE = '/api/v1';
 
@@ -346,6 +347,10 @@ export async function getProjects(): Promise<ApiResponse<ProjectsResponse>> {
 export async function createProject(data: {
   name: string;
   description?: string;
+  geo?: string;
+  language?: string;
+  authors?: string[];
+  defaultToplistIds?: string[];
 }): Promise<ApiResponse<ProjectWithCount>> {
   return fetchApi<ProjectWithCount>('/project', {
     method: 'POST',
@@ -359,7 +364,14 @@ export async function getProject(id: string): Promise<ApiResponse<ProjectWithCou
 
 export async function updateProject(
   id: string,
-  data: { name?: string; description?: string }
+  data: {
+    name?: string;
+    description?: string;
+    geo?: string | null;
+    language?: string | null;
+    authors?: string[] | null;
+    defaultToplistIds?: string[] | null;
+  }
 ): Promise<ApiResponse<ProjectWithCount>> {
   return fetchApi<ProjectWithCount>(`/project/${id}`, {
     method: 'PUT',
@@ -371,4 +383,14 @@ export async function deleteProject(id: string): Promise<ApiResponse<{ message: 
   return fetchApi<{ message: string }>(`/project/${id}`, {
     method: 'DELETE',
   });
+}
+
+// Template endpoints
+export interface TemplatesResponse {
+  templates: ArticleTemplate[];
+  count: number;
+}
+
+export async function getTemplates(): Promise<ApiResponse<TemplatesResponse>> {
+  return fetchApi<TemplatesResponse>('/templates');
 }

@@ -6,9 +6,11 @@ import {
   LANGUAGE_NAMES,
   ARTICLE_SIZE_CONFIG,
   INTRO_CONCLUSION_LENGTHS,
+  Language,
 } from '../../types/generation-options';
 import { getAuthorById } from '../author';
 import { mergeWithDefaults } from '../../config/defaults';
+import { templateService } from '../template';
 
 function resolveOptions(options?: GenerationOptionsInput): GenerationOptions {
   // If author profile is specified, use it as base
@@ -120,7 +122,13 @@ export function buildOutlineSystemPrompt(options?: GenerationOptionsInput): stri
   const resolved = resolveOptions(options);
   const language = LANGUAGE_NAMES[resolved.language] || 'English (US)';
   const isEnglish = resolved.language.startsWith('en');
-  const articleSizeInstructions = buildArticleSizeInstructions(resolved.articleSize);
+
+  // Check if a template is specified
+  const template = options?.templateId ? templateService.getTemplate(options.templateId) : undefined;
+
+  // Use template article size if template is specified, otherwise use provided/default
+  const effectiveArticleSize = template ? template.articleSize : resolved.articleSize;
+  const articleSizeInstructions = buildArticleSizeInstructions(effectiveArticleSize);
 
   // Get author's site for POV description when using first-person-plural
   let authorSite: string | undefined;
@@ -128,6 +136,11 @@ export function buildOutlineSystemPrompt(options?: GenerationOptionsInput): stri
     const profile = getAuthorById(options.authorProfileId);
     authorSite = profile?.site;
   }
+
+  // Build template guidance section if template is specified
+  const templateGuidance = template
+    ? templateService.buildTemplatePromptSection(template, resolved.language)
+    : '';
 
   return `You are an expert SEO content strategist who writes like a native ${language} speaker. Create article outlines that sound natural and local.
 
@@ -152,7 +165,7 @@ FORMALITY: ${resolved.formality === 'formal' ? 'Use formal language and complete
 
 HEADING STYLE: ${getHeadingCaseInstruction(resolved.headingCase, isEnglish)}
 ${!isEnglish ? `IMPORTANT: For ${language}, do NOT use English-style Title Case. Use sentence case (capitalize only the first word and proper nouns).` : ''}
-
+${templateGuidance ? templateGuidance : `
 MANDATORY ARTICLE STRUCTURE - Follow this exact order:
 
 1. INTRODUCTION (Required, always FIRST)
@@ -190,6 +203,7 @@ ${resolved.structure.faqs ? `
    - This MUST be the final section in your output
 
 ${resolved.structure.tableOfContents ? '- Structure the outline to support a table of contents' : ''}
+`}
 
 CONTENT STRUCTURE GUIDELINES:
 - Create outlines that are logical, comprehensive, and SEO-optimized
