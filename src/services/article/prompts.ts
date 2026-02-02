@@ -490,43 +490,74 @@ EXAMPLE OF WHAT TO AVOID:
   if (options?.toplists && options.toplists.length > 0) {
     const includedToplists = options.toplists.filter(t => t.includeInArticle);
     if (includedToplists.length > 0) {
-      const brandList = includedToplists.flatMap(toplist =>
+      // Build detailed brand profiles with ALL available attributes
+      const brandProfiles = includedToplists.flatMap(toplist =>
         toplist.entries.map(entry => {
           const brand = entry.brand;
           if (!brand) return null;
 
-          // Extract key attributes for the LLM to reference
           const attrs = brand.attributes || {};
-          const attrList = [
-            attrs.license ? `License: ${attrs.license}` : null,
-            attrs.welcomeOffer ? `Welcome Offer: ${attrs.welcomeOffer}` : null,
-            attrs.withdrawalTime ? `Withdrawal Time: ${attrs.withdrawalTime}` : null,
-            attrs.bestFor ? `Best For: ${attrs.bestFor}` : null,
-          ].filter(Boolean).join(', ');
+          const profile: string[] = [`### ${entry.rank}. ${brand.name}`];
 
-          return `${entry.rank}. **${brand.name}**${attrList ? ` - ${attrList}` : ''}`;
+          // Add all known attributes
+          if (attrs.license) profile.push(`- License: ${attrs.license}`);
+          if (attrs.welcomeOffer) profile.push(`- Welcome Offer: ${attrs.welcomeOffer}`);
+          if (attrs.wageringRequirement) profile.push(`- Wagering Requirement: ${attrs.wageringRequirement}x`);
+          if (attrs.withdrawalTime) profile.push(`- Withdrawal Time: ${attrs.withdrawalTime}`);
+          if (attrs.paymentMethods && Array.isArray(attrs.paymentMethods)) {
+            profile.push(`- Payment Methods: ${(attrs.paymentMethods as string[]).join(', ')}`);
+          }
+          if (attrs.highlights && Array.isArray(attrs.highlights)) {
+            profile.push(`- Highlights: ${(attrs.highlights as string[]).join(', ')}`);
+          }
+          if (attrs.bestFor) profile.push(`- Best For: ${attrs.bestFor}`);
+          if (attrs.overallScore) profile.push(`- Score: ${attrs.overallScore}/10`);
+          if (attrs.gameCount) profile.push(`- Game Count: ${attrs.gameCount}`);
+          if (attrs.providers && Array.isArray(attrs.providers)) {
+            profile.push(`- Game Providers: ${(attrs.providers as string[]).join(', ')}`);
+          }
+
+          // Add any other attributes not explicitly handled
+          const handledKeys = ['license', 'welcomeOffer', 'wageringRequirement', 'withdrawalTime',
+                              'paymentMethods', 'highlights', 'bestFor', 'overallScore', 'gameCount', 'providers'];
+          Object.entries(attrs).forEach(([key, value]) => {
+            if (!handledKeys.includes(key) && value !== null && value !== undefined) {
+              profile.push(`- ${key}: ${Array.isArray(value) ? value.join(', ') : value}`);
+            }
+          });
+
+          return profile.join('\n');
         }).filter(Boolean)
       );
 
-      if (brandList.length > 0) {
-        const brandNames = includedToplists.flatMap(t => t.entries.map(e => e.brand?.name)).filter(Boolean);
+      const brandNames = includedToplists.flatMap(t => t.entries.map(e => e.brand?.name)).filter(Boolean);
+
+      if (brandProfiles.length > 0) {
         toplistBrandContext = `
-## BRANDS IN THE TOPLIST - STRICT CONSTRAINT:
-${brandList.join('\n')}
+## BRAND DATA - USE ONLY THESE FACTS:
 
-ABSOLUTE RULES - VIOLATION WILL RUIN THE ARTICLE:
-1. You may ONLY mention these ${brandNames.length} brands: ${brandNames.join(', ')}
-2. Do NOT invent, fabricate, or make up any other brand/casino names
-3. Do NOT use placeholder names like "[Casino Namn 1]", "Casino X", "Brand A", etc.
-4. If a table or comparison needs more entries than we have brands (${brandNames.length}), make the table SMALLER - only include our actual brands
-5. Every brand name in your output MUST be one of: ${brandNames.join(', ')}
-6. If you cannot write a section without inventing brands, write it as prose about our ${brandNames.length} brands only
+${brandProfiles.join('\n\n')}
 
-EXAMPLE OF WHAT TO AVOID:
-❌ BAD: A comparison table with "Lucky Nugget, Instant Casino, Casino X, SuperSlots" - Casino X and SuperSlots don't exist!
-✓ GOOD: A comparison table with ONLY "Lucky Nugget, Instant Casino" - these are the only brands we have
+## STRICT RULES FOR BRAND CONTENT:
 
-The user has specifically chosen ${brandNames.length} brands. Do not add fictional competitors.
+**RULE 1: ONLY THESE BRANDS EXIST**
+You may ONLY mention these ${brandNames.length} brands: ${brandNames.join(', ')}
+- Do NOT invent other brands (no "Casino X", "SuperSlots", "CryptoBet", etc.)
+- Do NOT use placeholders like "[Casino Namn 1]"
+- If a table needs more entries, make it SMALLER with only our ${brandNames.length} brands
+
+**RULE 2: ONLY USE PROVIDED FACTS**
+- ONLY state facts that are listed in the brand data above
+- If an attribute is NOT listed above, do NOT invent it
+- Do NOT fabricate: game counts, slot numbers, provider names, payment methods, withdrawal times
+- If you don't have data for something, either skip it or write generically without specific numbers
+
+**RULE 3: WHAT TO DO WHEN DATA IS MISSING**
+❌ BAD: "Lucky Nugget offers 500+ slots from NetEnt and Microgaming" (fabricated if not in data)
+✓ GOOD: "Lucky Nugget offers a wide selection of games" (generic when data missing)
+✓ BETTER: Only mention specifics that ARE in the brand data above
+
+The brand data above is the ONLY source of truth. Anything not listed is unknown.
 `;
       }
     }
