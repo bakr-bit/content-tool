@@ -187,6 +187,7 @@ export interface OutlineSection {
   description: string;
   suggestedWordCount?: number;
   componentType?: ComponentType;
+  toplistId?: string;             // Reference to a toplist (renders as table, not LLM-generated)
   subsections?: OutlineSection[];
 }
 
@@ -318,6 +319,9 @@ export interface ArticleFormState {
 
   // Knowledge Tab
   deepResearch: DeepResearchOptions;
+
+  // Toplist Tab
+  toplists?: import('@/types/toplist').ArticleToplist[];
 }
 
 // API Request Types
@@ -340,6 +344,7 @@ export interface FullWorkflowRequest {
     includeKeywords?: string[];
     site?: string;
     projectId?: string;
+    toplists?: import('@/types/toplist').ArticleToplist[];
   };
 }
 

@@ -58,6 +58,7 @@ export interface OutlineSection {
   description: string;
   suggestedWordCount?: number;
   componentType?: ComponentType;  // Component type for specialized formatting
+  toplistId?: string;             // Reference to a toplist (renders as table, not LLM-generated)
   subsections?: OutlineSection[];
 }
 
@@ -115,6 +116,10 @@ export interface Project {
   projectId: string;
   name: string;
   description?: string;
+  geo?: string;
+  language?: string;
+  authors?: string[];
+  defaultToplistIds?: string[];
   createdAt: string;
   updatedAt?: string;
 }

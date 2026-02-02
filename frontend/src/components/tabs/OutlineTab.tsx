@@ -81,32 +81,6 @@ interface OutlineTabProps {
 type GenerationStatus = 'idle' | 'researching' | 'generating' | 'complete' | 'error';
 type ViewMode = 'preview' | 'edit' | 'structured';
 
-// Toplist insertion indicator component
-interface ToplistIndicatorProps {
-  toplists: { name: string; heading?: string; headingLevel?: string; entries?: unknown[] }[];
-}
-
-function ToplistIndicator({ toplists }: ToplistIndicatorProps) {
-  if (toplists.length === 0) return null;
-
-  return (
-    <div className="border-2 border-dashed border-primary/40 rounded-lg p-3 bg-primary/5 my-2">
-      <div className="flex items-center gap-2 text-sm text-primary">
-        <Table2 className="h-4 w-4" />
-        <span className="font-medium">Toplist{toplists.length > 1 ? 's' : ''} will be inserted here</span>
-      </div>
-      <div className="mt-2 space-y-1">
-        {toplists.map((toplist, idx) => (
-          <div key={idx} className="text-xs text-muted-foreground pl-6">
-            • {toplist.headingLevel === 'h3' ? '###' : '##'} {toplist.heading || toplist.name}
-            {toplist.entries && <span className="text-muted-foreground/70"> ({toplist.entries.length} items)</span>}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // Default descriptions for each component type (used when adding or changing components)
 const COMPONENT_DEFAULT_DESCRIPTIONS: Record<string, string> = {
   prose: 'Write engaging paragraph content that covers this topic thoroughly. Use short paragraphs, include relevant examples, and maintain natural flow.',
@@ -381,48 +355,63 @@ function SectionCard({
 
             {/* Component type and level row */}
             <div className="flex items-center gap-2 flex-wrap">
-              <Select
-                value={section.componentType || 'prose'}
-                onValueChange={(value) => handleComponentChange(value as ComponentType)}
-              >
-                <SelectTrigger className="w-[180px] h-8 text-xs">
-                  <SelectValue placeholder="Component type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {components.map((comp) => (
-                    <SelectItem key={comp.id} value={comp.id} className="text-xs">
-                      <div className="flex flex-col">
-                        <span>{comp.name}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {/* Show toplist indicator for toplist sections */}
+              {section.toplistId ? (
+                <Badge className="text-xs bg-primary/10 text-primary border-primary/20 flex items-center gap-1">
+                  <Table2 className="h-3 w-3" />
+                  Toplist Section
+                </Badge>
+              ) : (
+                <Select
+                  value={section.componentType || 'prose'}
+                  onValueChange={(value) => handleComponentChange(value as ComponentType)}
+                >
+                  <SelectTrigger className="w-[180px] h-8 text-xs">
+                    <SelectValue placeholder="Component type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {components.map((comp) => (
+                      <SelectItem key={comp.id} value={comp.id} className="text-xs">
+                        <div className="flex flex-col">
+                          <span>{comp.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
 
               <Badge variant="outline" className="text-xs">
                 H{section.level}
               </Badge>
 
-              {section.suggestedWordCount && (
+              {section.suggestedWordCount && !section.toplistId && (
                 <Badge variant="secondary" className="text-xs">
                   ~{section.suggestedWordCount} words
                 </Badge>
               )}
 
-              {section.componentType && section.componentType !== 'prose' && (
+              {section.componentType && section.componentType !== 'prose' && !section.toplistId && (
                 <Badge className="text-xs bg-blue-500/10 text-blue-500 border-blue-500/20">
                   {COMPONENT_TYPE_NAMES[section.componentType]}
                 </Badge>
               )}
             </div>
 
-            {/* Description */}
-            <Textarea
-              value={section.description || ''}
-              onChange={(e) => onUpdate({ description: e.target.value })}
-              placeholder="Section description (guides the AI writer)"
-              className="text-xs min-h-[60px] resize-none"
-            />
+            {/* Description - hidden for toplist sections */}
+            {!section.toplistId && (
+              <Textarea
+                value={section.description || ''}
+                onChange={(e) => onUpdate({ description: e.target.value })}
+                placeholder="Section description (guides the AI writer)"
+                className="text-xs min-h-[60px] resize-none"
+              />
+            )}
+            {section.toplistId && (
+              <p className="text-xs text-muted-foreground italic">
+                This section will render the toplist table. Drag to reposition.
+              </p>
+            )}
           </div>
 
           {/* Actions */}
@@ -677,6 +666,35 @@ export function OutlineTab({ form }: OutlineTabProps) {
     updateSection(sectionIndex, { subsections: newSubsections });
   };
 
+  // Add a toplist section at a specific position
+  const addToplistSection = (toplistId: string, toplistName: string, afterIndex?: number) => {
+    if (!outline) return;
+
+    const newSection: OutlineSection = {
+      id: `toplist-section-${Date.now()}`,
+      heading: toplistName,
+      level: 2,
+      description: 'This section renders the toplist table.',
+      componentType: 'toplist',
+      toplistId: toplistId,
+      suggestedWordCount: 0, // Toplists don't have word count
+    };
+
+    const newSections = [...outline.sections];
+    if (afterIndex !== undefined) {
+      newSections.splice(afterIndex + 1, 0, newSection);
+    } else {
+      // Insert after first section by default (common placement)
+      newSections.splice(1, 0, newSection);
+    }
+
+    const newOutline = { ...outline, sections: newSections };
+    form.setOutline(newOutline);
+
+    const outlineMd = outlineToMarkdown(newOutline, structure, language, articleTitle);
+    setOutlineText(outlineMd);
+  };
+
   // Drag and drop handlers for reordering sections
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -848,8 +866,32 @@ export function OutlineTab({ form }: OutlineTabProps) {
 
         {viewMode === 'structured' && outline ? (
           <div className="min-h-[350px] space-y-3">
-            {/* Add section button at top */}
-            <div className="flex justify-end">
+            {/* Add section buttons at top */}
+            <div className="flex justify-end gap-2">
+              {/* Insert Toplist dropdown */}
+              {includedToplists.length > 0 && (
+                <Select
+                  value=""
+                  onValueChange={(toplistId) => {
+                    const toplist = includedToplists.find(t => t.toplistId === toplistId);
+                    if (toplist) {
+                      addToplistSection(toplistId, toplist.heading || toplist.name);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="h-7 w-[180px] text-xs">
+                    <Table2 className="h-3.5 w-3.5 mr-1" />
+                    <span>Insert Toplist</span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {includedToplists.map((toplist) => (
+                      <SelectItem key={toplist.toplistId} value={toplist.toplistId} className="text-xs">
+                        {toplist.heading || toplist.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               <Button
                 variant="outline"
                 size="sm"
@@ -863,24 +905,19 @@ export function OutlineTab({ form }: OutlineTabProps) {
 
             {/* Section cards */}
             {outline.sections.map((section, idx) => (
-              <div key={section.id || idx}>
-                <SectionCard
-                  section={section}
-                  index={idx}
-                  components={components}
-                  isDragging={draggedIndex === idx}
-                  onDragStart={handleDragStart}
-                  onDragOver={handleDragOver}
-                  onDragEnd={handleDragEnd}
-                  onUpdate={(updates) => updateSection(idx, updates)}
-                  onDelete={() => deleteSection(idx)}
-                  onAddSubsection={() => addSubsection(idx)}
-                />
-                {/* Show toplist indicator after first section */}
-                {idx === 0 && includedToplists.length > 0 && (
-                  <ToplistIndicator toplists={includedToplists} />
-                )}
-              </div>
+              <SectionCard
+                key={section.id || idx}
+                section={section}
+                index={idx}
+                components={components}
+                isDragging={draggedIndex === idx}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+                onUpdate={(updates) => updateSection(idx, updates)}
+                onDelete={() => deleteSection(idx)}
+                onAddSubsection={() => addSubsection(idx)}
+              />
             ))}
 
             {outline.sections.length === 0 && (
@@ -911,10 +948,6 @@ Click "Generate Outline" to research competitors and create an optimized structu
           />
         ) : (
           <div className="min-h-[350px] rounded-md border bg-background p-4 overflow-auto prose prose-sm prose-invert max-w-none">
-            {/* Show toplist indicator at top of preview if toplists are included */}
-            {includedToplists.length > 0 && (
-              <ToplistIndicator toplists={includedToplists} />
-            )}
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
