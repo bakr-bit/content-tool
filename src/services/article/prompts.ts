@@ -509,14 +509,24 @@ EXAMPLE OF WHAT TO AVOID:
       );
 
       if (brandList.length > 0) {
+        const brandNames = includedToplists.flatMap(t => t.entries.map(e => e.brand?.name)).filter(Boolean);
         toplistBrandContext = `
-## BRANDS IN THE TOPLIST (USE THESE EXACT NAMES):
+## BRANDS IN THE TOPLIST - STRICT CONSTRAINT:
 ${brandList.join('\n')}
 
-CRITICAL: When referring to brands in this article, you MUST use the exact brand names listed above.
-- Do NOT use placeholders like "[Casino Namn 1]" or "[Brand Name]"
-- Do NOT invent brand names - only mention the brands listed above
-- Use the brand's actual name (e.g., "${includedToplists[0]?.entries[0]?.brand?.name || 'BrandName'}") not generic placeholders
+ABSOLUTE RULES - VIOLATION WILL RUIN THE ARTICLE:
+1. You may ONLY mention these ${brandNames.length} brands: ${brandNames.join(', ')}
+2. Do NOT invent, fabricate, or make up any other brand/casino names
+3. Do NOT use placeholder names like "[Casino Namn 1]", "Casino X", "Brand A", etc.
+4. If a table or comparison needs more entries than we have brands (${brandNames.length}), make the table SMALLER - only include our actual brands
+5. Every brand name in your output MUST be one of: ${brandNames.join(', ')}
+6. If you cannot write a section without inventing brands, write it as prose about our ${brandNames.length} brands only
+
+EXAMPLE OF WHAT TO AVOID:
+❌ BAD: A comparison table with "Lucky Nugget, Instant Casino, Casino X, SuperSlots" - Casino X and SuperSlots don't exist!
+✓ GOOD: A comparison table with ONLY "Lucky Nugget, Instant Casino" - these are the only brands we have
+
+The user has specifically chosen ${brandNames.length} brands. Do not add fictional competitors.
 `;
       }
     }
