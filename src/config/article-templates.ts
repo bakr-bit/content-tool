@@ -1,26 +1,26 @@
 import { ArticleTemplate } from '../types/article-template';
 
 /**
- * PARASITE Template - Comprehensive Affiliate Article (7-8k words)
+ * PARASITE Template - Comprehensive Affiliate Article (6-7k words)
  *
  * Designed for high-converting affiliate content with:
  * - Strong EEAT signals (methodology, credentials)
  * - Multiple ranking tables for different intents
  * - Individual reviews for each ranked item
  * - Legal/compliance sections for trust
- * - Comprehensive FAQ coverage
+ * - FAQ and glossary for long-tail coverage
  */
 export const PARASITE_TEMPLATE: ArticleTemplate = {
   id: 'parasite',
-  name: 'Parasite (7-8k Affiliate)',
-  description: 'Comprehensive affiliate article with main ranking, category rankings, individual reviews, and extensive FAQs. Ideal for competitive keywords.',
+  name: 'Parasite (6-7k Affiliate)',
+  description: 'Comprehensive affiliate article with main ranking, category rankings, individual reviews, and FAQ. Ideal for competitive keywords.',
   icon: 'Bug',
   category: 'affiliate',
   articleSize: {
     preset: 'custom',
-    targetWordCount: 7500,
-    minHeadings: 25,
-    maxHeadings: 30,
+    targetWordCount: 7000,
+    minHeadings: 24,
+    maxHeadings: 28,
     subsectionsPerSection: 2,
     wordsPerSection: 350,
     introductionLength: 'standard',
@@ -64,7 +64,7 @@ export const PARASITE_TEMPLATE: ArticleTemplate = {
       headingGuidance: 'A heading for the quick summary/TLDR section (e.g., "Quick Verdict" or "Top 3 Picks at a Glance")',
       level: 2,
       componentType: 'prose',
-      purpose: 'Top 3 picks summary for skimmers who want fast answers. Include key differentiators for each pick.',
+      purpose: 'Top picks summary for skimmers who want fast answers. Include key differentiators for each pick. DEDUP: Keep it brief (2-3 sentences per pick). Do NOT explain methodology or go into detail - that comes later. Do NOT repeat in the conclusion.',
       suggestedWordCount: 150,
     },
     // 3. Methodology
@@ -103,7 +103,7 @@ export const PARASITE_TEMPLATE: ArticleTemplate = {
           headingGuidance: 'A heading for the fastest/quickest option category (e.g., "Fastest Payouts" or "Best for Quick Withdrawals")',
           level: 3,
           componentType: 'category_ranking',
-          purpose: 'Top 3-5 for users who prioritize speed. Include specific timeframes.',
+          purpose: 'Rank by WITHDRAWAL SPEED only. Table columns: Name, Fastest Method, Time. DEDUP: Do NOT mention bonuses or crypto here - focus purely on speed.',
           suggestedWordCount: 150,
         },
         {
@@ -112,7 +112,7 @@ export const PARASITE_TEMPLATE: ArticleTemplate = {
           headingGuidance: 'A heading for crypto-friendly options (e.g., "Best for Crypto Users" or "Top Bitcoin Options")',
           level: 3,
           componentType: 'category_ranking',
-          purpose: 'Top 3-5 for crypto users. Include supported coins and any crypto-specific bonuses.',
+          purpose: 'Rank by CRYPTO SUPPORT only. Table columns: Name, Supported Coins, Crypto Bonus (if any). DEDUP: Do NOT mention withdrawal speed or welcome bonuses here - focus purely on crypto features.',
           suggestedWordCount: 150,
         },
         {
@@ -121,7 +121,7 @@ export const PARASITE_TEMPLATE: ArticleTemplate = {
           headingGuidance: 'A heading for best welcome offers (e.g., "Best Welcome Bonuses" or "Biggest Sign-Up Offers")',
           level: 3,
           componentType: 'category_ranking',
-          purpose: 'Top 3-5 for bonus hunters. Include bonus amounts and wagering requirements.',
+          purpose: 'Rank by BONUS VALUE only. Table columns: Name, Welcome Bonus, Wagering Requirement. DEDUP: Do NOT mention withdrawal speed or crypto here - focus purely on bonus generosity.',
           suggestedWordCount: 150,
         },
       ],
@@ -162,10 +162,10 @@ export const PARASITE_TEMPLATE: ArticleTemplate = {
     {
       id: 'legal-status',
       sectionType: 'legal_status',
-      headingGuidance: 'A heading about legal/regulatory aspects (e.g., "Legal Status" or "Regulation & Player Protection")',
+      headingGuidance: 'A heading about legal/regulatory aspects (e.g., "Legal Status" or "Licenses & Regulation")',
       level: 2,
       componentType: 'legal_rg',
-      purpose: 'Legal status in target jurisdiction, player protection measures, responsible gambling resources. Include helpline numbers.',
+      purpose: 'Focus on LEGAL aspects: Which licenses exist (MGA, Curacao, etc.), what each license means for player protection, how disputes are handled, and official helpline numbers. DEDUP: Do NOT list responsible gambling tools (insättningsgränser, förlustgränser, självexkludering) - those are covered in the Deep Dive section. Do NOT repeat tax info (covered in Tax section).',
       suggestedWordCount: 400,
     },
     // 19. Comparison Table
@@ -175,7 +175,7 @@ export const PARASITE_TEMPLATE: ArticleTemplate = {
       headingGuidance: 'A heading comparing two main options/approaches (e.g., "Regulated vs Offshore" or "Type A vs Type B")',
       level: 2,
       componentType: 'comparison',
-      purpose: 'Two-column comparison table (e.g., regulated vs non-regulated). Help readers understand trade-offs.',
+      purpose: 'Two-column comparison TABLE focusing on practical differences: bonuses, game selection, withdrawal speed, payment methods, betting limits. DEDUP: Do NOT explain what licenses mean (covered in Legal section). Do NOT discuss taxes (covered in Tax section). Keep it factual and table-focused.',
       suggestedWordCount: 350,
     },
     // 20. Tax Considerations
@@ -185,7 +185,7 @@ export const PARASITE_TEMPLATE: ArticleTemplate = {
       headingGuidance: 'A heading about tax implications (e.g., "Tax Considerations" or "Do You Need to Pay Tax?")',
       level: 2,
       componentType: 'prose',
-      purpose: 'Tax considerations for the target market with appropriate disclaimers. Point to official resources.',
+      purpose: 'ONLY cover tax rules: Which winnings are taxable vs tax-free based on license jurisdiction, how to declare winnings, links to official tax authority. DEDUP: Do NOT explain what MGA or Curacao licenses are (covered in Legal section). Just state tax implications per license type.',
       suggestedWordCount: 200,
     },
     // 21. How to Choose
@@ -215,7 +215,7 @@ export const PARASITE_TEMPLATE: ArticleTemplate = {
       headingGuidance: 'A heading for frequently asked questions (e.g., "FAQ" or "Common Questions")',
       level: 2,
       componentType: 'faq',
-      purpose: 'Common questions (6-8) covering the most searched queries. Target featured snippets.',
+      purpose: '6-8 unique questions NOT already answered in the article. Focus on edge cases, specific scenarios, and long-tail queries. DEDUP: Do NOT ask questions whose answers are already in dedicated sections (e.g., "What licenses exist?" is in Legal, "How do bonuses work?" is in Bonus Terms). Each Q&A should provide NEW information.',
       suggestedWordCount: 400,
     },
     // 24. Conclusion
@@ -225,37 +225,27 @@ export const PARASITE_TEMPLATE: ArticleTemplate = {
       headingGuidance: 'A concluding heading with a recommendation focus (e.g., "Final Verdict" or "Our Recommendation")',
       level: 2,
       componentType: 'prose',
-      purpose: 'Summary of key recommendations with clear next steps. Strong CTA for top pick.',
+      purpose: 'Wrap up for readers who read the whole article. State ONE clear top recommendation with a strong CTA. DEDUP: Do NOT re-list all picks (that was in Quick Verdict). Do NOT repeat methodology or criteria. Just give the final verdict and next action.',
       suggestedWordCount: 200,
     },
     // 25. Deep Dive
     {
       id: 'deep-dive',
       sectionType: 'deep_dive',
-      headingGuidance: 'A heading for additional in-depth coverage (e.g., "Deep Dive" or "Advanced Topics")',
+      headingGuidance: 'A heading about responsible gambling and player safety (e.g., "Responsible Gambling" or "Playing Safely")',
       level: 2,
       componentType: 'prose',
-      purpose: 'Additional in-depth topics that demonstrate expertise. Cover edge cases and advanced considerations.',
+      purpose: 'Focus on RESPONSIBLE GAMBLING: Available self-control tools (deposit limits, loss limits, session limits, self-exclusion), warning signs of problem gambling, how to set personal limits, and resources for getting help. DEDUP: Do NOT explain licenses or legal status (covered in Legal section). Do NOT list helpline numbers (covered in Legal section). Focus on practical tools and self-help strategies.',
       suggestedWordCount: 500,
     },
-    // 26. Extended FAQ
-    {
-      id: 'extended-faq',
-      sectionType: 'extended_faq',
-      headingGuidance: 'A heading for additional questions (e.g., "More Questions" or "Additional FAQ")',
-      level: 2,
-      componentType: 'faq',
-      purpose: 'Additional 12 detailed questions covering long-tail queries. Target additional featured snippets.',
-      suggestedWordCount: 600,
-    },
-    // 27. Glossary
+    // 26. Glossary
     {
       id: 'glossary',
       sectionType: 'glossary',
       headingGuidance: 'A heading for terminology definitions (e.g., "Glossary" or "Key Terms Explained")',
       level: 2,
       componentType: 'glossary',
-      purpose: 'Key terms and definitions for newcomers. Also helps with topical authority.',
+      purpose: 'Brief 1-2 sentence definitions of 10-15 industry terms. Format: **Term**: Definition. DEDUP: Keep definitions SHORT. Do NOT turn this into explanations - other sections already explain concepts in depth. Just define the jargon.',
       suggestedWordCount: 400,
     },
   ],

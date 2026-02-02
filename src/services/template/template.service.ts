@@ -141,13 +141,24 @@ ${hasToplist ? `
 
     prompt += `
 **Heading Generation Rules:**
-1. Translate headings to ${languageName} - they must sound native, not translated
-2. Include the main keyword naturally in key headings (introduction, main ranking, conclusion)
-3. Use competitor research to inform heading style and terminology for this market
-4. Match the componentType exactly as specified
-5. Target the suggestedWordCount for each section
-6. For repeatable sections (like individual reviews), generate exactly ${reviewCount} instances${hasToplist ? ' (matching the toplist)' : ''}
-7. Use ${CURRENT_YEAR} (not 2024 or 2025) when including a year in headings
+1. **CRITICAL: Match the heading guidance TOPIC** - The heading guidance specifies what the section should be ABOUT. Your generated heading MUST be about the SAME topic. For example:
+   - If guidance says "A heading about responsible gambling", generate a heading about responsible gambling (NOT about licenses)
+   - If guidance says "A heading about payment methods", generate a heading about payments (NOT about bonuses)
+   - The heading topic dictates what the section writer will cover - wrong topic = wrong content
+2. Translate headings to ${languageName} - they must sound native, not translated
+3. Include the main keyword naturally in key headings (introduction, main ranking, conclusion)
+4. Use competitor research to inform heading style and terminology for this market
+5. Match the componentType exactly as specified
+6. Target the suggestedWordCount for each section
+7. For repeatable sections (like individual reviews), generate exactly ${reviewCount} instances${hasToplist ? ' (matching the toplist)' : ''}
+8. Use ${CURRENT_YEAR} (not 2024 or 2025) when including a year in headings
+
+**CRITICAL - Section Description Rules:**
+When generating the "description" field for each section, you MUST:
+1. Look for any ⚠️ CONSTRAINT lines - these are MANDATORY exclusions
+2. Copy the constraint verbatim into the description (e.g., "NOTE: Do NOT cover X in this section")
+3. The description is passed to the content writer - if it doesn't include the constraint, the writer WILL cover forbidden topics
+4. Example: If you see "⚠️ CONSTRAINT: Do NOT list responsible gambling tools", your description MUST end with: "NOTE: Do NOT list responsible gambling tools - covered elsewhere."
 
 **Example Transformation (for Dutch market, keyword "casino zonder cruks"):**
 - Template guidance: "A heading for the main top ${toplistEntryCount || 10} comparison table"
@@ -168,9 +179,16 @@ ${hasToplist ? `
     number: number | string,
     indent: string
   ): string {
+    // Extract DEDUP constraints from purpose
+    const dedupMatch = section.purpose.match(/DEDUP:([^.]+\.)/);
+    const dedupConstraint = dedupMatch ? `\n${indent}   ⚠️ CONSTRAINT: ${dedupMatch[1].trim()}` : '';
+
+    // Clean purpose (remove DEDUP for cleaner display, but keep other content)
+    const cleanPurpose = section.purpose.replace(/DEDUP:[^.]+\./g, '').trim();
+
     return `${indent}${number}. [${section.sectionType}] (H${section.level}, ${section.componentType}, ~${section.suggestedWordCount} words)
-${indent}   Heading guidance: "${section.headingGuidance}"
-${indent}   Purpose: ${section.purpose}
+${indent}   🎯 TOPIC: "${section.headingGuidance}" ← Your heading MUST be about this topic
+${indent}   Purpose: ${cleanPurpose}${dedupConstraint}
 `;
   }
 
@@ -187,6 +205,42 @@ ${indent}   Purpose: ${section.purpose}
    */
   hasTemplate(id: string): boolean {
     return this.getTemplate(id) !== undefined;
+  }
+
+  /**
+   * Get DEDUP constraints for a specific section type from a template
+   * Returns the constraint text if found, or undefined if no constraints
+   */
+  getSectionConstraints(templateId: string, sectionId: string): string | undefined {
+    const template = this.getTemplate(templateId);
+    if (!template) return undefined;
+
+    // Normalize ID for comparison (handle both underscore and hyphen formats)
+    const normalizeId = (id: string) => id.toLowerCase().replace(/[-_]/g, '');
+    const normalizedInput = normalizeId(sectionId);
+
+    // Find section by ID (checking both top-level and subsections)
+    for (const section of template.outlineSkeleton) {
+      // Check if this section matches (by sectionType or id, normalized)
+      if (normalizeId(section.sectionType) === normalizedInput ||
+          normalizeId(section.id) === normalizedInput) {
+        const match = section.purpose.match(/DEDUP:([^.]+\.)/);
+        return match ? match[1].trim() : undefined;
+      }
+
+      // Check subsections
+      if (section.subsections) {
+        for (const sub of section.subsections) {
+          if (normalizeId(sub.sectionType) === normalizedInput ||
+              normalizeId(sub.id) === normalizedInput) {
+            const match = sub.purpose.match(/DEDUP:([^.]+\.)/);
+            return match ? match[1].trim() : undefined;
+          }
+        }
+      }
+    }
+
+    return undefined;
   }
 }
 

@@ -579,7 +579,15 @@ ${siblingContext}
 ## Research Context:
 ${enhancedResearchContext}
 ${componentInstructions}
-IMPORTANT: This section should ONLY cover "${section.heading}". Do NOT repeat information from previous sections OR sibling sections.
+IMPORTANT - DEDUPLICATION RULES:
+1. This section should ONLY cover "${section.heading}"
+2. Do NOT repeat information from previous sections OR sibling sections
+3. If the description says "Do NOT cover X" or "DEDUP: Do NOT X", then you MUST NOT include that content - it belongs in another section
+4. Check the description above carefully for any exclusions before writing
+${options?.templateId ? (() => {
+  const constraints = templateService.getSectionConstraints(options.templateId, section.id);
+  return constraints ? `\n⚠️ TEMPLATE CONSTRAINT FOR THIS SECTION: ${constraints}\nYou MUST follow this constraint - the content it forbids is covered in another section.` : '';
+})() : ''}
 ${section.componentType && section.componentType !== 'prose' ? `\nFORMAT REQUIREMENT: Follow the ${section.componentType} component format instructions above precisely.` : ''}
 Write the content for this section now. Output the section content only, in Markdown format. Do not include the heading.`;
 
