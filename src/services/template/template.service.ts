@@ -8,6 +8,19 @@ import {
 import { getAllTemplates, getTemplateById } from '../../config/article-templates';
 import { LANGUAGE_NAMES, Language } from '../../types/generation-options';
 
+// Current year for template examples and guidance
+const CURRENT_YEAR = new Date().getFullYear();
+
+/**
+ * Options for building template prompt sections
+ */
+export interface TemplatePromptOptions {
+  /** Number of entries in the primary toplist (affects mini_review count) */
+  toplistEntryCount?: number;
+  /** Whether a toplist has been included */
+  hasToplist?: boolean;
+}
+
 /**
  * Template Service - Manages article templates and builds template guidance for outline generation
  */
@@ -48,10 +61,22 @@ class TemplateService {
    * This creates detailed instructions for the LLM to follow the template structure
    * while generating localized, research-informed headings.
    */
-  buildTemplatePromptSection(template: ArticleTemplate, language: Language): string {
+  buildTemplatePromptSection(
+    template: ArticleTemplate,
+    language: Language,
+    options?: TemplatePromptOptions
+  ): string {
     const languageName = LANGUAGE_NAMES[language] || 'English (US)';
     const totalWordCount = calculateTemplateWordCount(template);
     const sectionCount = countTemplateSections(template);
+
+    // Determine dynamic values based on toplist
+    const toplistEntryCount = options?.toplistEntryCount;
+    const hasToplist = options?.hasToplist || (toplistEntryCount !== undefined && toplistEntryCount > 0);
+
+    // Use toplist entry count for review count if available, otherwise template default
+    const reviewCount = toplistEntryCount ??
+      (template.outlineSkeleton.find(s => s.isRepeatable)?.repeatCount || 10);
 
     let prompt = `
 ## TEMPLATE: ${template.name}
@@ -63,7 +88,14 @@ You MUST follow this exact section structure. Generate headings in ${languageNam
 - Total sections: ${sectionCount}
 - Generate headings that are TRANSLATED to ${languageName} and ADAPTED to the specific keyword/topic
 - Do NOT use the guidance text as the actual heading - create natural, localized headings
-
+- Current year is ${CURRENT_YEAR} - use this year in any headings that include a year
+${hasToplist ? `
+**TOPLIST-DRIVEN CONTENT:**
+- A toplist with ${toplistEntryCount} entries has been provided
+- Generate exactly ${reviewCount} individual review sections (one for each brand in the toplist)
+- The main ranking heading should reference "${toplistEntryCount}" not "10" (e.g., "Top ${toplistEntryCount}" not "Top 10")
+- ONLY write about brands that are in the provided toplist - do NOT invent additional brands
+` : ''}
 **Required Sections (in exact order):**
 
 `;
@@ -71,11 +103,28 @@ You MUST follow this exact section structure. Generate headings in ${languageNam
     // Build section list
     let sectionNumber = 1;
     for (const section of template.outlineSkeleton) {
-      prompt += this.formatSectionGuidance(section, sectionNumber, '');
+      // Adjust repeatable section count based on toplist
+      const effectiveRepeatCount = section.isRepeatable && toplistEntryCount
+        ? toplistEntryCount
+        : section.repeatCount;
+
+      // Adjust heading guidance for main_ranking if toplist count is known
+      let adjustedSection = section;
+      if (section.sectionType === 'main_ranking' && toplistEntryCount) {
+        adjustedSection = {
+          ...section,
+          headingGuidance: section.headingGuidance.replace(
+            /top 10/gi,
+            `Top ${toplistEntryCount}`
+          ),
+        };
+      }
+
+      prompt += this.formatSectionGuidance(adjustedSection, sectionNumber, '');
 
       // Handle repeatable sections
-      if (section.isRepeatable && section.repeatCount) {
-        prompt += `   (Repeat this section ${section.repeatCount} times with different items)\n`;
+      if (section.isRepeatable && effectiveRepeatCount) {
+        prompt += `   (Repeat this section ${effectiveRepeatCount} times - one for each item in the toplist)\n`;
       }
 
       // Handle subsections
@@ -97,11 +146,12 @@ You MUST follow this exact section structure. Generate headings in ${languageNam
 3. Use competitor research to inform heading style and terminology for this market
 4. Match the componentType exactly as specified
 5. Target the suggestedWordCount for each section
-6. For repeatable sections (like individual reviews), generate all ${template.outlineSkeleton.find(s => s.isRepeatable)?.repeatCount || 10} instances
+6. For repeatable sections (like individual reviews), generate exactly ${reviewCount} instances${hasToplist ? ' (matching the toplist)' : ''}
+7. Use ${CURRENT_YEAR} (not 2024 or 2025) when including a year in headings
 
 **Example Transformation (for Dutch market, keyword "casino zonder cruks"):**
-- Template guidance: "A heading for the main top 10 comparison table"
-- Generated heading: "Top 10 Casino's Zonder Cruks (2025)"
+- Template guidance: "A heading for the main top ${toplistEntryCount || 10} comparison table"
+- Generated heading: "Top ${toplistEntryCount || 10} Casino's Zonder Cruks (${CURRENT_YEAR})"
 
 - Template guidance: "A heading about payment and banking options"
 - Generated heading: "Betaalmethodes & Uitbetalingen"

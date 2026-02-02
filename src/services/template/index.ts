@@ -1,1 +1,1 @@
-export { templateService } from './template.service';
+export { templateService, type TemplatePromptOptions } from './template.service';

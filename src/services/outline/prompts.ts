@@ -12,6 +12,9 @@ import { getAuthorById } from '../author';
 import { mergeWithDefaults } from '../../config/defaults';
 import { templateService } from '../template';
 
+// Current year for outline examples and guidance
+const CURRENT_YEAR = new Date().getFullYear();
+
 function resolveOptions(options?: GenerationOptionsInput): GenerationOptions {
   // If author profile is specified, use it as base
   if (options?.authorProfileId) {
@@ -130,6 +133,12 @@ export function buildOutlineSystemPrompt(options?: GenerationOptionsInput): stri
   const effectiveArticleSize = template ? template.articleSize : resolved.articleSize;
   const articleSizeInstructions = buildArticleSizeInstructions(effectiveArticleSize);
 
+  // Calculate toplist entry count for template guidance
+  const includedToplists = options?.toplists?.filter(t => t.includeInArticle) || [];
+  const primaryToplistEntryCount = includedToplists.length > 0
+    ? includedToplists.reduce((max, t) => Math.max(max, t.entries.length), 0)
+    : undefined;
+
   // Get author's site for POV description when using first-person-plural
   let authorSite: string | undefined;
   if (options?.authorProfileId) {
@@ -139,7 +148,10 @@ export function buildOutlineSystemPrompt(options?: GenerationOptionsInput): stri
 
   // Build template guidance section if template is specified
   const templateGuidance = template
-    ? templateService.buildTemplatePromptSection(template, resolved.language)
+    ? templateService.buildTemplatePromptSection(template, resolved.language, {
+        toplistEntryCount: primaryToplistEntryCount,
+        hasToplist: includedToplists.length > 0,
+      })
     : '';
 
   return `You are an expert SEO content strategist who writes like a native ${language} speaker. Create article outlines that sound natural and local.
@@ -302,7 +314,7 @@ FEW-SHOT EXAMPLES:
 
 EXAMPLE 1 - Listicle Format (keyword: "best online casinos"):
 {
-  "title": "10 Best Online Casinos for Real Money in 2024",
+  "title": "10 Best Online Casinos for Real Money in ${CURRENT_YEAR}",
   "sections": [
     {"id": "introduction", "heading": "Finding a Trustworthy Online Casino", "level": 2, "description": "Hook with the challenge of finding reliable casinos. Preview what makes our top picks stand out.", "suggestedWordCount": 150, "componentType": "prose"},
     {"id": "top-picks", "heading": "Our Top 10 Picks at a Glance", "level": 2, "description": "Quick comparison table with all 10 casinos showing key metrics.", "suggestedWordCount": 400, "componentType": "toplist"},
@@ -505,7 +517,7 @@ ${includeKeywords.map(kw => `- ${kw}`).join('\n')}`;
 The user has provided ${toplists.length} toplist(s) that MUST be included in the article. Create a section for EACH toplist with the exact toplistId.
 
 Available toplists:
-${toplists.map(t => `- toplistId: "${t.toplistId}" | Name: "${t.name}" | Entries: ${t.entries.length} brands`).join('\n')}
+${toplists.map(t => `- toplistId: "${t.toplistId}" | Name: "${t.name}" | Entries: ${t.entries.length} brands (${t.entries.map(e => e.brand?.name || 'Brand #' + e.rank).join(', ')})`).join('\n')}
 
 CRITICAL RULES for toplist sections:
 1. Create a dedicated section for EACH toplist above
@@ -514,9 +526,12 @@ CRITICAL RULES for toplist sections:
 4. The toplist will be rendered as a comparison table - the section description should explain what the table shows
 5. Do NOT describe the brands in the section description - the table data comes from the toplist
 6. Place toplist sections prominently (after introduction, before individual reviews)
+7. Use "Top ${toplists[0]?.entries.length || 'X'}" not "Top 10" in the heading - match the actual number of brands
+8. ONLY write individual reviews for brands that are in the toplist - do NOT invent additional brands
+9. The number of individual review sections MUST match the number of toplist entries (${toplists[0]?.entries.length || 'varies'})
 
-Example section with toplist:
-{"id": "top-picks", "heading": "Top 10 Casino's Zonder Cruks", "level": 2, "description": "Our comparison of the best options based on extensive testing.", "suggestedWordCount": 100, "componentType": "toplist", "toplistId": "${toplists[0]?.toplistId || 'example-id'}"}`;
+Example section with toplist (${toplists[0]?.entries.length || 2} brands):
+{"id": "top-picks", "heading": "Top ${toplists[0]?.entries.length || 2} Casino's Zonder Cruks (${CURRENT_YEAR})", "level": 2, "description": "Our comparison of the best options based on extensive testing.", "suggestedWordCount": 100, "componentType": "toplist", "toplistId": "${toplists[0]?.toplistId || 'example-id'}"}`;
   }
 
   if (resolved.customTonePrompt) {
