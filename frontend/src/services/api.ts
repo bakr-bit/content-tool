@@ -14,6 +14,11 @@ import type { ArticleTemplate } from '@/types/template';
 
 const API_BASE = '/api/v1';
 
+function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function fetchApi<T>(
   endpoint: string,
   options?: RequestInit
@@ -21,10 +26,25 @@ async function fetchApi<T>(
   const response = await fetch(`${API_BASE}${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
       ...options?.headers,
     },
     ...options,
   });
+
+  // Handle 401 - redirect to login
+  if (response.status === 401) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    window.location.href = '/login';
+    return {
+      success: false,
+      error: {
+        message: 'Session expired',
+        code: 401,
+      },
+    };
+  }
 
   const data = await response.json();
 

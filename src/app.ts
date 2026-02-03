@@ -1,5 +1,6 @@
 import express, { Application } from 'express';
 import { errorHandler } from './api/middleware/error-handler';
+import { authMiddleware } from './api/middleware/auth';
 import {
   healthRoutes,
   researchRoutes,
@@ -13,6 +14,7 @@ import {
   toplistRoutes,
   templateRoutes,
 } from './api/routes';
+import { authRoutes } from './api/routes/auth.routes';
 import { logger } from './utils/logger';
 
 export function createApp(): Application {
@@ -28,18 +30,21 @@ export function createApp(): Application {
     next();
   });
 
-  // API Routes
+  // Public routes
   app.use('/api/v1/health', healthRoutes);
-  app.use('/api/v1/research', researchRoutes);
-  app.use('/api/v1/outline', outlineRoutes);
-  app.use('/api/v1/article', articleRoutes);
-  app.use('/api/v1/workflow', workflowRoutes);
-  app.use('/api/v1/keywords', keywordsRoutes);
-  app.use('/api/v1/components', componentsRoutes);
-  app.use('/api/v1/authors', authorsRoutes);
-  app.use('/api/v1/project', projectRoutes);
-  app.use('/api/v1/toplist', toplistRoutes);
-  app.use('/api/v1/templates', templateRoutes);
+  app.use('/api/v1/auth', authRoutes);
+
+  // Protected routes (require authentication)
+  app.use('/api/v1/research', authMiddleware, researchRoutes);
+  app.use('/api/v1/outline', authMiddleware, outlineRoutes);
+  app.use('/api/v1/article', authMiddleware, articleRoutes);
+  app.use('/api/v1/workflow', authMiddleware, workflowRoutes);
+  app.use('/api/v1/keywords', authMiddleware, keywordsRoutes);
+  app.use('/api/v1/components', authMiddleware, componentsRoutes);
+  app.use('/api/v1/authors', authMiddleware, authorsRoutes);
+  app.use('/api/v1/project', authMiddleware, projectRoutes);
+  app.use('/api/v1/toplist', authMiddleware, toplistRoutes);
+  app.use('/api/v1/templates', authMiddleware, templateRoutes);
 
   // 404 handler
   app.use((_req, res) => {

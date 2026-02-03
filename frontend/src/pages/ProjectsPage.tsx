@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { ProjectCard } from '@/components/projects/ProjectCard';
 import { CreateProjectDialog } from '@/components/projects/CreateProjectDialog';
 import { ArticleModal } from '@/components/article-modal/ArticleModal';
-import { Plus, FileText, FolderPlus, Loader2 } from 'lucide-react';
+import { Plus, FileText, FolderPlus, Loader2, LogOut } from 'lucide-react';
 import { getProjects } from '@/services/api';
+import { useAuth } from '@/context/AuthContext';
 import type { ProjectWithCount } from '@/types/project';
 
 export function ProjectsPage() {
@@ -14,6 +15,7 @@ export function ProjectsPage() {
   const [error, setError] = useState<string | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [articleModalOpen, setArticleModalOpen] = useState(false);
+  const { logout } = useAuth();
 
   const fetchProjects = useCallback(async () => {
     setLoading(true);
@@ -60,6 +62,9 @@ export function ProjectsPage() {
               <Button onClick={() => setArticleModalOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 New Article
+              </Button>
+              <Button variant="ghost" size="icon" onClick={logout} title="Sign out">
+                <LogOut className="w-4 h-4" />
               </Button>
             </div>
           </div>
