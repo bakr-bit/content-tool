@@ -17,44 +17,52 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Plus, GripVertical, Pencil, Trash2, Table2, FolderOpen, Save, Loader2, Library } from 'lucide-react';
+import { Plus, GripVertical, Pencil, Trash2, Table2, FolderOpen, Loader2, Library, ExternalLink } from 'lucide-react';
 import { ToplistBuilder } from '@/components/toplist/ToplistBuilder';
 import { ToplistPreview } from '@/components/toplist/ToplistPreview';
-import { getLibraryToplists, saveToLibrary, loadFromLibrary, getToplist } from '@/services/toplist-api';
+import { getToplists, getToplist } from '@/services/toplist-api';
 import type { UseArticleFormReturn } from '@/hooks/useArticleForm';
-import type { ArticleToplist, ToplistHeadingLevel, Toplist } from '@/types/toplist';
+import type { ArticleToplist, ToplistHeadingLevel, Toplist, ToplistEntry, ColumnDefinition } from '@/types/toplist';
 
 interface ToplistTabProps {
   form: UseArticleFormReturn;
 }
+
+// Default columns for toplists loaded from API
+const DEFAULT_COLUMNS: ColumnDefinition[] = [
+  { id: 'rank', label: '#', type: 'number', brandAttribute: '_rank' },
+  { id: 'name', label: 'Name', type: 'text', brandAttribute: 'name' },
+  { id: 'bonus', label: 'Bonus', type: 'text', brandAttribute: 'bonus' },
+  { id: 'rating', label: 'Rating', type: 'rating', brandAttribute: 'rating' },
+];
 
 export function ToplistTab({ form }: ToplistTabProps) {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [editingToplist, setEditingToplist] = useState<ArticleToplist | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-  // Library state
+  // Library state (now fetches from project's toplists in API)
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
-  const [libraryToplists, setLibraryToplists] = useState<Toplist[]>([]);
+  const [projectToplists, setProjectToplists] = useState<Toplist[]>([]);
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
-  const [savingToplistId, setSavingToplistId] = useState<string | null>(null);
-  const [loadingToplistId, setLoadingToplistId] = useState<string | null>(null);
+  const [loadingToplistSlug, setLoadingToplistSlug] = useState<string | null>(null);
 
   const toplists = form.formState.toplists || [];
+  const projectId = form.formState.projectId;
 
-  // Fetch library toplists when dialog opens
+  // Fetch project toplists when dialog opens
   useEffect(() => {
-    if (isLibraryOpen) {
+    if (isLibraryOpen && projectId) {
       setIsLoadingLibrary(true);
-      getLibraryToplists()
+      getToplists(projectId)
         .then((result) => {
           if (result.success && result.data) {
-            setLibraryToplists(result.data.toplists);
+            setProjectToplists(result.data.toplists);
           }
         })
         .finally(() => setIsLoadingLibrary(false));
     }
-  }, [isLibraryOpen]);
+  }, [isLibraryOpen, projectId]);
 
   const handleAddToplist = () => {
     setEditingToplist(null);
@@ -136,56 +144,73 @@ export function ToplistTab({ form }: ToplistTabProps) {
     setDraggedIndex(null);
   };
 
-  const handleSaveToLibrary = async (toplistId: string) => {
-    setSavingToplistId(toplistId);
+  const handleLoadFromApi = async (toplist: Toplist) => {
+    if (!projectId) return;
+
+    setLoadingToplistSlug(toplist.slug);
     try {
-      const result = await saveToLibrary(toplistId);
-      if (result.success) {
-        // Refresh library if dialog is open
-        if (isLibraryOpen) {
-          const libraryResult = await getLibraryToplists();
-          if (libraryResult.success && libraryResult.data) {
-            setLibraryToplists(libraryResult.data.toplists);
-          }
-        }
+      // Fetch the full toplist with resolved items
+      const result = await getToplist(projectId, toplist.slug);
+
+      if (result.success && result.data) {
+        const resolved = result.data;
+
+        // Convert API items to ToplistEntry format
+        const entries: ToplistEntry[] = resolved.items.map((item, index) => ({
+          entryId: `${toplist.slug}-${item.brandId}-${index}`,
+          toplistId: toplist.id,
+          brandId: item.brandId,
+          rank: index + 1,
+          createdAt: new Date().toISOString(),
+          brand: {
+            brandId: item.brandId,
+            name: item.name,
+            defaultLogo: item.logo,
+            defaultBonus: item.bonus,
+            defaultAffiliateUrl: item.affiliateUrl,
+            defaultRating: item.rating,
+            terms: item.terms,
+            license: item.license,
+            description: item.description,
+            pros: item.pros,
+            cons: item.cons,
+          },
+          attributeOverrides: {
+            bonus: item.bonus || undefined,
+            rating: item.rating || undefined,
+            affiliateUrl: item.affiliateUrl || undefined,
+            reviewUrl: item.reviewUrl || undefined,
+            cta: item.cta || undefined,
+          },
+        }));
+
+        // Create ArticleToplist from API data
+        const newToplist: ArticleToplist = {
+          toplistId: toplist.id,
+          name: resolved.title || toplist.slug,
+          columns: DEFAULT_COLUMNS,
+          position: toplists.length,
+          createdAt: toplist.createdAt || new Date().toISOString(),
+          updatedAt: resolved.updatedAt,
+          entries,
+          includeInArticle: true,
+          heading: resolved.title || toplist.slug,
+          headingLevel: 'h2',
+        };
+
+        form.addToplist(newToplist);
+        setIsLibraryOpen(false);
       }
     } finally {
-      setSavingToplistId(null);
+      setLoadingToplistSlug(null);
     }
   };
 
-  const handleLoadFromLibrary = async (libraryToplistId: string) => {
-    setLoadingToplistId(libraryToplistId);
-    try {
-      // Load the full toplist with entries
-      const fullToplistResult = await getToplist(libraryToplistId);
-      if (!fullToplistResult.success || !fullToplistResult.data) {
-        return;
-      }
-
-      // Load it as a new toplist (creates a copy)
-      const result = await loadFromLibrary(libraryToplistId, {
-        position: toplists.length,
-      });
-
-      if (result.success && result.data) {
-        // Fetch the full toplist with entries
-        const loadedResult = await getToplist(result.data.toplistId);
-        if (loadedResult.success && loadedResult.data) {
-          const newToplist: ArticleToplist = {
-            ...loadedResult.data,
-            entries: loadedResult.data.entries || fullToplistResult.data.entries || [],
-            includeInArticle: true,
-            heading: loadedResult.data.name,
-            headingLevel: 'h2',
-          };
-          form.addToplist(newToplist);
-          setIsLibraryOpen(false);
-        }
-      }
-    } finally {
-      setLoadingToplistId(null);
-    }
+  const handleOpenToplistManager = () => {
+    // Open toplist manager in new tab - with site context if available
+    const baseUrl = 'https://toplist-cms.vercel.app/dashboard';
+    const url = projectId ? `${baseUrl}/sites/${projectId}` : baseUrl;
+    window.open(url, '_blank');
   };
 
   return (
@@ -194,36 +219,56 @@ export function ToplistTab({ form }: ToplistTabProps) {
         <div>
           <h2 className="text-lg font-semibold">Toplists</h2>
           <p className="text-sm text-muted-foreground">
-            Create comparison tables for your article.
+            Add comparison tables to your article from the Toplist API.
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setIsLibraryOpen(true)}>
-            <FolderOpen className="h-4 w-4 mr-2" />
-            Load from Library
+          <Button variant="outline" onClick={handleOpenToplistManager}>
+            <ExternalLink className="h-4 w-4 mr-2" />
+            Manage Toplists
           </Button>
+          {projectId && (
+            <Button variant="outline" onClick={() => setIsLibraryOpen(true)}>
+              <FolderOpen className="h-4 w-4 mr-2" />
+              Load from API
+            </Button>
+          )}
           <Button onClick={handleAddToplist}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Toplist
+            Create New
           </Button>
         </div>
       </div>
+
+      {!projectId && (
+        <div className="bg-muted/50 border rounded-lg p-4 text-sm text-muted-foreground">
+          <strong>Note:</strong> Select a project in the Details tab to load toplists from the API.
+        </div>
+      )}
 
       {toplists.length === 0 ? (
         <div className="border-2 border-dashed rounded-lg p-12 text-center">
           <Table2 className="h-12 w-12 mx-auto text-muted-foreground/50" />
           <h3 className="mt-4 text-lg font-medium">No toplists yet</h3>
           <p className="mt-2 text-sm text-muted-foreground">
-            Create a new toplist or load one from your library.
+            {projectId
+              ? 'Load a toplist from the API or create a new one.'
+              : 'Select a project first, then load toplists from the API.'}
           </p>
           <div className="flex gap-2 justify-center mt-4">
-            <Button variant="outline" onClick={() => setIsLibraryOpen(true)}>
-              <FolderOpen className="h-4 w-4 mr-2" />
-              Load from Library
+            <Button variant="outline" onClick={handleOpenToplistManager}>
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Manage Toplists
             </Button>
+            {projectId && (
+              <Button variant="outline" onClick={() => setIsLibraryOpen(true)}>
+                <FolderOpen className="h-4 w-4 mr-2" />
+                Load from API
+              </Button>
+            )}
             <Button onClick={handleAddToplist}>
               <Plus className="h-4 w-4 mr-2" />
-              Create New Toplist
+              Create New
             </Button>
           </div>
         </div>
@@ -266,19 +311,6 @@ export function ToplistTab({ form }: ToplistTabProps) {
                     </Label>
                   </div>
                   <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleSaveToLibrary(toplist.toplistId)}
-                      disabled={savingToplistId === toplist.toplistId}
-                      title="Save to library for reuse"
-                    >
-                      {savingToplistId === toplist.toplistId ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Save className="h-4 w-4" />
-                      )}
-                    </Button>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -347,16 +379,16 @@ export function ToplistTab({ form }: ToplistTabProps) {
         onSave={handleSaveToplist}
       />
 
-      {/* Library Dialog */}
+      {/* Load from API Dialog */}
       <Dialog open={isLibraryOpen} onOpenChange={setIsLibraryOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Library className="h-5 w-5" />
-              Toplist Library
+              Load Toplist from API
             </DialogTitle>
             <DialogDescription>
-              Select a saved toplist to load into your article. A copy will be created.
+              Select a toplist from your project to add to this article.
             </DialogDescription>
           </DialogHeader>
 
@@ -365,37 +397,51 @@ export function ToplistTab({ form }: ToplistTabProps) {
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
-            ) : libraryToplists.length === 0 ? (
+            ) : projectToplists.length === 0 ? (
               <div className="text-center py-12">
                 <Library className="h-12 w-12 mx-auto text-muted-foreground/50" />
-                <h3 className="mt-4 text-lg font-medium">No saved toplists</h3>
+                <h3 className="mt-4 text-lg font-medium">No toplists found</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Create a toplist and click the save icon to add it to your library.
+                  Create toplists in the Toplist Manager first.
                 </p>
+                <Button
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => {
+                    setIsLibraryOpen(false);
+                    handleOpenToplistManager();
+                  }}
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Open Toplist Manager
+                </Button>
               </div>
             ) : (
               <div className="space-y-3">
-                {libraryToplists.map((toplist) => (
+                {projectToplists.map((toplist) => (
                   <div
-                    key={toplist.toplistId}
+                    key={toplist.id}
                     className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-medium">{toplist.name}</h4>
+                        <h4 className="font-medium">{toplist.title || toplist.slug}</h4>
                         <p className="text-sm text-muted-foreground">
-                          {toplist.columns.length} columns
-                          {toplist.createdAt && (
-                            <> &middot; Created {new Date(toplist.createdAt).toLocaleDateString()}</>
+                          Slug: {toplist.slug}
+                          {toplist.itemCount !== undefined && (
+                            <> &middot; {toplist.itemCount} items</>
+                          )}
+                          {toplist.updatedAt && (
+                            <> &middot; Updated {new Date(toplist.updatedAt).toLocaleDateString()}</>
                           )}
                         </p>
                       </div>
                       <Button
                         size="sm"
-                        onClick={() => handleLoadFromLibrary(toplist.toplistId)}
-                        disabled={loadingToplistId === toplist.toplistId}
+                        onClick={() => handleLoadFromApi(toplist)}
+                        disabled={loadingToplistSlug === toplist.slug}
                       >
-                        {loadingToplistId === toplist.toplistId ? (
+                        {loadingToplistSlug === toplist.slug ? (
                           <Loader2 className="h-4 w-4 animate-spin mr-2" />
                         ) : (
                           <Plus className="h-4 w-4 mr-2" />
@@ -403,23 +449,6 @@ export function ToplistTab({ form }: ToplistTabProps) {
                         Load
                       </Button>
                     </div>
-                    {toplist.columns.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {toplist.columns.slice(0, 6).map((col) => (
-                          <span
-                            key={col.id}
-                            className="text-xs bg-muted px-2 py-0.5 rounded"
-                          >
-                            {col.label}
-                          </span>
-                        ))}
-                        {toplist.columns.length > 6 && (
-                          <span className="text-xs text-muted-foreground">
-                            +{toplist.columns.length - 6} more
-                          </span>
-                        )}
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
