@@ -37,9 +37,9 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
 router.post(
   '/',
   validate(projectCreateSchema),
-  (req: Request<{}, {}, ProjectCreateBody>, res: Response, next: NextFunction) => {
+  async (req: Request<{}, {}, ProjectCreateBody>, res: Response, next: NextFunction) => {
     try {
-      const project = projectService.createProject(req.body);
+      const project = await projectService.createProject(req.body);
 
       res.status(201).json({
         success: true,
@@ -90,7 +90,7 @@ router.get('/:id', (req: Request, res: Response, next: NextFunction) => {
 router.put(
   '/:id',
   validate(projectUpdateSchema),
-  (req: Request<{ id: string }, {}, ProjectUpdateBody>, res: Response, next: NextFunction) => {
+  async (req: Request<{ id: string }, {}, ProjectUpdateBody>, res: Response, next: NextFunction) => {
     try {
       const { name, description, geo, language, authors, defaultToplistIds } = req.body;
 
@@ -116,7 +116,7 @@ router.put(
         defaultToplistIds: defaultToplistIds ?? undefined,
       };
 
-      const updated = projectService.updateProject(req.params.id, updates);
+      const updated = await projectService.updateProject(req.params.id, updates);
 
       if (!updated) {
         res.status(404).json({
@@ -147,9 +147,9 @@ router.put(
 );
 
 // Delete a project
-router.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
+router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const deleted = projectService.deleteProject(req.params.id);
+    const deleted = await projectService.deleteProject(req.params.id);
 
     if (!deleted) {
       res.status(404).json({

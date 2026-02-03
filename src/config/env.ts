@@ -49,6 +49,10 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().optional(),
   SUPABASE_ANON_KEY: z.string().optional(),
 
+  // Toplist API Integration
+  TOPLIST_API_URL: z.string().url().default('http://localhost:3001'),
+  TOPLIST_API_KEY: z.string().min(1).optional(),
+
   // Embedding Settings
   EMBEDDING_ENABLED: z.string().transform((val) => val.toLowerCase() === 'true').default('false'),
   EMBEDDING_CHUNK_SIZE: z.string().transform(Number).default('512'),

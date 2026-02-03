@@ -1,4 +1,3 @@
-import { Brand, BrandAttributes } from './brand.storage';
 import { translationService } from '../translation';
 
 export interface ToplistColumn {
@@ -6,6 +5,25 @@ export interface ToplistColumn {
   label: string;
   type: 'text' | 'number' | 'currency' | 'rating' | 'list' | 'badge';
   brandAttribute: string;
+}
+
+// Local types for markdown generation - compatible with both old and new API formats
+export interface BrandAttributes {
+  [key: string]: unknown;
+}
+
+export interface Brand {
+  name: string;
+  attributes?: BrandAttributes;
+  // New API fields
+  defaultLogo?: string | null;
+  defaultBonus?: string | null;
+  defaultAffiliateUrl?: string | null;
+  defaultRating?: number | null;
+  terms?: string | null;
+  license?: string | null;
+  pros?: string[] | null;
+  cons?: string[] | null;
 }
 
 export interface ToplistEntryData {
