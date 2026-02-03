@@ -33,7 +33,8 @@ export function createApp(): Application {
   // Public routes
   app.use('/api/v1/health', healthRoutes);
   app.use('/api/v1/auth', authRoutes);
-  app.use('/api/v1/templates', templateRoutes); // Public - just template metadata
+  app.use('/api/v1/templates', templateRoutes); // Public - article template metadata
+  app.use('/api/v1/toplist', toplistRoutes); // Public - toplist templates/brands
 
   // Protected routes (require authentication)
   app.use('/api/v1/research', authMiddleware, researchRoutes);
@@ -44,7 +45,6 @@ export function createApp(): Application {
   app.use('/api/v1/components', authMiddleware, componentsRoutes);
   app.use('/api/v1/authors', authMiddleware, authorsRoutes);
   app.use('/api/v1/project', authMiddleware, projectRoutes);
-  app.use('/api/v1/toplist', authMiddleware, toplistRoutes);
 
   // 404 handler
   app.use((_req, res) => {
