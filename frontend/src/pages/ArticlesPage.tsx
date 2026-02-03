@@ -7,7 +7,7 @@ import { ArticlePagination } from '@/components/articles/ArticlePagination';
 import { ArticleModal } from '@/components/article-modal/ArticleModal';
 import { ArticleViewDialog } from '@/components/articles/ArticleViewDialog';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 export function ArticlesPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -89,33 +89,20 @@ export function ArticlesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-semibold">Content Tool</span>
-            </div>
-            <Button onClick={() => setModalOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              New Article
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold">Articles</h1>
-          <p className="text-muted-foreground">
+    <div className="p-6">
+      {/* Page Header */}
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Articles</h1>
+          <p className="text-zinc-400">
             Manage your generated articles
           </p>
         </div>
+        <Button onClick={() => setModalOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          New Article
+        </Button>
+      </div>
 
         {error && (
           <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive">
@@ -150,7 +137,6 @@ export function ArticlesPage() {
             />
           )}
         </div>
-      </main>
 
       {/* Article Modal */}
       <ArticleModal

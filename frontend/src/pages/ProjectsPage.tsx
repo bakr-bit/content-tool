@@ -42,8 +42,8 @@ export function ProjectsPage() {
       {/* Page Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Projects</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold text-white">Projects</h1>
+          <p className="text-zinc-400">
             Organize your content into projects
           </p>
         </div>
@@ -79,12 +79,12 @@ export function ProjectsPage() {
         </div>
       ) : (
         /* Empty State */
-        <div className="flex flex-col items-center justify-center py-16 px-4 border-2 border-dashed rounded-lg">
-          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-            <FolderPlus className="w-8 h-8 text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-16 px-4 border-2 border-dashed border-zinc-700 rounded-lg">
+          <div className="w-16 h-16 bg-zinc-800 rounded-full flex items-center justify-center mb-4">
+            <FolderPlus className="w-8 h-8 text-zinc-400" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">No projects yet</h2>
-          <p className="text-muted-foreground text-center mb-6 max-w-md">
+          <h2 className="text-xl font-semibold text-white mb-2">No projects yet</h2>
+          <p className="text-zinc-400 text-center mb-6 max-w-md">
             Create your first project to start organizing your articles.
             Projects help you group related content together.
           </p>

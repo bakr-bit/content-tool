@@ -85,23 +85,23 @@ export function Layout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-zinc-950">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-16 items-center justify-between border-b bg-white px-4 md:px-6">
+        <header className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-900 px-4 md:px-6">
           {/* Hamburger menu button - mobile only */}
           <button
             onClick={() => setSidebarOpen(true)}
-            className="md:hidden p-2 -ml-2 text-zinc-600 hover:text-zinc-900"
+            className="md:hidden p-2 -ml-2 text-zinc-400 hover:text-white"
           >
             <Menu className="h-6 w-6" />
           </button>
           <div className="hidden md:block" />
           <div className="flex items-center gap-4">
-            <span className="text-sm text-zinc-600 hidden sm:inline">{user.username}</span>
+            <span className="text-sm text-zinc-400 hidden sm:inline">{user.username}</span>
             <button
               onClick={logout}
-              className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 h-10 px-2"
+              className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white h-10 px-2"
             >
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Sign out</span>

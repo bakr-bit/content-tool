@@ -38,7 +38,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, FileText, ChevronLeft, Pencil, Trash2, Loader2, ChevronDown, X, Globe, Languages, Users } from 'lucide-react';
+import { Plus, ChevronLeft, Pencil, Trash2, Loader2, ChevronDown, X, Globe, Languages, Users } from 'lucide-react';
 
 export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -275,69 +275,51 @@ export function ProjectDetailPage() {
 
   if (projectLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="p-6 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-400" />
       </div>
     );
   }
 
   if (projectError || !project) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="border-b bg-card">
-          <div className="container mx-auto px-6 py-4">
-            <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-              <ChevronLeft className="h-4 w-4" />
-              Back to Projects
-            </Link>
-          </div>
-        </header>
-        <main className="container mx-auto px-6 py-8">
-          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive">
-            {projectError || 'Project not found'}
-          </div>
-        </main>
+      <div className="p-6">
+        <Link to="/" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white mb-6">
+          <ChevronLeft className="h-4 w-4" />
+          Back to Projects
+        </Link>
+        <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive">
+          {projectError || 'Project not found'}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-semibold">Content Tool</span>
-            </div>
-            <Button onClick={() => setModalOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              New Article
-            </Button>
-          </div>
+    <div className="p-6">
+      {/* Page Header */}
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <Link to="/" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white mb-2">
+            <ChevronLeft className="h-4 w-4" />
+            Back to Projects
+          </Link>
+          <h1 className="text-2xl font-bold text-white">{project.name}</h1>
+          {project.description && (
+            <p className="text-zinc-400">{project.description}</p>
+          )}
         </div>
-      </header>
+        <Button onClick={() => setModalOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          New Article
+        </Button>
+      </div>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        {/* Breadcrumb */}
-        <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6">
-          <ChevronLeft className="h-4 w-4" />
-          Back to Projects
-        </Link>
-
-        {/* Project Header */}
-        <div className="mb-6">
-          <div className="flex items-start justify-between">
-            <div className="space-y-2">
-              <h1 className="text-2xl font-bold">{project.name}</h1>
-              {project.description && (
-                <p className="text-muted-foreground">{project.description}</p>
-              )}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+      {/* Project Details */}
+      <div className="mb-6">
+        <div className="flex items-start justify-between">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400">
                 <span>
                   {project.articleCount} {project.articleCount === 1 ? 'article' : 'articles'}
                 </span>
@@ -425,7 +407,6 @@ export function ProjectDetailPage() {
             />
           )}
         </div>
-      </main>
 
       {/* Article Modal - pre-fill projectId */}
       <ArticleModal
