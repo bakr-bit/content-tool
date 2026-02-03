@@ -219,6 +219,54 @@ const deepResearchOptionsSchema = z.object({
   includeCitations: z.boolean().optional(),
 }).optional();
 
+// Toplist schemas for article generation (defined here to be used in generationOptionsSchema)
+const columnDefinitionSchemaForGeneration = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  type: z.enum(['text', 'number', 'currency', 'rating', 'list', 'badge']),
+  brandAttribute: z.string().min(1),
+  width: z.string().optional(),
+  format: z.string().optional(),
+});
+
+const brandAttributesSchemaForGeneration = z.record(z.unknown());
+
+const toplistBrandSchemaForGeneration = z.object({
+  brandId: z.string(),
+  name: z.string(),
+  slug: z.string().optional(),
+  logoUrl: z.string().optional(),
+  websiteUrl: z.string().optional(),
+  attributes: brandAttributesSchemaForGeneration.default({}),
+  createdAt: z.string(),
+  updatedAt: z.string().optional(),
+});
+
+const toplistEntryDataSchemaForGeneration = z.object({
+  entryId: z.string(),
+  toplistId: z.string().optional(),
+  brandId: z.string(),
+  rank: z.number(),
+  attributeOverrides: brandAttributesSchemaForGeneration.optional(),
+  brand: toplistBrandSchemaForGeneration.optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+});
+
+const articleToplistSchemaForGeneration = z.object({
+  toplistId: z.string(),
+  name: z.string(),
+  templateId: z.string().optional(),
+  columns: z.array(columnDefinitionSchemaForGeneration),
+  entries: z.array(toplistEntryDataSchemaForGeneration),
+  position: z.number().optional(),
+  includeInArticle: z.boolean().optional(),
+  heading: z.string().optional(),
+  headingLevel: z.enum(['h2', 'h3']).optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+});
+
 // Complete Generation Options schema
 export const generationOptionsSchema = z.object({
   // Content settings
@@ -255,6 +303,9 @@ export const generationOptionsSchema = z.object({
 
   // Additional keywords to include in the outline
   includeKeywords: z.array(z.string().max(100)).max(20).optional(),
+
+  // Toplists to include in the generated article
+  toplists: z.array(articleToplistSchemaForGeneration).optional(),
 }).optional();
 
 // Legacy preferences schema (for backward compatibility)
@@ -383,11 +434,96 @@ export const updateAuthorSchema = z.object({
 export const projectCreateSchema = z.object({
   name: z.string().min(1, 'Project name is required').max(100),
   description: z.string().max(500).optional(),
+  geo: z.string().max(50).optional(),
+  language: z.string().max(50).optional(),
+  authors: z.array(z.string().max(100)).max(20).optional(),
+  defaultToplistIds: z.array(z.string()).max(10).optional(),
 });
 
 export const projectUpdateSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   description: z.string().max(500).optional(),
+  geo: z.string().max(50).optional().nullable(),
+  language: z.string().max(50).optional().nullable(),
+  authors: z.array(z.string().max(100)).max(20).optional().nullable(),
+  defaultToplistIds: z.array(z.string()).max(10).optional().nullable(),
+});
+
+// Toplist schemas for CRUD operations
+const columnDefinitionSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  type: z.enum(['text', 'number', 'currency', 'rating', 'list', 'badge']),
+  brandAttribute: z.string().min(1),
+  width: z.string().optional(),
+  format: z.string().optional(),
+});
+
+const brandAttributesSchema = z.record(z.unknown());
+
+// Template schemas
+export const createTemplateSchema = z.object({
+  name: z.string().min(1, 'Template name is required').max(100),
+  description: z.string().max(500).optional(),
+  columns: z.array(columnDefinitionSchema).min(1, 'At least one column is required'),
+});
+
+export const updateTemplateSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  description: z.string().max(500).optional(),
+  columns: z.array(columnDefinitionSchema).min(1).optional(),
+});
+
+// Brand schemas
+export const createBrandSchema = z.object({
+  name: z.string().min(1, 'Brand name is required').max(100),
+  slug: z.string().max(100).optional(),
+  logoUrl: z.string().url().optional(),
+  websiteUrl: z.string().url().optional(),
+  attributes: brandAttributesSchema.optional(),
+});
+
+export const updateBrandSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  slug: z.string().max(100).optional(),
+  logoUrl: z.string().url().optional().nullable(),
+  websiteUrl: z.string().url().optional().nullable(),
+  attributes: brandAttributesSchema.optional(),
+});
+
+// Toplist schemas
+export const createToplistSchema = z.object({
+  articleId: z.string().uuid().optional(),
+  name: z.string().min(1, 'Toplist name is required').max(100),
+  templateId: z.string().optional(),
+  columns: z.array(columnDefinitionSchema).min(1, 'At least one column is required'),
+  position: z.number().int().min(0).optional(),
+  markdownOutput: z.string().optional(),
+});
+
+export const updateToplistSchema = z.object({
+  articleId: z.string().uuid().optional().nullable(),
+  name: z.string().min(1).max(100).optional(),
+  templateId: z.string().optional().nullable(),
+  columns: z.array(columnDefinitionSchema).min(1).optional(),
+  position: z.number().int().min(0).optional(),
+  markdownOutput: z.string().optional().nullable(),
+});
+
+// Entry schemas
+export const createEntrySchema = z.object({
+  brandId: z.string().uuid('Invalid brand ID'),
+  rank: z.number().int().min(1),
+  attributeOverrides: brandAttributesSchema.optional(),
+});
+
+export const updateEntrySchema = z.object({
+  rank: z.number().int().min(1).optional(),
+  attributeOverrides: brandAttributesSchema.optional(),
+});
+
+export const reorderEntriesSchema = z.object({
+  entryIds: z.array(z.string().uuid()).min(1),
 });
 
 // Type exports
@@ -401,3 +537,12 @@ export type CreateAuthorBody = z.infer<typeof createAuthorSchema>;
 export type UpdateAuthorBody = z.infer<typeof updateAuthorSchema>;
 export type ProjectCreateBody = z.infer<typeof projectCreateSchema>;
 export type ProjectUpdateBody = z.infer<typeof projectUpdateSchema>;
+export type CreateTemplateBody = z.infer<typeof createTemplateSchema>;
+export type UpdateTemplateBody = z.infer<typeof updateTemplateSchema>;
+export type CreateBrandBody = z.infer<typeof createBrandSchema>;
+export type UpdateBrandBody = z.infer<typeof updateBrandSchema>;
+export type CreateToplistBody = z.infer<typeof createToplistSchema>;
+export type UpdateToplistBody = z.infer<typeof updateToplistSchema>;
+export type CreateEntryBody = z.infer<typeof createEntrySchema>;
+export type UpdateEntryBody = z.infer<typeof updateEntrySchema>;
+export type ReorderEntriesBody = z.infer<typeof reorderEntriesSchema>;

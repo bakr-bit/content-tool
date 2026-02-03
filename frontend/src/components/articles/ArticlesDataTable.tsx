@@ -26,7 +26,7 @@ interface ArticlesDataTableProps {
   sortOrder?: ListArticlesQuery['sortOrder'];
   onSort: (sortBy: ListArticlesQuery['sortBy'], sortOrder: ListArticlesQuery['sortOrder']) => void;
   onDelete: (articleId: string) => void;
-  onUpdate: (updatedArticle: ArticleWithStatus) => void;
+  onView: (article: ArticleWithStatus) => void;
 }
 
 function formatDate(dateString: string): string {
@@ -61,7 +61,7 @@ export function ArticlesDataTable({
   sortOrder,
   onSort,
   onDelete,
-  onUpdate,
+  onView,
 }: ArticlesDataTableProps) {
   const handleSortClick = (column: ListArticlesQuery['sortBy']) => {
     if (sortBy === column) {
@@ -86,9 +86,13 @@ export function ArticlesDataTable({
       ),
       cell: ({ row }) => (
         <div className="max-w-[300px]">
-          <span className="font-medium" title={row.getValue('title')}>
+          <button
+            className="font-medium text-left hover:underline hover:text-primary transition-colors"
+            title={row.getValue('title')}
+            onClick={() => onView(row.original)}
+          >
             {truncateText(row.getValue('title'), 50)}
-          </span>
+          </button>
         </div>
       ),
     },
@@ -107,6 +111,15 @@ export function ArticlesDataTable({
       cell: ({ row }) => (
         <span className="text-muted-foreground">
           {row.getValue('keyword')}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'site',
+      header: 'Website',
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.site || 'N/A'}
         </span>
       ),
     },
@@ -152,7 +165,7 @@ export function ArticlesDataTable({
         <ArticleRowActions
           article={row.original}
           onDelete={() => onDelete(row.original.articleId)}
-          onUpdate={onUpdate}
+          onView={() => onView(row.original)}
         />
       ),
     },

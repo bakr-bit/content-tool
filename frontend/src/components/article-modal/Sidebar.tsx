@@ -6,6 +6,7 @@ import {
   LayoutList,
   Brain,
   FileOutput,
+  Table2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -14,7 +15,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-export type TabId = 'details' | 'outline' | 'content' | 'knowledge' | 'formatting' | 'structure' | 'result';
+export type TabId = 'details' | 'outline' | 'content' | 'knowledge' | 'formatting' | 'structure' | 'toplist' | 'result';
 
 interface Tab {
   id: TabId;
@@ -24,6 +25,7 @@ interface Tab {
 
 const TABS: Tab[] = [
   { id: 'details', label: 'Details', icon: FileText },
+  { id: 'toplist', label: 'Toplist', icon: Table2 },
   { id: 'structure', label: 'Structure', icon: LayoutList },
   { id: 'outline', label: 'Outline', icon: List },
   { id: 'content', label: 'Content', icon: Palette },

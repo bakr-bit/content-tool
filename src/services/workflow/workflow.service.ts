@@ -61,7 +61,9 @@ export class WorkflowOrchestrator {
         deepResearchEnabled: isDeepResearchEnabled,
         topicLevelResearch: deepResearchOptions.topicLevelResearch,
         sectionLevelResearch: deepResearchOptions.sectionLevelResearch,
-        includeCitations: deepResearchOptions.includeCitations
+        includeCitations: deepResearchOptions.includeCitations,
+        hasToplist: !!options?.toplists,
+        toplistCount: options?.toplists?.length || 0
       },
       'Starting full workflow'
     );

@@ -10,6 +10,10 @@ export interface ProjectRow {
   project_id: string;
   name: string;
   description: string | null;
+  geo: string | null;
+  language: string | null;
+  authors: string | null; // JSON array
+  default_toplist_ids: string | null; // JSON array
   created_at: string;
   updated_at: string | null;
 }
@@ -18,6 +22,10 @@ export interface Project {
   projectId: string;
   name: string;
   description?: string;
+  geo?: string;
+  language?: string;
+  authors?: string[];
+  defaultToplistIds?: string[];
   createdAt: string;
   updatedAt?: string;
 }
@@ -25,11 +33,19 @@ export interface Project {
 export interface CreateProjectInput {
   name: string;
   description?: string;
+  geo?: string;
+  language?: string;
+  authors?: string[];
+  defaultToplistIds?: string[];
 }
 
 export interface UpdateProjectInput {
   name?: string;
   description?: string;
+  geo?: string;
+  language?: string;
+  authors?: string[];
+  defaultToplistIds?: string[];
 }
 
 function rowToProject(row: ProjectRow): Project {
@@ -37,6 +53,10 @@ function rowToProject(row: ProjectRow): Project {
     projectId: row.project_id,
     name: row.name,
     description: row.description ?? undefined,
+    geo: row.geo ?? undefined,
+    language: row.language ?? undefined,
+    authors: row.authors ? JSON.parse(row.authors) : undefined,
+    defaultToplistIds: row.default_toplist_ids ? JSON.parse(row.default_toplist_ids) : undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at ?? undefined,
   };
@@ -55,12 +75,16 @@ export class ProjectStorage {
 
     try {
       this.db.prepare(`
-        INSERT INTO projects (project_id, name, description, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO projects (project_id, name, description, geo, language, authors, default_toplist_ids, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         projectId,
         input.name,
         input.description ?? null,
+        input.geo ?? null,
+        input.language ?? null,
+        input.authors ? JSON.stringify(input.authors) : null,
+        input.defaultToplistIds ? JSON.stringify(input.defaultToplistIds) : null,
         now,
         null
       );
@@ -71,6 +95,10 @@ export class ProjectStorage {
         projectId,
         name: input.name,
         description: input.description,
+        geo: input.geo,
+        language: input.language,
+        authors: input.authors,
+        defaultToplistIds: input.defaultToplistIds,
         createdAt: now,
       };
     } catch (error) {
@@ -137,16 +165,28 @@ export class ProjectStorage {
 
       const name = updates.name ?? existing.name;
       const description = updates.description !== undefined ? updates.description : existing.description;
+      const geo = updates.geo !== undefined ? updates.geo : existing.geo;
+      const language = updates.language !== undefined ? updates.language : existing.language;
+      const authors = updates.authors !== undefined ? updates.authors : existing.authors;
+      const defaultToplistIds = updates.defaultToplistIds !== undefined ? updates.defaultToplistIds : existing.defaultToplistIds;
 
       this.db.prepare(`
         UPDATE projects SET
           name = ?,
           description = ?,
+          geo = ?,
+          language = ?,
+          authors = ?,
+          default_toplist_ids = ?,
           updated_at = ?
         WHERE project_id = ?
       `).run(
         name,
         description ?? null,
+        geo ?? null,
+        language ?? null,
+        authors ? JSON.stringify(authors) : null,
+        defaultToplistIds ? JSON.stringify(defaultToplistIds) : null,
         now,
         projectId
       );
@@ -157,6 +197,10 @@ export class ProjectStorage {
         projectId,
         name,
         description: description ?? undefined,
+        geo: geo ?? undefined,
+        language: language ?? undefined,
+        authors: authors ?? undefined,
+        defaultToplistIds: defaultToplistIds ?? undefined,
         createdAt: existing.createdAt,
         updatedAt: now,
       };

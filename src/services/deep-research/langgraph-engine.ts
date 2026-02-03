@@ -528,14 +528,14 @@ Keep it concise - 1-2 sentences about what the user wants to learn.`),
     const messages = [
       new SystemMessage(`Extract the individual factual questions from this query. Each question should be something that can be definitively answered.
 
-Return ONLY a JSON array of {question, searchQuery} objects. No other text.
-
 Example:
 "Who founded Anthropic and when" →
 [
   {"question": "Who founded Anthropic?", "searchQuery": "Anthropic founders"},
   {"question": "When was Anthropic founded?", "searchQuery": "Anthropic founded date year"}
-]`),
+]
+
+RESPONSE FORMAT: Your entire response must begin with [ and end with ]. No markdown, no explanation.`),
       new HumanMessage(`Query: "${query}"`)
     ];
 
@@ -611,10 +611,12 @@ For each fact, identify:
 2. Which source(s) it came from (by number)
 3. The type: statistic, quote, definition, or claim
 
-Return ONLY a JSON array:
+Example format:
 [
   {"fact": "The fact statement", "sourceIds": [1, 2], "type": "statistic"}
-]`),
+]
+
+RESPONSE FORMAT: Your entire response must begin with [ and end with ]. No markdown, no explanation.`),
       new HumanMessage(`Query: "${query}"
 
 Answer: ${answer}

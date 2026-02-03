@@ -14,7 +14,7 @@ router.post(
     try {
       const { keyword, geo, options, outlineId } = req.body;
 
-      // Debug logging for deep research options
+      // Debug logging for options
       logger.info({
         keyword,
         geo,
@@ -22,6 +22,10 @@ router.post(
         deepResearchReceived: options?.deepResearch,
         hasDeepResearch: !!options?.deepResearch,
         deepResearchEnabled: options?.deepResearch?.enabled,
+        hasToplists: !!options?.toplists,
+        toplistCount: options?.toplists?.length || 0,
+        toplistNames: options?.toplists?.map(t => t.name) || [],
+        toplistEntryCounts: options?.toplists?.map(t => t.entries?.length || 0) || [],
       }, 'Full generation request received');
 
       const workflow = await workflowOrchestrator.runFullWorkflow({ keyword, geo, options, outlineId });

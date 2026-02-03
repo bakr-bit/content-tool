@@ -14,6 +14,7 @@ import { FormattingTab } from '@/components/tabs/FormattingTab';
 import { StructureTab } from '@/components/tabs/StructureTab';
 import { OutlineTab } from '@/components/tabs/OutlineTab';
 import { KnowledgeTab } from '@/components/tabs/KnowledgeTab';
+import { ToplistTab } from '@/components/tabs/ToplistTab';
 import { ResultTab } from '@/components/tabs/ResultTab';
 import { useArticleForm } from '@/hooks/useArticleForm';
 import { startFullWorkflow, pollWorkflowUntilComplete, updateOutline } from '@/services/api';
@@ -26,7 +27,7 @@ interface ArticleModalProps {
   defaultProjectId?: string;
 }
 
-const TAB_ORDER: TabId[] = ['details', 'structure', 'outline', 'content', 'knowledge', 'formatting'];
+const TAB_ORDER: TabId[] = ['details', 'toplist', 'structure', 'outline', 'content', 'knowledge', 'formatting'];
 
 export function ArticleModal({ open, onOpenChange, onArticleCreated, defaultProjectId }: ArticleModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>('details');
@@ -125,6 +126,8 @@ export function ArticleModal({ open, onOpenChange, onArticleCreated, defaultProj
         return <DetailsTab form={form} />;
       case 'outline':
         return <OutlineTab form={form} />;
+      case 'toplist':
+        return <ToplistTab form={form} />;
       case 'content':
         return <ContentTab form={form} />;
       case 'knowledge':

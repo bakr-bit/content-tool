@@ -10,13 +10,9 @@ import {
 } from '@/components/ui/select';
 import { AuthorSelect, AuthorModal } from '@/components/author';
 import {
-  LANGUAGE_NAMES,
-  COUNTRY_NAMES,
   TONE_NAMES,
   POV_NAMES,
   FORMALITY_NAMES,
-  type Language,
-  type TargetCountry,
   type ToneOfVoice,
   type PointOfView,
   type Formality,
@@ -72,49 +68,6 @@ export function ContentTab({ form }: ContentTabProps) {
           {form.formState.selectedAuthorId
             ? 'Settings below are from the selected author. You can override them if needed.'
             : 'Configure voice settings manually or select an author above.'}
-        </p>
-      </div>
-
-      {/* Language */}
-      <div className="space-y-2">
-        <Label>Language</Label>
-        <Select
-          value={form.formState.language}
-          onValueChange={(value) => form.setLanguage(value as Language)}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(LANGUAGE_NAMES).map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Target Country */}
-      <div className="space-y-2">
-        <Label>Target Country</Label>
-        <Select
-          value={form.formState.targetCountry}
-          onValueChange={(value) => form.setTargetCountry(value as TargetCountry)}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(COUNTRY_NAMES).map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <p className="text-xs text-muted-foreground">
-          Helps tailor content to regional preferences and SEO.
         </p>
       </div>
 

@@ -92,17 +92,31 @@ router.put(
   validate(projectUpdateSchema),
   (req: Request<{ id: string }, {}, ProjectUpdateBody>, res: Response, next: NextFunction) => {
     try {
-      const { name, description } = req.body;
+      const { name, description, geo, language, authors, defaultToplistIds } = req.body;
 
-      if (!name && description === undefined) {
+      // Check if at least one field is provided
+      const hasUpdate = name !== undefined || description !== undefined || geo !== undefined ||
+        language !== undefined || authors !== undefined || defaultToplistIds !== undefined;
+
+      if (!hasUpdate) {
         res.status(400).json({
           success: false,
-          error: { message: 'At least one of name or description must be provided', code: 400 },
+          error: { message: 'At least one field must be provided', code: 400 },
         });
         return;
       }
 
-      const updated = projectService.updateProject(req.params.id, { name, description });
+      // Convert null to undefined for storage compatibility
+      const updates = {
+        name,
+        description: description ?? undefined,
+        geo: geo ?? undefined,
+        language: language ?? undefined,
+        authors: authors ?? undefined,
+        defaultToplistIds: defaultToplistIds ?? undefined,
+      };
+
+      const updated = projectService.updateProject(req.params.id, updates);
 
       if (!updated) {
         res.status(404).json({

@@ -5,6 +5,7 @@ import { ArticlesDataTable } from '@/components/articles/ArticlesDataTable';
 import { ArticleToolbar } from '@/components/articles/ArticleToolbar';
 import { ArticlePagination } from '@/components/articles/ArticlePagination';
 import { ArticleModal } from '@/components/article-modal/ArticleModal';
+import { ArticleViewDialog } from '@/components/articles/ArticleViewDialog';
 import { Button } from '@/components/ui/button';
 import { Plus, FileText } from 'lucide-react';
 
@@ -13,6 +14,7 @@ export function ArticlesPage() {
   const [articles, setArticles] = useState<ArticleWithStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [viewingArticle, setViewingArticle] = useState<ArticleWithStatus | null>(null);
   const [query, setQuery] = useState<ListArticlesQuery>({
     page: 1,
     limit: 10,
@@ -135,7 +137,7 @@ export function ArticlesPage() {
             sortOrder={query.sortOrder}
             onSort={handleSort}
             onDelete={handleDelete}
-            onUpdate={handleUpdate}
+            onView={setViewingArticle}
           />
 
           {pagination.totalPages > 1 && (
@@ -155,6 +157,14 @@ export function ArticlesPage() {
         open={modalOpen}
         onOpenChange={setModalOpen}
         onArticleCreated={fetchArticles}
+      />
+
+      {/* Article View Dialog */}
+      <ArticleViewDialog
+        article={viewingArticle}
+        open={!!viewingArticle}
+        onOpenChange={(open) => !open && setViewingArticle(null)}
+        onUpdate={handleUpdate}
       />
     </div>
   );

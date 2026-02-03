@@ -72,7 +72,13 @@ export function ToplistTab({ form }: ToplistTabProps) {
 
   const handleSaveToplist = (toplist: ArticleToplist) => {
     if (editingToplist) {
-      form.updateToplist(toplist);
+      // Preserve article integration settings, defaulting if not set
+      form.updateToplist({
+        ...toplist,
+        includeInArticle: toplist.includeInArticle ?? editingToplist.includeInArticle ?? true,
+        heading: toplist.heading ?? editingToplist.heading ?? toplist.name,
+        headingLevel: toplist.headingLevel ?? editingToplist.headingLevel ?? 'h2',
+      });
     } else {
       // New toplists are included by default with default heading
       form.addToplist({

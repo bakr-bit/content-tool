@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import type { ArticleWithStatus, ListArticlesQuery } from '@/types/article';
 import type { ProjectWithCount } from '@/types/project';
+import type { ToplistTemplate } from '@/types/toplist';
 import { getProject, getArticles, deleteArticle, updateProject, deleteProject } from '@/services/api';
+import { getTemplates } from '@/services/toplist-api';
 import { ArticlesDataTable } from '@/components/articles/ArticlesDataTable';
 import { ArticleToolbar } from '@/components/articles/ArticleToolbar';
 import { ArticlePagination } from '@/components/articles/ArticlePagination';
@@ -10,7 +12,14 @@ import { ArticleModal } from '@/components/article-modal/ArticleModal';
 import { ArticleViewDialog } from '@/components/articles/ArticleViewDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import {
   Dialog,
   DialogContent,
@@ -29,7 +38,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, FileText, ChevronLeft, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { Plus, FileText, ChevronLeft, Pencil, Trash2, Loader2, ChevronDown, X, Globe, Languages, Users } from 'lucide-react';
 
 export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -62,11 +71,27 @@ export function ProjectDetailPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editName, setEditName] = useState('');
   const [editDescription, setEditDescription] = useState('');
+  const [editGeo, setEditGeo] = useState('');
+  const [editLanguage, setEditLanguage] = useState('');
+  const [editAuthorInput, setEditAuthorInput] = useState('');
+  const [editAuthors, setEditAuthors] = useState<string[]>([]);
+  const [editSelectedTemplateIds, setEditSelectedTemplateIds] = useState<string[]>([]);
+  const [templates, setTemplates] = useState<ToplistTemplate[]>([]);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Delete dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Load templates on mount
+  useEffect(() => {
+    getTemplates().then((result) => {
+      if (result.success && result.data) {
+        setTemplates(result.data.templates);
+      }
+    });
+  }, []);
 
   const fetchProject = useCallback(async () => {
     if (!projectId) return;
@@ -162,7 +187,41 @@ export function ProjectDetailPage() {
     if (project) {
       setEditName(project.name);
       setEditDescription(project.description || '');
+      setEditGeo(project.geo || '');
+      setEditLanguage(project.language || '');
+      setEditAuthors(project.authors || []);
+      setEditSelectedTemplateIds(project.defaultToplistIds || []);
+      setShowAdvanced(
+        !!(project.geo || project.language || project.authors?.length || project.defaultToplistIds?.length)
+      );
       setEditDialogOpen(true);
+    }
+  };
+
+  const handleAddEditAuthor = () => {
+    const trimmed = editAuthorInput.trim();
+    if (trimmed && !editAuthors.includes(trimmed)) {
+      setEditAuthors([...editAuthors, trimmed]);
+      setEditAuthorInput('');
+    }
+  };
+
+  const handleRemoveEditAuthor = (author: string) => {
+    setEditAuthors(editAuthors.filter((a) => a !== author));
+  };
+
+  const handleEditAuthorKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddEditAuthor();
+    }
+  };
+
+  const toggleEditTemplate = (templateId: string) => {
+    if (editSelectedTemplateIds.includes(templateId)) {
+      setEditSelectedTemplateIds(editSelectedTemplateIds.filter((id) => id !== templateId));
+    } else {
+      setEditSelectedTemplateIds([...editSelectedTemplateIds, templateId]);
     }
   };
 
@@ -174,6 +233,10 @@ export function ProjectDetailPage() {
       const result = await updateProject(projectId, {
         name: editName.trim(),
         description: editDescription.trim() || undefined,
+        geo: editGeo.trim() || undefined,
+        language: editLanguage.trim() || undefined,
+        authors: editAuthors.length > 0 ? editAuthors : undefined,
+        defaultToplistIds: editSelectedTemplateIds.length > 0 ? editSelectedTemplateIds : undefined,
       });
 
       if (result.success && result.data) {
@@ -269,14 +332,46 @@ export function ProjectDetailPage() {
         {/* Project Header */}
         <div className="mb-6">
           <div className="flex items-start justify-between">
-            <div>
+            <div className="space-y-2">
               <h1 className="text-2xl font-bold">{project.name}</h1>
               {project.description && (
-                <p className="text-muted-foreground mt-1">{project.description}</p>
+                <p className="text-muted-foreground">{project.description}</p>
               )}
-              <p className="text-sm text-muted-foreground mt-2">
-                {project.articleCount} {project.articleCount === 1 ? 'article' : 'articles'}
-              </p>
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <span>
+                  {project.articleCount} {project.articleCount === 1 ? 'article' : 'articles'}
+                </span>
+                {project.geo && (
+                  <span className="flex items-center gap-1">
+                    <Globe className="h-3.5 w-3.5" />
+                    {project.geo}
+                  </span>
+                )}
+                {project.language && (
+                  <span className="flex items-center gap-1">
+                    <Languages className="h-3.5 w-3.5" />
+                    {project.language}
+                  </span>
+                )}
+                {project.authors && project.authors.length > 0 && (
+                  <span className="flex items-center gap-1">
+                    <Users className="h-3.5 w-3.5" />
+                    {project.authors.join(', ')}
+                  </span>
+                )}
+              </div>
+              {project.defaultToplistIds && project.defaultToplistIds.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {project.defaultToplistIds.map((id) => {
+                    const template = templates.find((t) => t.templateId === id);
+                    return (
+                      <Badge key={id} variant="secondary" className="text-xs">
+                        {template?.name || id}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={handleEditOpen}>
@@ -353,19 +448,17 @@ export function ProjectDetailPage() {
 
       {/* Edit Project Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Edit Project</DialogTitle>
             <DialogDescription>
-              Update the project name and description.
+              Update the project settings.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
             <div className="space-y-2">
-              <label htmlFor="edit-name" className="text-sm font-medium">
-                Name *
-              </label>
+              <Label htmlFor="edit-name">Name *</Label>
               <Input
                 id="edit-name"
                 value={editName}
@@ -375,9 +468,7 @@ export function ProjectDetailPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="edit-description" className="text-sm font-medium">
-                Description
-              </label>
+              <Label htmlFor="edit-description">Description</Label>
               <Textarea
                 id="edit-description"
                 value={editDescription}
@@ -386,6 +477,95 @@ export function ProjectDetailPage() {
                 rows={3}
               />
             </div>
+
+            <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-full justify-between">
+                  Additional Settings
+                  <ChevronDown className={`h-4 w-4 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-4 pt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-geo">GEO</Label>
+                    <Input
+                      id="edit-geo"
+                      placeholder="e.g., US, UK, DE"
+                      value={editGeo}
+                      onChange={(e) => setEditGeo(e.target.value)}
+                      disabled={isUpdating}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-language">Language</Label>
+                    <Input
+                      id="edit-language"
+                      placeholder="e.g., English, German"
+                      value={editLanguage}
+                      onChange={(e) => setEditLanguage(e.target.value)}
+                      disabled={isUpdating}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Authors</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Add author name"
+                      value={editAuthorInput}
+                      onChange={(e) => setEditAuthorInput(e.target.value)}
+                      onKeyDown={handleEditAuthorKeyDown}
+                      disabled={isUpdating}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleAddEditAuthor}
+                      disabled={isUpdating || !editAuthorInput.trim()}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  {editAuthors.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {editAuthors.map((author) => (
+                        <Badge key={author} variant="secondary" className="gap-1">
+                          {author}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveEditAuthor(author)}
+                            className="ml-1 hover:text-destructive"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Default Toplist Templates</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Select templates to use by default when creating toplists
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {templates.map((template) => (
+                      <Badge
+                        key={template.templateId}
+                        variant={editSelectedTemplateIds.includes(template.templateId) ? 'default' : 'outline'}
+                        className="cursor-pointer"
+                        onClick={() => toggleEditTemplate(template.templateId)}
+                      >
+                        {template.name}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </div>
 
           <DialogFooter>

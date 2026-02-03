@@ -78,7 +78,7 @@ Return your analysis as JSON:
   "competitorWeaknesses": ["Weakness 1", "Weakness 2"]
 }
 
-IMPORTANT: Return ONLY valid JSON, no other text or markdown.`),
+RESPONSE FORMAT: Your entire response must begin with { and end with }. No markdown, no explanation.`),
         new HumanMessage(`Keyword: "${keyword}"
 
 Competitor Content:
@@ -147,7 +147,8 @@ ${contentSummaries}`)
         new SystemMessage(`Based on the identified content gaps and unique angles, provide 5-7 specific content recommendations for an article about "${keyword}".
 
 Each recommendation should be actionable and specific.
-Return ONLY a JSON array of strings, no other text.`),
+
+RESPONSE FORMAT: Your entire response must begin with [ and end with ]. No markdown, no explanation.`),
         new HumanMessage(`Gaps:
 ${gaps.map(g => `- ${g.topic}: ${g.description}`).join('\n')}
 
@@ -197,7 +198,8 @@ ${uniqueAngles.map(a => `- ${a}`).join('\n')}`)
         new SystemMessage(`Analyze these headings from competitor articles about "${keyword}" and identify the most important subtopics that appear frequently.
 
 Return the top 5-8 subtopics that should definitely be covered in a comprehensive article.
-Return ONLY a JSON array of strings, no other text.`),
+
+RESPONSE FORMAT: Your entire response must begin with [ and end with ]. No markdown, no explanation.`),
         new HumanMessage(`Headings from competitors:
 ${allHeadings.slice(0, 50).join('\n')}`)
       ];
