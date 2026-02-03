@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { Layout } from '@/components/layout/Layout';
 import { ProjectsPage } from '@/pages/ProjectsPage';
 import { ProjectDetailPage } from '@/pages/ProjectDetailPage';
 import { ArticlesPage } from '@/pages/ArticlesPage';
@@ -26,33 +27,35 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <ProjectsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/projects/:projectId"
-        element={
-          <ProtectedRoute>
-            <ProjectDetailPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/articles"
-        element={
-          <ProtectedRoute>
-            <ArticlesPage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <ProjectsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:projectId"
+          element={
+            <ProtectedRoute>
+              <ProjectDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/articles"
+          element={
+            <ProtectedRoute>
+              <ArticlesPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Layout>
   );
 }
 
