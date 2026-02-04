@@ -1,4 +1,5 @@
 import { translationService } from '../translation';
+import { translateToplistContent } from './content-translator';
 
 export interface ToplistColumn {
   id: string;
@@ -46,12 +47,20 @@ export interface ToplistData {
   headingLevel?: ToplistHeadingLevel;
 }
 
+// Fields that should be translated
+const TRANSLATABLE_FIELDS = ['bonus', 'terms', 'cta', 'description', 'license'];
+
 /**
  * Generates markdown table from toplist data with optional heading
  * @param toplist - The toplist data to generate markdown from
- * @param language - Optional language code for translating column labels (e.g., 'de-DE', 'es-ES')
+ * @param language - Optional language code for translating content (e.g., 'de-DE', 'es-ES')
+ * @param translatedContent - Optional pre-translated content map
  */
-export function generateToplistMarkdown(toplist: ToplistData, language?: string): string {
+export function generateToplistMarkdown(
+  toplist: ToplistData,
+  language?: string,
+  translatedContent?: Map<string, string>
+): string {
   const { columns, entries, heading, headingLevel, name } = toplist;
 
   if (!entries || entries.length === 0) {
@@ -67,16 +76,16 @@ export function generateToplistMarkdown(toplist: ToplistData, language?: string)
   lines.push('');
 
   // Add table header - translate labels if language is provided and not English
-  const shouldTranslate = language && !language.startsWith('en-');
+  const shouldTranslateLabels = language && !language.startsWith('en-');
   const headers = columns.map((col) =>
-    shouldTranslate ? translationService.translate(col.label, language) : col.label
+    shouldTranslateLabels ? translationService.translate(col.label, language) : col.label
   );
   lines.push(`| ${headers.join(' | ')} |`);
   lines.push(`| ${headers.map(() => '---').join(' | ')} |`);
 
   // Add table rows
   for (const entry of entries) {
-    const cells = columns.map((col) => formatCellValue(entry, col));
+    const cells = columns.map((col) => formatCellValue(entry, col, translatedContent));
     lines.push(`| ${cells.join(' | ')} |`);
   }
 
@@ -84,9 +93,67 @@ export function generateToplistMarkdown(toplist: ToplistData, language?: string)
 }
 
 /**
+ * Async version that handles translation of toplist content
+ * @param toplist - The toplist data to generate markdown from
+ * @param language - Optional language code for translating content (e.g., 'de-DE', 'es-ES')
+ */
+export async function generateToplistMarkdownAsync(
+  toplist: ToplistData,
+  language?: string
+): Promise<string> {
+  const shouldTranslateContent = language && !language.startsWith('en-');
+
+  let translatedContent: Map<string, string> | undefined;
+
+  if (shouldTranslateContent) {
+    translatedContent = await translateToplistEntries(toplist.entries, language);
+  }
+
+  return generateToplistMarkdown(toplist, language, translatedContent);
+}
+
+/**
+ * Translates all translatable content from toplist entries
+ */
+async function translateToplistEntries(
+  entries: ToplistEntryData[],
+  language: string
+): Promise<Map<string, string>> {
+  const textsToTranslate: Record<string, string> = {};
+
+  // Collect all translatable text from entries
+  for (const entry of entries) {
+    const brand = entry.brand;
+    const overrides = entry.attributeOverrides || {};
+    const attrs: BrandAttributes = { ...brand?.attributes, ...overrides };
+
+    for (const field of TRANSLATABLE_FIELDS) {
+      const value = attrs[field];
+      if (typeof value === 'string' && value.trim() && value !== '-') {
+        // Use a unique key combining entry and field
+        const key = `${entry.entryId}:${field}`;
+        textsToTranslate[key] = value;
+      }
+    }
+  }
+
+  if (Object.keys(textsToTranslate).length === 0) {
+    return new Map();
+  }
+
+  const translated = await translateToplistContent(textsToTranslate, language);
+
+  return new Map(Object.entries(translated));
+}
+
+/**
  * Format a cell value based on column type
  */
-function formatCellValue(entry: ToplistEntryData, column: ToplistColumn): string {
+function formatCellValue(
+  entry: ToplistEntryData,
+  column: ToplistColumn,
+  translatedContent?: Map<string, string>
+): string {
   const brand = entry.brand;
   const overrides = entry.attributeOverrides || {};
   const attrs: BrandAttributes = { ...brand?.attributes, ...overrides };
@@ -107,7 +174,27 @@ function formatCellValue(entry: ToplistEntryData, column: ToplistColumn): string
     return '-';
   }
 
-  switch (column.type) {
+  // Check if we have a translated version
+  if (translatedContent && TRANSLATABLE_FIELDS.includes(column.brandAttribute)) {
+    const translationKey = `${entry.entryId}:${column.brandAttribute}`;
+    const translatedValue = translatedContent.get(translationKey);
+    if (translatedValue) {
+      return formatValueByType(translatedValue, column.type);
+    }
+  }
+
+  return formatValueByType(value, column.type);
+}
+
+/**
+ * Format value based on column type
+ */
+function formatValueByType(value: unknown, type: ToplistColumn['type']): string {
+  if (value === undefined || value === null) {
+    return '-';
+  }
+
+  switch (type) {
     case 'list':
       if (Array.isArray(value)) {
         return value.join(', ');
@@ -137,13 +224,13 @@ function formatCellValue(entry: ToplistEntryData, column: ToplistColumn): string
  * Insert toplist markdown into article content after the first H2 heading
  * @param articleContent - The article markdown content
  * @param toplists - Array of toplist data to insert
- * @param language - Optional language code for translating column labels
+ * @param language - Optional language code for translating content
  */
-export function insertToplistIntoArticle(
+export async function insertToplistIntoArticle(
   articleContent: string,
   toplists: ToplistData[],
   language?: string
-): string {
+): Promise<string> {
   // Filter only toplists marked for inclusion
   const includedToplists = toplists.filter((t) => t.includeInArticle !== false);
 
@@ -152,8 +239,11 @@ export function insertToplistIntoArticle(
   }
 
   // Generate markdown for all included toplists with translations
-  const toplistMarkdown = includedToplists
-    .map((toplist) => generateToplistMarkdown(toplist, language))
+  const toplistMarkdowns = await Promise.all(
+    includedToplists.map((toplist) => generateToplistMarkdownAsync(toplist, language))
+  );
+
+  const toplistMarkdown = toplistMarkdowns
     .filter((md) => md.length > 0)
     .join('\n\n');
 
