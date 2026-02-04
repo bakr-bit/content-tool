@@ -362,19 +362,69 @@ const DEFAULT_TRANSLATIONS: Record<string, Record<string, string>> = {
     'zh-TW': '我們喜歡的原因', 'ko-KR': '추천 이유', 'ar-SA': 'لماذا نحبه', 'hi-IN': 'हमें क्यों पसंद है',
     'tr-TR': 'Neden Beğendik',
   },
+  'Bonus': {
+    'de-DE': 'Bonus', 'de-AT': 'Bonus', 'es-ES': 'Bono', 'es-MX': 'Bono',
+    'fr-FR': 'Bonus', 'fr-CA': 'Bonus', 'it-IT': 'Bonus', 'pt-BR': 'Bônus',
+    'pt-PT': 'Bónus', 'nl-NL': 'Bonus', 'sv-SE': 'Bonus', 'no-NO': 'Bonus',
+    'da-DK': 'Bonus', 'fi-FI': 'Bonus', 'pl-PL': 'Bonus', 'ru-RU': 'Бонус',
+    'ja-JP': 'ボーナス', 'zh-CN': '奖金', 'zh-TW': '獎金', 'ko-KR': '보너스',
+    'ar-SA': 'مكافأة', 'hi-IN': 'बोनस', 'tr-TR': 'Bonus',
+  },
+  'Terms': {
+    'de-DE': 'Bedingungen', 'de-AT': 'Bedingungen', 'es-ES': 'Términos', 'es-MX': 'Términos',
+    'fr-FR': 'Conditions', 'fr-CA': 'Conditions', 'it-IT': 'Termini', 'pt-BR': 'Termos',
+    'pt-PT': 'Termos', 'nl-NL': 'Voorwaarden', 'sv-SE': 'Villkor', 'no-NO': 'Vilkår',
+    'da-DK': 'Vilkår', 'fi-FI': 'Ehdot', 'pl-PL': 'Warunki', 'ru-RU': 'Условия',
+    'ja-JP': '利用規約', 'zh-CN': '条款', 'zh-TW': '條款', 'ko-KR': '약관',
+    'ar-SA': 'الشروط', 'hi-IN': 'शर्तें', 'tr-TR': 'Şartlar',
+  },
+  'Rating': {
+    'de-DE': 'Bewertung', 'de-AT': 'Bewertung', 'es-ES': 'Calificación', 'es-MX': 'Calificación',
+    'fr-FR': 'Note', 'fr-CA': 'Note', 'it-IT': 'Valutazione', 'pt-BR': 'Avaliação',
+    'pt-PT': 'Avaliação', 'nl-NL': 'Beoordeling', 'sv-SE': 'Betyg', 'no-NO': 'Vurdering',
+    'da-DK': 'Bedømmelse', 'fi-FI': 'Arvosana', 'pl-PL': 'Ocena', 'ru-RU': 'Рейтинг',
+    'ja-JP': '評価', 'zh-CN': '评分', 'zh-TW': '評分', 'ko-KR': '평점',
+    'ar-SA': 'التقييم', 'hi-IN': 'रेटिंग', 'tr-TR': 'Puan',
+  },
+  'CTA': {
+    'de-DE': 'Aktion', 'de-AT': 'Aktion', 'es-ES': 'Acción', 'es-MX': 'Acción',
+    'fr-FR': 'Action', 'fr-CA': 'Action', 'it-IT': 'Azione', 'pt-BR': 'Ação',
+    'pt-PT': 'Ação', 'nl-NL': 'Actie', 'sv-SE': 'Åtgärd', 'no-NO': 'Handling',
+    'da-DK': 'Handling', 'fi-FI': 'Toiminto', 'pl-PL': 'Akcja', 'ru-RU': 'Действие',
+    'ja-JP': 'アクション', 'zh-CN': '操作', 'zh-TW': '操作', 'ko-KR': '액션',
+    'ar-SA': 'إجراء', 'hi-IN': 'कार्रवाई', 'tr-TR': 'İşlem',
+  },
+  'Description': {
+    'de-DE': 'Beschreibung', 'de-AT': 'Beschreibung', 'es-ES': 'Descripción', 'es-MX': 'Descripción',
+    'fr-FR': 'Description', 'fr-CA': 'Description', 'it-IT': 'Descrizione', 'pt-BR': 'Descrição',
+    'pt-PT': 'Descrição', 'nl-NL': 'Beschrijving', 'sv-SE': 'Beskrivning', 'no-NO': 'Beskrivelse',
+    'da-DK': 'Beskrivelse', 'fi-FI': 'Kuvaus', 'pl-PL': 'Opis', 'ru-RU': 'Описание',
+    'ja-JP': '説明', 'zh-CN': '描述', 'zh-TW': '描述', 'ko-KR': '설명',
+    'ar-SA': 'الوصف', 'hi-IN': 'विवरण', 'tr-TR': 'Açıklama',
+  },
+  'Pros': {
+    'de-DE': 'Vorteile', 'de-AT': 'Vorteile', 'es-ES': 'Ventajas', 'es-MX': 'Ventajas',
+    'fr-FR': 'Avantages', 'fr-CA': 'Avantages', 'it-IT': 'Vantaggi', 'pt-BR': 'Vantagens',
+    'pt-PT': 'Vantagens', 'nl-NL': 'Voordelen', 'sv-SE': 'Fördelar', 'no-NO': 'Fordeler',
+    'da-DK': 'Fordele', 'fi-FI': 'Edut', 'pl-PL': 'Zalety', 'ru-RU': 'Плюсы',
+    'ja-JP': 'メリット', 'zh-CN': '优点', 'zh-TW': '優點', 'ko-KR': '장점',
+    'ar-SA': 'المميزات', 'hi-IN': 'फायदे', 'tr-TR': 'Artılar',
+  },
+  'Cons': {
+    'de-DE': 'Nachteile', 'de-AT': 'Nachteile', 'es-ES': 'Desventajas', 'es-MX': 'Desventajas',
+    'fr-FR': 'Inconvénients', 'fr-CA': 'Inconvénients', 'it-IT': 'Svantaggi', 'pt-BR': 'Desvantagens',
+    'pt-PT': 'Desvantagens', 'nl-NL': 'Nadelen', 'sv-SE': 'Nackdelar', 'no-NO': 'Ulemper',
+    'da-DK': 'Ulemper', 'fi-FI': 'Haitat', 'pl-PL': 'Wady', 'ru-RU': 'Минусы',
+    'ja-JP': 'デメリット', 'zh-CN': '缺点', 'zh-TW': '缺點', 'ko-KR': '단점',
+    'ar-SA': 'العيوب', 'hi-IN': 'नुकसान', 'tr-TR': 'Eksiler',
+  },
 };
 
 function seedDefaultTranslations(database: Database.Database): void {
-  const existingCount = database.prepare('SELECT COUNT(*) as count FROM translations').get() as { count: number };
-
-  if (existingCount.count > 0) {
-    logger.debug('Translations already seeded, skipping');
-    return;
-  }
-
   const now = new Date().toISOString();
+  // Use INSERT OR REPLACE to upsert translations (allows adding new ones to existing DB)
   const stmt = database.prepare(`
-    INSERT INTO translations (key, language, translation, created_at)
+    INSERT OR REPLACE INTO translations (key, language, translation, created_at)
     VALUES (?, ?, ?, ?)
   `);
 
@@ -465,6 +515,9 @@ export function getDatabase(dbPath: string): Database.Database {
 
   // Run migrations
   runMigrations(db);
+
+  // Always seed/update translations (uses upsert so safe to run multiple times)
+  seedDefaultTranslations(db);
 
   logger.info('SQLite database initialized successfully');
 
