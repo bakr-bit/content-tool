@@ -49,12 +49,14 @@ export function ToplistTab({ form }: ToplistTabProps) {
 
   const toplists = form.formState.toplists || [];
   const projectId = form.formState.projectId;
+  // Site key in toplist API uses projectId with -internal suffix
+  const siteKey = projectId ? `${projectId}-internal` : null;
 
   // Fetch project toplists when dialog opens
   useEffect(() => {
-    if (isLibraryOpen && projectId) {
+    if (isLibraryOpen && siteKey) {
       setIsLoadingLibrary(true);
-      getToplists(projectId)
+      getToplists(siteKey)
         .then((result) => {
           if (result.success && result.data) {
             setProjectToplists(result.data.toplists);
@@ -145,12 +147,12 @@ export function ToplistTab({ form }: ToplistTabProps) {
   };
 
   const handleLoadFromApi = async (toplist: Toplist) => {
-    if (!projectId) return;
+    if (!siteKey) return;
 
     setLoadingToplistSlug(toplist.slug);
     try {
       // Fetch the full toplist with resolved items
-      const result = await getToplist(projectId, toplist.slug);
+      const result = await getToplist(siteKey, toplist.slug);
 
       if (result.success && result.data) {
         const resolved = result.data;
@@ -209,7 +211,7 @@ export function ToplistTab({ form }: ToplistTabProps) {
   const handleOpenToplistManager = () => {
     // Open toplist manager in new tab - with site context if available
     const baseUrl = 'https://toplist-cms.vercel.app/dashboard';
-    const url = projectId ? `${baseUrl}/sites/${projectId}` : baseUrl;
+    const url = siteKey ? `${baseUrl}/sites/${siteKey}` : baseUrl;
     window.open(url, '_blank');
   };
 
