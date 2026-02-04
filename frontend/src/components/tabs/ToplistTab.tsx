@@ -17,8 +17,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Plus, GripVertical, Pencil, Trash2, Table2, FolderOpen, Loader2, Library, ExternalLink } from 'lucide-react';
-import { ToplistBuilder } from '@/components/toplist/ToplistBuilder';
+import { GripVertical, Trash2, Table2, FolderOpen, Loader2, Library, ExternalLink, Plus } from 'lucide-react';
 import { ToplistPreview } from '@/components/toplist/ToplistPreview';
 import { getToplists, getToplist } from '@/services/toplist-api';
 import type { UseArticleFormReturn } from '@/hooks/useArticleForm';
@@ -37,11 +36,9 @@ const DEFAULT_COLUMNS: ColumnDefinition[] = [
 ];
 
 export function ToplistTab({ form }: ToplistTabProps) {
-  const [isBuilderOpen, setIsBuilderOpen] = useState(false);
-  const [editingToplist, setEditingToplist] = useState<ArticleToplist | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-  // Library state (now fetches from project's toplists in API)
+  // Load from API state
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [projectToplists, setProjectToplists] = useState<Toplist[]>([]);
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
@@ -64,42 +61,10 @@ export function ToplistTab({ form }: ToplistTabProps) {
         })
         .finally(() => setIsLoadingLibrary(false));
     }
-  }, [isLibraryOpen, projectId]);
-
-  const handleAddToplist = () => {
-    setEditingToplist(null);
-    setIsBuilderOpen(true);
-  };
-
-  const handleEditToplist = (toplist: ArticleToplist) => {
-    setEditingToplist(toplist);
-    setIsBuilderOpen(true);
-  };
+  }, [isLibraryOpen, siteKey]);
 
   const handleDeleteToplist = (toplistId: string) => {
     form.removeToplist(toplistId);
-  };
-
-  const handleSaveToplist = (toplist: ArticleToplist) => {
-    if (editingToplist) {
-      // Preserve article integration settings, defaulting if not set
-      form.updateToplist({
-        ...toplist,
-        includeInArticle: toplist.includeInArticle ?? editingToplist.includeInArticle ?? true,
-        heading: toplist.heading ?? editingToplist.heading ?? toplist.name,
-        headingLevel: toplist.headingLevel ?? editingToplist.headingLevel ?? 'h2',
-      });
-    } else {
-      // New toplists are included by default with default heading
-      form.addToplist({
-        ...toplist,
-        includeInArticle: true,
-        heading: toplist.name,
-        headingLevel: 'h2',
-      });
-    }
-    setIsBuilderOpen(false);
-    setEditingToplist(null);
   };
 
   const handleToggleInclude = (toplistId: string, include: boolean) => {
@@ -230,15 +195,11 @@ export function ToplistTab({ form }: ToplistTabProps) {
             Manage Toplists
           </Button>
           {projectId && (
-            <Button variant="outline" onClick={() => setIsLibraryOpen(true)}>
+            <Button onClick={() => setIsLibraryOpen(true)}>
               <FolderOpen className="h-4 w-4 mr-2" />
               Load from API
             </Button>
           )}
-          <Button onClick={handleAddToplist}>
-            <Plus className="h-4 w-4 mr-2" />
-            Create New
-          </Button>
         </div>
       </div>
 
@@ -254,7 +215,7 @@ export function ToplistTab({ form }: ToplistTabProps) {
           <h3 className="mt-4 text-lg font-medium">No toplists yet</h3>
           <p className="mt-2 text-sm text-muted-foreground">
             {projectId
-              ? 'Load a toplist from the API or create a new one.'
+              ? 'Load a toplist from the Toplist API to include it in your article.'
               : 'Select a project first, then load toplists from the API.'}
           </p>
           <div className="flex gap-2 justify-center mt-4">
@@ -263,15 +224,11 @@ export function ToplistTab({ form }: ToplistTabProps) {
               Manage Toplists
             </Button>
             {projectId && (
-              <Button variant="outline" onClick={() => setIsLibraryOpen(true)}>
+              <Button onClick={() => setIsLibraryOpen(true)}>
                 <FolderOpen className="h-4 w-4 mr-2" />
                 Load from API
               </Button>
             )}
-            <Button onClick={handleAddToplist}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create New
-            </Button>
           </div>
         </div>
       ) : (
@@ -312,22 +269,13 @@ export function ToplistTab({ form }: ToplistTabProps) {
                       {toplist.includeInArticle ? 'Included' : 'Excluded'}
                     </Label>
                   </div>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEditToplist(toplist)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteToplist(toplist.toplistId)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeleteToplist(toplist.toplistId)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
 
@@ -373,13 +321,6 @@ export function ToplistTab({ form }: ToplistTabProps) {
           ))}
         </div>
       )}
-
-      <ToplistBuilder
-        open={isBuilderOpen}
-        onOpenChange={setIsBuilderOpen}
-        toplist={editingToplist}
-        onSave={handleSaveToplist}
-      />
 
       {/* Load from API Dialog */}
       <Dialog open={isLibraryOpen} onOpenChange={setIsLibraryOpen}>
