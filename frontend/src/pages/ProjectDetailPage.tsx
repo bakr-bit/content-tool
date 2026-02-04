@@ -2,9 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import type { ArticleWithStatus, ListArticlesQuery } from '@/types/article';
 import type { ProjectWithCount } from '@/types/project';
-import type { ToplistTemplate } from '@/types/toplist';
 import { getProject, getArticles, deleteArticle, updateProject, deleteProject } from '@/services/api';
-import { getTemplates } from '@/services/toplist-api';
 import { ArticlesDataTable } from '@/components/articles/ArticlesDataTable';
 import { ArticleToolbar } from '@/components/articles/ArticleToolbar';
 import { ArticlePagination } from '@/components/articles/ArticlePagination';
@@ -75,23 +73,12 @@ export function ProjectDetailPage() {
   const [editLanguage, setEditLanguage] = useState('');
   const [editAuthorInput, setEditAuthorInput] = useState('');
   const [editAuthors, setEditAuthors] = useState<string[]>([]);
-  const [editSelectedTemplateIds, setEditSelectedTemplateIds] = useState<string[]>([]);
-  const [templates, setTemplates] = useState<ToplistTemplate[]>([]);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Delete dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  // Load templates on mount
-  useEffect(() => {
-    getTemplates().then((result) => {
-      if (result.success && result.data) {
-        setTemplates(result.data.templates);
-      }
-    });
-  }, []);
 
   const fetchProject = useCallback(async () => {
     if (!projectId) return;
@@ -190,9 +177,8 @@ export function ProjectDetailPage() {
       setEditGeo(project.geo || '');
       setEditLanguage(project.language || '');
       setEditAuthors(project.authors || []);
-      setEditSelectedTemplateIds(project.defaultToplistIds || []);
       setShowAdvanced(
-        !!(project.geo || project.language || project.authors?.length || project.defaultToplistIds?.length)
+        !!(project.geo || project.language || project.authors?.length)
       );
       setEditDialogOpen(true);
     }
@@ -217,14 +203,6 @@ export function ProjectDetailPage() {
     }
   };
 
-  const toggleEditTemplate = (templateId: string) => {
-    if (editSelectedTemplateIds.includes(templateId)) {
-      setEditSelectedTemplateIds(editSelectedTemplateIds.filter((id) => id !== templateId));
-    } else {
-      setEditSelectedTemplateIds([...editSelectedTemplateIds, templateId]);
-    }
-  };
-
   const handleEditSave = async () => {
     if (!projectId || !editName.trim()) return;
 
@@ -236,7 +214,6 @@ export function ProjectDetailPage() {
         geo: editGeo.trim() || undefined,
         language: editLanguage.trim() || undefined,
         authors: editAuthors.length > 0 ? editAuthors : undefined,
-        defaultToplistIds: editSelectedTemplateIds.length > 0 ? editSelectedTemplateIds : undefined,
       });
 
       if (result.success && result.data) {
@@ -342,18 +319,6 @@ export function ProjectDetailPage() {
                   </span>
                 )}
               </div>
-              {project.defaultToplistIds && project.defaultToplistIds.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {project.defaultToplistIds.map((id) => {
-                    const template = templates.find((t) => t.templateId === id);
-                    return (
-                      <Badge key={id} variant="secondary" className="text-xs">
-                        {template?.name || id}
-                      </Badge>
-                    );
-                  })}
-                </div>
-              )}
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={handleEditOpen}>
@@ -525,25 +490,6 @@ export function ProjectDetailPage() {
                       ))}
                     </div>
                   )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Default Toplist Templates</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Select templates to use by default when creating toplists
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {templates.map((template) => (
-                      <Badge
-                        key={template.templateId}
-                        variant={editSelectedTemplateIds.includes(template.templateId) ? 'default' : 'outline'}
-                        className="cursor-pointer"
-                        onClick={() => toggleEditTemplate(template.templateId)}
-                      >
-                        {template.name}
-                      </Badge>
-                    ))}
-                  </div>
                 </div>
               </CollapsibleContent>
             </Collapsible>

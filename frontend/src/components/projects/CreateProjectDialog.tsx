@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
@@ -20,8 +20,6 @@ import {
 import { Loader2, ChevronDown, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { createProject } from '@/services/api';
-import { getTemplates } from '@/services/toplist-api';
-import type { ToplistTemplate } from '@/types/toplist';
 
 interface CreateProjectDialogProps {
   open: boolean;
@@ -41,21 +39,9 @@ export function CreateProjectDialog({
   const [language, setLanguage] = useState('');
   const [authorInput, setAuthorInput] = useState('');
   const [authors, setAuthors] = useState<string[]>([]);
-  const [selectedTemplateIds, setSelectedTemplateIds] = useState<string[]>([]);
-  const [templates, setTemplates] = useState<ToplistTemplate[]>([]);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (open) {
-      getTemplates().then((result) => {
-        if (result.success && result.data) {
-          setTemplates(result.data.templates);
-        }
-      });
-    }
-  }, [open]);
 
   const handleAddAuthor = () => {
     const trimmed = authorInput.trim();
@@ -76,14 +62,6 @@ export function CreateProjectDialog({
     }
   };
 
-  const toggleTemplate = (templateId: string) => {
-    if (selectedTemplateIds.includes(templateId)) {
-      setSelectedTemplateIds(selectedTemplateIds.filter((id) => id !== templateId));
-    } else {
-      setSelectedTemplateIds([...selectedTemplateIds, templateId]);
-    }
-  };
-
   const handleCreate = async () => {
     if (!name.trim()) {
       setError('Project name is required');
@@ -100,7 +78,6 @@ export function CreateProjectDialog({
         geo: geo.trim() || undefined,
         language: language.trim() || undefined,
         authors: authors.length > 0 ? authors : undefined,
-        defaultToplistIds: selectedTemplateIds.length > 0 ? selectedTemplateIds : undefined,
       });
 
       if (result.success && result.data) {
@@ -125,7 +102,6 @@ export function CreateProjectDialog({
     setLanguage('');
     setAuthorInput('');
     setAuthors([]);
-    setSelectedTemplateIds([]);
     setShowAdvanced(false);
     setError(null);
   };
@@ -235,25 +211,6 @@ export function CreateProjectDialog({
                     ))}
                   </div>
                 )}
-              </div>
-
-              <div className="space-y-2">
-                <Label>Default Toplist Templates</Label>
-                <p className="text-xs text-muted-foreground">
-                  Select templates to use by default when creating toplists in this project
-                </p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {templates.map((template) => (
-                    <Badge
-                      key={template.templateId}
-                      variant={selectedTemplateIds.includes(template.templateId) ? 'default' : 'outline'}
-                      className="cursor-pointer"
-                      onClick={() => toggleTemplate(template.templateId)}
-                    >
-                      {template.name}
-                    </Badge>
-                  ))}
-                </div>
               </div>
             </CollapsibleContent>
           </Collapsible>
