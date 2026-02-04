@@ -12,7 +12,7 @@ import type {
 import type { ProjectWithCount } from '@/types/project';
 import type { ArticleTemplate } from '@/types/template';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://206.81.26.109/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://beneath-intervention-starsmerchant-diverse.trycloudflare.com/api/v1';
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem('token');

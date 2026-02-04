@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://206.81.26.109/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://beneath-intervention-starsmerchant-diverse.trycloudflare.com/api/v1';
 
 interface User {
   token: string;

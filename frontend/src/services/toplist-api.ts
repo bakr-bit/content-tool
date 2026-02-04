@@ -17,7 +17,7 @@ import type {
   UpdateTemplateRequest,
 } from '@/types/toplist';
 
-const API_BASE = `${import.meta.env.VITE_API_URL || 'http://206.81.26.109/api/v1'}/toplist`;
+const API_BASE = `${import.meta.env.VITE_API_URL || 'https://beneath-intervention-starsmerchant-diverse.trycloudflare.com/api/v1'}/toplist`;
 
 async function fetchApi<T>(
   endpoint: string,
