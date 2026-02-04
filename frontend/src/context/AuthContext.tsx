@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://206.81.26.109/api/v1';
+
 interface User {
   token: string;
   username: string;
@@ -25,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (token && username) {
       // Verify token is still valid
-      fetch('/api/v1/auth/verify', {
+      fetch(`${API_BASE}/auth/verify`, {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => {
@@ -47,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (username: string, password: string) => {
-    const res = await fetch('/api/v1/auth/login', {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
