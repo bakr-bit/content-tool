@@ -7,7 +7,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import type { ArticleToplist, ColumnDefinition, ToplistEntry, BrandAttributes } from '@/types/toplist';
+import type { ArticleToplist, ColumnDefinition, ToplistEntry } from '@/types/toplist';
 
 interface ToplistPreviewProps {
   toplist: ArticleToplist;
@@ -31,7 +31,6 @@ export function ToplistPreview({ toplist, compact = false }: ToplistPreviewProps
   const getCellValue = (entry: ToplistEntry, column: ColumnDefinition) => {
     const brand = entry.brand;
     const overrides = entry.attributeOverrides || {};
-    const attrs: BrandAttributes = { ...brand?.attributes, ...overrides };
 
     // Handle special _rank attribute
     if (column.brandAttribute === '_rank') {
@@ -43,13 +42,29 @@ export function ToplistPreview({ toplist, compact = false }: ToplistPreviewProps
       return brand?.name || '-';
     }
 
-    const value = attrs[column.brandAttribute];
-
-    if (value === undefined || value === null) {
-      return '-';
+    // Check overrides first, then fall back to brand fields
+    const key = column.brandAttribute;
+    if (overrides[key] !== undefined) {
+      return overrides[key];
     }
 
-    return value;
+    // Map column attributes to Brand fields
+    if (brand) {
+      switch (key) {
+        case 'bonus': return brand.defaultBonus;
+        case 'rating': return brand.defaultRating;
+        case 'logo': return brand.defaultLogo;
+        case 'affiliateUrl': return brand.defaultAffiliateUrl;
+        case 'terms': return brand.terms;
+        case 'license': return brand.license;
+        case 'pros': return brand.pros;
+        case 'cons': return brand.cons;
+        case 'website': return brand.website;
+        case 'description': return brand.description;
+      }
+    }
+
+    return '-';
   };
 
   const formatValue = (value: unknown, type: ColumnDefinition['type']) => {

@@ -219,7 +219,7 @@ export async function getLibraryToplists(): Promise<ApiResponse<ListToplistsResu
 /**
  * @deprecated No longer supported - toplists are managed in the Toplist API
  */
-export async function saveToLibrary(toplistId: string, name?: string): Promise<ApiResponse<Toplist>> {
+export async function saveToLibrary(_toplistId: string, _name?: string): Promise<ApiResponse<Toplist>> {
   return {
     success: false,
     error: { message: 'saveToLibrary is deprecated. Toplists are now managed in the Toplist API.', code: 501 },
@@ -230,8 +230,8 @@ export async function saveToLibrary(toplistId: string, name?: string): Promise<A
  * @deprecated No longer supported - use getToplist(siteKey, slug) instead
  */
 export async function loadFromLibrary(
-  libraryToplistId: string,
-  options?: { articleId?: string; position?: number }
+  _libraryToplistId: string,
+  _options?: { articleId?: string; position?: number }
 ): Promise<ApiResponse<Toplist>> {
   return {
     success: false,

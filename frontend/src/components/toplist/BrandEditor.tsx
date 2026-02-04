@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { createBrand } from '@/services/toplist-api';
-import type { Brand, BrandAttributes } from '@/types/toplist';
+import type { Brand } from '@/types/toplist';
 
 interface BrandEditorProps {
   open: boolean;
@@ -30,10 +30,15 @@ export function BrandEditor({
   defaultName = '',
 }: BrandEditorProps) {
   const [name, setName] = useState('');
-  const [slug, setSlug] = useState('');
+  const [brandId, setBrandId] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
   const [websiteUrl, setWebsiteUrl] = useState('');
-  const [attributes, setAttributes] = useState<BrandAttributes>({});
+  const [defaultBonus, setDefaultBonus] = useState('');
+  const [defaultRating, setDefaultRating] = useState('');
+  const [terms, setTerms] = useState('');
+  const [license, setLicense] = useState('');
+  const [pros, setPros] = useState('');
+  const [cons, setCons] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,21 +47,31 @@ export function BrandEditor({
       setError(null);
       if (brand) {
         setName(brand.name);
-        setSlug(brand.slug || '');
-        setLogoUrl(brand.logoUrl || '');
-        setWebsiteUrl(brand.websiteUrl || '');
-        setAttributes(brand.attributes);
+        setBrandId(brand.brandId);
+        setLogoUrl(brand.defaultLogo || '');
+        setWebsiteUrl(brand.website || '');
+        setDefaultBonus(brand.defaultBonus || '');
+        setDefaultRating(brand.defaultRating?.toString() || '');
+        setTerms(brand.terms || '');
+        setLicense(brand.license || '');
+        setPros(brand.pros?.join(', ') || '');
+        setCons(brand.cons?.join(', ') || '');
       } else {
         setName(defaultName);
-        setSlug(generateSlug(defaultName));
+        setBrandId(generateBrandId(defaultName));
         setLogoUrl('');
         setWebsiteUrl('');
-        setAttributes({});
+        setDefaultBonus('');
+        setDefaultRating('');
+        setTerms('');
+        setLicense('');
+        setPros('');
+        setCons('');
       }
     }
   }, [open, brand, defaultName]);
 
-  const generateSlug = (text: string) => {
+  const generateBrandId = (text: string) => {
     return text
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
@@ -66,37 +81,30 @@ export function BrandEditor({
   const handleNameChange = (value: string) => {
     setName(value);
     if (!brand) {
-      setSlug(generateSlug(value));
+      setBrandId(generateBrandId(value));
     }
   };
 
-  const handleAttributeChange = (key: string, value: string) => {
-    setAttributes((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  const handleListAttributeChange = (key: string, value: string) => {
-    const items = value.split(',').map((s) => s.trim()).filter(Boolean);
-    setAttributes((prev) => ({
-      ...prev,
-      [key]: items,
-    }));
-  };
-
   const handleSave = async () => {
-    if (!name.trim()) return;
+    if (!name.trim() || !brandId.trim()) return;
 
     setIsSaving(true);
     setError(null);
     try {
+      const prosArray = pros.split(',').map((s) => s.trim()).filter(Boolean);
+      const consArray = cons.split(',').map((s) => s.trim()).filter(Boolean);
+
       const result = await createBrand({
+        brandId: brandId.trim(),
         name: name.trim(),
-        slug: slug || undefined,
-        logoUrl: logoUrl || undefined,
-        websiteUrl: websiteUrl || undefined,
-        attributes,
+        website: websiteUrl || undefined,
+        defaultLogo: logoUrl || undefined,
+        defaultBonus: defaultBonus || undefined,
+        defaultRating: defaultRating ? parseFloat(defaultRating) : undefined,
+        terms: terms || undefined,
+        license: license || undefined,
+        pros: prosArray.length > 0 ? prosArray : undefined,
+        cons: consArray.length > 0 ? consArray : undefined,
       });
 
       if (result.success && result.data) {
@@ -143,12 +151,13 @@ export function BrandEditor({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="brand-slug">Slug</Label>
+              <Label htmlFor="brand-id">Brand ID *</Label>
               <Input
-                id="brand-slug"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
+                id="brand-id"
+                value={brandId}
+                onChange={(e) => setBrandId(e.target.value)}
                 placeholder="e.g., instant-casino"
+                disabled={!!brand}
               />
             </div>
 
@@ -174,85 +183,68 @@ export function BrandEditor({
               />
             </div>
 
-            {/* Attributes */}
+            {/* Brand Details */}
             <div className="border-t pt-4 mt-4">
-              <h4 className="font-medium mb-3">Attributes</h4>
+              <h4 className="font-medium mb-3">Brand Details</h4>
 
               <div className="space-y-3">
                 <div className="space-y-2">
-                  <Label>License</Label>
+                  <Label>Default Bonus</Label>
                   <Input
-                    value={(attributes.license as string) || ''}
-                    onChange={(e) => handleAttributeChange('license', e.target.value)}
-                    placeholder="e.g., MGA, Curaçao"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Welcome Offer</Label>
-                  <Input
-                    value={(attributes.welcomeOffer as string) || ''}
-                    onChange={(e) => handleAttributeChange('welcomeOffer', e.target.value)}
+                    value={defaultBonus}
+                    onChange={(e) => setDefaultBonus(e.target.value)}
                     placeholder="e.g., 200% up to €7,500"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Wagering Requirement</Label>
+                  <Label>Default Rating (1-10)</Label>
                   <Input
-                    value={String(attributes.wageringRequirement || '')}
-                    onChange={(e) => handleAttributeChange('wageringRequirement', e.target.value)}
-                    placeholder="e.g., 35x"
+                    type="number"
+                    min="1"
+                    max="10"
+                    step="0.1"
+                    value={defaultRating}
+                    onChange={(e) => setDefaultRating(e.target.value)}
+                    placeholder="e.g., 9.5"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Withdrawal Time</Label>
+                  <Label>License</Label>
                   <Input
-                    value={(attributes.withdrawalTime as string) || ''}
-                    onChange={(e) => handleAttributeChange('withdrawalTime', e.target.value)}
-                    placeholder="e.g., 0-24 hours"
+                    value={license}
+                    onChange={(e) => setLicense(e.target.value)}
+                    placeholder="e.g., MGA, Curaçao"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Payment Methods (comma-separated)</Label>
+                  <Label>Terms</Label>
                   <Input
-                    value={Array.isArray(attributes.paymentMethods) ? attributes.paymentMethods.join(', ') : ''}
-                    onChange={(e) => handleListAttributeChange('paymentMethods', e.target.value)}
-                    placeholder="e.g., Visa, MasterCard, Bitcoin"
+                    value={terms}
+                    onChange={(e) => setTerms(e.target.value)}
+                    placeholder="e.g., 18+ T&Cs apply"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Highlights (comma-separated)</Label>
+                  <Label>Pros (comma-separated)</Label>
                   <Textarea
-                    value={Array.isArray(attributes.highlights) ? attributes.highlights.join(', ') : ''}
-                    onChange={(e) => handleListAttributeChange('highlights', e.target.value)}
+                    value={pros}
+                    onChange={(e) => setPros(e.target.value)}
                     placeholder="e.g., Fast payouts, Great game selection, 24/7 support"
                     rows={2}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Best For</Label>
-                  <Input
-                    value={(attributes.bestFor as string) || ''}
-                    onChange={(e) => handleAttributeChange('bestFor', e.target.value)}
-                    placeholder="e.g., High rollers"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Overall Score (1-10)</Label>
-                  <Input
-                    type="number"
-                    min="1"
-                    max="10"
-                    step="0.1"
-                    value={attributes.overallScore || ''}
-                    onChange={(e) => handleAttributeChange('overallScore', e.target.value)}
-                    placeholder="e.g., 9.5"
+                  <Label>Cons (comma-separated)</Label>
+                  <Textarea
+                    value={cons}
+                    onChange={(e) => setCons(e.target.value)}
+                    placeholder="e.g., High wagering, Limited countries"
+                    rows={2}
                   />
                 </div>
               </div>

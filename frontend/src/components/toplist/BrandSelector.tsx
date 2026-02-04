@@ -42,7 +42,7 @@ export function BrandSelector({
     async function loadBrands() {
       setIsLoading(true);
       try {
-        const result = await getBrands({ limit: 500 });
+        const result = await getBrands();
         if (result.success && result.data) {
           setAllBrands(result.data.brands);
         }

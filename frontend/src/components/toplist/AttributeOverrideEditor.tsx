@@ -36,10 +36,24 @@ export function AttributeOverrideEditor({
   }, [open, entry]);
 
   const getOriginalValue = (key: string): unknown => {
-    if (key === 'name') {
-      return entry.brand?.name;
+    if (!entry.brand) return undefined;
+    const brand = entry.brand;
+
+    // Map column attributes to Brand fields
+    switch (key) {
+      case 'name': return brand.name;
+      case 'bonus': return brand.defaultBonus;
+      case 'rating': return brand.defaultRating;
+      case 'logo': return brand.defaultLogo;
+      case 'affiliateUrl': return brand.defaultAffiliateUrl;
+      case 'terms': return brand.terms;
+      case 'license': return brand.license;
+      case 'pros': return brand.pros;
+      case 'cons': return brand.cons;
+      case 'website': return brand.website;
+      case 'description': return brand.description;
+      default: return undefined;
     }
-    return entry.brand?.attributes?.[key];
   };
 
   const handleChange = (key: string, value: string) => {
