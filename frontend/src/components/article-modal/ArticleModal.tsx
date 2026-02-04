@@ -148,7 +148,7 @@ export function ArticleModal({ open, onOpenChange, onArticleCreated, defaultProj
   return (
     <TooltipProvider>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-4xl h-[85vh] p-0 gap-0 flex flex-col">
+        <DialogContent className="max-w-7xl w-[95vw] h-[95vh] p-0 gap-0 flex flex-col">
           <DialogTitle className="sr-only">SEO Article Details</DialogTitle>
 
           {/* Header */}
