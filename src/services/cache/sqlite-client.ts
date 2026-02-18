@@ -7,7 +7,7 @@ const logger = createChildLogger('SQLiteClient');
 
 let db: Database.Database | null = null;
 
-const SCHEMA_VERSION = 7;
+const SCHEMA_VERSION = 8;
 
 const MIGRATIONS: Record<number, string[]> = {
   1: [
@@ -146,6 +146,35 @@ const MIGRATIONS: Record<number, string[]> = {
       PRIMARY KEY (key, language)
     )`,
     `CREATE INDEX IF NOT EXISTS idx_translations_language ON translations(language)`,
+  ],
+  8: [
+    // Content plan pages for site architecture import
+    `CREATE TABLE IF NOT EXISTS content_plan_pages (
+      page_id TEXT PRIMARY KEY,
+      project_id TEXT NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE,
+      url TEXT,
+      meta_title TEXT,
+      meta_description TEXT,
+      keywords TEXT,
+      page_type TEXT,
+      icon TEXT,
+      level INTEGER,
+      nav_i TEXT,
+      nav_ii TEXT,
+      nav_iii TEXT,
+      description TEXT,
+      notes TEXT,
+      position INTEGER NOT NULL DEFAULT 0,
+      parent_page_id TEXT REFERENCES content_plan_pages(page_id) ON DELETE SET NULL,
+      generation_status TEXT NOT NULL DEFAULT 'pending',
+      article_id TEXT REFERENCES articles(article_id) ON DELETE SET NULL,
+      error_message TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_content_plan_pages_project ON content_plan_pages(project_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_content_plan_pages_status ON content_plan_pages(generation_status)`,
+    `CREATE INDEX IF NOT EXISTS idx_content_plan_pages_article ON content_plan_pages(article_id)`,
   ],
 };
 

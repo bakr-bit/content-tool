@@ -36,7 +36,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, ChevronLeft, Pencil, Trash2, Loader2, ChevronDown, X, Globe, Languages, Users } from 'lucide-react';
+import { Plus, ChevronLeft, Pencil, Trash2, Loader2, ChevronDown, X, Languages, Users, Upload } from 'lucide-react';
+import { Flag } from '@/components/ui/flag';
+import { ImportArchitectureDialog } from '@/components/content-plan/ImportArchitectureDialog';
+import { ContentPlanTable } from '@/components/content-plan/ContentPlanTable';
+import { useContentPlan } from '@/hooks/useContentPlan';
 
 export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -80,6 +84,10 @@ export function ProjectDetailPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Content plan
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const contentPlan = useContentPlan(projectId);
+
   const fetchProject = useCallback(async () => {
     if (!projectId) return;
 
@@ -90,10 +98,10 @@ export function ProjectDetailPage() {
       if (result.success && result.data) {
         setProject(result.data);
       } else {
-        setProjectError(result.error?.message || 'Failed to fetch project');
+        setProjectError(result.error?.message || 'Failed to fetch site');
       }
     } catch (err) {
-      setProjectError(err instanceof Error ? err.message : 'Failed to fetch project');
+      setProjectError(err instanceof Error ? err.message : 'Failed to fetch site');
     } finally {
       setProjectLoading(false);
     }
@@ -220,10 +228,10 @@ export function ProjectDetailPage() {
         setProject(result.data);
         setEditDialogOpen(false);
       } else {
-        setProjectError(result.error?.message || 'Failed to update project');
+        setProjectError(result.error?.message || 'Failed to update site');
       }
     } catch (err) {
-      setProjectError(err instanceof Error ? err.message : 'Failed to update project');
+      setProjectError(err instanceof Error ? err.message : 'Failed to update site');
     } finally {
       setIsUpdating(false);
     }
@@ -239,11 +247,11 @@ export function ProjectDetailPage() {
       if (result.success) {
         navigate('/');
       } else {
-        setProjectError(result.error?.message || 'Failed to delete project');
+        setProjectError(result.error?.message || 'Failed to delete site');
         setDeleteDialogOpen(false);
       }
     } catch (err) {
-      setProjectError(err instanceof Error ? err.message : 'Failed to delete project');
+      setProjectError(err instanceof Error ? err.message : 'Failed to delete site');
       setDeleteDialogOpen(false);
     } finally {
       setIsDeleting(false);
@@ -263,10 +271,10 @@ export function ProjectDetailPage() {
       <div className="p-6">
         <Link to="/" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white mb-6">
           <ChevronLeft className="h-4 w-4" />
-          Back to Projects
+          Back to Sites
         </Link>
         <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive">
-          {projectError || 'Project not found'}
+          {projectError || 'Site not found'}
         </div>
       </div>
     );
@@ -279,17 +287,23 @@ export function ProjectDetailPage() {
         <div>
           <Link to="/" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white mb-2">
             <ChevronLeft className="h-4 w-4" />
-            Back to Projects
+            Back to Sites
           </Link>
           <h1 className="text-2xl font-bold text-white">{project.name}</h1>
           {project.description && (
             <p className="text-zinc-400">{project.description}</p>
           )}
         </div>
-        <Button onClick={() => setModalOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          New Article
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
+            <Upload className="w-4 h-4 mr-2" />
+            Import Architecture
+          </Button>
+          <Button onClick={() => setModalOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            New Article
+          </Button>
+        </div>
       </div>
 
       {/* Project Details */}
@@ -302,7 +316,7 @@ export function ProjectDetailPage() {
                 </span>
                 {project.geo && (
                   <span className="flex items-center gap-1">
-                    <Globe className="h-3.5 w-3.5" />
+                    <Flag country={project.geo} size="sm" />
                     {project.geo}
                   </span>
                 )}
@@ -339,6 +353,31 @@ export function ProjectDetailPage() {
           </div>
         </div>
 
+        {/* Content Plan Section */}
+        {contentPlan.pages.length > 0 && (
+          <div className="mb-6 space-y-2">
+            <h2 className="text-lg font-semibold text-white">Content Plan</h2>
+            {contentPlan.error && (
+              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm">
+                {contentPlan.error}
+              </div>
+            )}
+            <ContentPlanTable
+              pages={contentPlan.pages}
+              stats={contentPlan.stats}
+              batchRunning={!!contentPlan.batchStatus?.running}
+              projectGeo={project.geo}
+              projectLanguage={project.language}
+              onGenerateSingle={contentPlan.generateSingle}
+              onGenerateBatch={contentPlan.generateBatch}
+              onCancelBatch={contentPlan.cancelBatch}
+              onUpdatePage={contentPlan.updatePage}
+              onDeletePage={contentPlan.deletePage}
+              onClearAll={contentPlan.clearPages}
+            />
+          </div>
+        )}
+
         {error && (
           <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive">
             {error}
@@ -373,6 +412,13 @@ export function ProjectDetailPage() {
           )}
         </div>
 
+      {/* Import Architecture Dialog */}
+      <ImportArchitectureDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+        onImport={contentPlan.importPages}
+      />
+
       {/* Article Modal - pre-fill projectId */}
       <ArticleModal
         open={modalOpen}
@@ -396,9 +442,9 @@ export function ProjectDetailPage() {
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Edit Project</DialogTitle>
+            <DialogTitle>Edit Site</DialogTitle>
             <DialogDescription>
-              Update the project settings.
+              Update the site settings.
             </DialogDescription>
           </DialogHeader>
 
@@ -511,7 +557,7 @@ export function ProjectDetailPage() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Project</AlertDialogTitle>
+            <AlertDialogTitle>Delete Site</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete "{project.name}"? This action cannot be undone.
             </AlertDialogDescription>

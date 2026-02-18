@@ -12,7 +12,7 @@ import type {
 import type { ProjectWithCount } from '@/types/project';
 import type { ArticleTemplate } from '@/types/template';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://beneath-intervention-starsmerchant-diverse.trycloudflare.com/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem('token');
@@ -405,6 +405,82 @@ export async function deleteProject(id: string): Promise<ApiResponse<{ message: 
   return fetchApi<{ message: string }>(`/project/${id}`, {
     method: 'DELETE',
   });
+}
+
+// Content Plan endpoints
+export async function importContentPlan(
+  projectId: string,
+  pages: import('@/types/content-plan').ImportPageInput[]
+): Promise<ApiResponse<{ pages: import('@/types/content-plan').ContentPlanPage[]; count: number }>> {
+  return fetchApi<{ pages: import('@/types/content-plan').ContentPlanPage[]; count: number }>(
+    `/content-plan/project/${projectId}/import`,
+    { method: 'POST', body: JSON.stringify({ pages }) }
+  );
+}
+
+export async function getContentPlan(
+  projectId: string
+): Promise<ApiResponse<{ pages: import('@/types/content-plan').ContentPlanPage[]; stats: import('@/types/content-plan').ContentPlanStats; count: number }>> {
+  return fetchApi<{ pages: import('@/types/content-plan').ContentPlanPage[]; stats: import('@/types/content-plan').ContentPlanStats; count: number }>(
+    `/content-plan/project/${projectId}`
+  );
+}
+
+export async function deleteContentPlan(
+  projectId: string
+): Promise<ApiResponse<{ message: string }>> {
+  return fetchApi<{ message: string }>(`/content-plan/project/${projectId}`, { method: 'DELETE' });
+}
+
+export async function startBatchGeneration(
+  projectId: string,
+  pageIds?: string[],
+  options?: Record<string, unknown>
+): Promise<ApiResponse<import('@/types/content-plan').BatchStatus>> {
+  return fetchApi<import('@/types/content-plan').BatchStatus>(
+    `/content-plan/project/${projectId}/generate`,
+    { method: 'POST', body: JSON.stringify({ pageIds, options }) }
+  );
+}
+
+export async function getContentPlanStatus(
+  projectId: string
+): Promise<ApiResponse<import('@/types/content-plan').BatchStatus>> {
+  return fetchApi<import('@/types/content-plan').BatchStatus>(
+    `/content-plan/project/${projectId}/status`
+  );
+}
+
+export async function cancelBatch(
+  projectId: string
+): Promise<ApiResponse<{ cancelled: boolean }>> {
+  return fetchApi<{ cancelled: boolean }>(`/content-plan/project/${projectId}/cancel`, { method: 'POST' });
+}
+
+export async function generateSinglePage(
+  pageId: string,
+  options?: Record<string, unknown>
+): Promise<ApiResponse<import('@/types/content-plan').ContentPlanPage>> {
+  return fetchApi<import('@/types/content-plan').ContentPlanPage>(
+    `/content-plan/page/${pageId}/generate`,
+    { method: 'POST', body: JSON.stringify({ options }) }
+  );
+}
+
+export async function updateContentPlanPage(
+  pageId: string,
+  data: { keywords?: string; generationStatus?: 'pending' | 'skipped' }
+): Promise<ApiResponse<import('@/types/content-plan').ContentPlanPage>> {
+  return fetchApi<import('@/types/content-plan').ContentPlanPage>(
+    `/content-plan/page/${pageId}`,
+    { method: 'PATCH', body: JSON.stringify(data) }
+  );
+}
+
+export async function deleteContentPlanPage(
+  pageId: string
+): Promise<ApiResponse<{ message: string }>> {
+  return fetchApi<{ message: string }>(`/content-plan/page/${pageId}`, { method: 'DELETE' });
 }
 
 // Template endpoints

@@ -13,6 +13,7 @@ import {
   projectRoutes,
   toplistRoutes,
   templateRoutes,
+  contentPlanRoutes,
 } from './api/routes';
 import { authRoutes } from './api/routes/auth.routes';
 import { logger } from './utils/logger';
@@ -57,6 +58,7 @@ export function createApp(): Application {
   app.use('/api/v1/components', authMiddleware, componentsRoutes);
   app.use('/api/v1/authors', authMiddleware, authorsRoutes);
   app.use('/api/v1/project', authMiddleware, projectRoutes);
+  app.use('/api/v1/content-plan', authMiddleware, contentPlanRoutes);
 
   // 404 handler
   app.use((_req, res) => {

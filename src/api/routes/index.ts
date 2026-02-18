@@ -9,3 +9,4 @@ export * from './authors.routes';
 export * from './project.routes';
 export * from './toplist.routes';
 export * from './template.routes';
+export * from './content-plan.routes';

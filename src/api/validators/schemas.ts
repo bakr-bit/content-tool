@@ -526,7 +526,38 @@ export const reorderEntriesSchema = z.object({
   entryIds: z.array(z.string().uuid()).min(1),
 });
 
+// Content Plan schemas
+export const contentPlanImportSchema = z.object({
+  pages: z.array(z.object({
+    url: z.string().max(500).optional(),
+    metaTitle: z.string().max(500).optional(),
+    metaDescription: z.string().max(1000).optional(),
+    keywords: z.string().max(1000).optional(),
+    pageType: z.string().max(100).optional(),
+    icon: z.string().max(100).optional(),
+    level: z.number().int().min(0).max(10).optional(),
+    navI: z.string().max(200).optional(),
+    navII: z.string().max(200).optional(),
+    navIII: z.string().max(200).optional(),
+    description: z.string().max(2000).optional(),
+    notes: z.string().max(2000).optional(),
+  })).min(1, 'At least one page is required').max(500),
+});
+
+export const contentPlanGenerateSchema = z.object({
+  pageIds: z.array(z.string().uuid()).optional(),
+  options: generationOptionsSchema,
+});
+
+export const contentPlanPageUpdateSchema = z.object({
+  keywords: z.string().max(1000).optional(),
+  generationStatus: z.enum(['pending', 'skipped']).optional(),
+});
+
 // Type exports
+export type ContentPlanImportBody = z.infer<typeof contentPlanImportSchema>;
+export type ContentPlanGenerateBody = z.infer<typeof contentPlanGenerateSchema>;
+export type ContentPlanPageUpdateBody = z.infer<typeof contentPlanPageUpdateSchema>;
 export type ResearchRequestBody = z.infer<typeof researchRequestSchema>;
 export type OutlineGenerateRequestBody = z.infer<typeof outlineGenerateRequestSchema>;
 export type OutlineUpdateRequestBody = z.infer<typeof outlineUpdateRequestSchema>;
