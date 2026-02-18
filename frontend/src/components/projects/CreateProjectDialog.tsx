@@ -28,7 +28,6 @@ import { Loader2, ChevronDown, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { createProject } from '@/services/api';
 import { TONE_NAMES, POV_NAMES, FORMALITY_NAMES } from '@/types/article';
-import type { ToneOfVoice, PointOfView, Formality } from '@/types/article';
 
 interface CreateProjectDialogProps {
   open: boolean;
