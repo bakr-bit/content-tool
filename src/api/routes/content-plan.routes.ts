@@ -157,7 +157,17 @@ router.patch(
   validate(contentPlanPageUpdateSchema),
   (req: Request<{ pageId: string }, {}, ContentPlanPageUpdateBody>, res: Response, next: NextFunction) => {
     try {
-      const page = contentPlanService.updatePage(req.params.pageId, req.body);
+      const { keywords, generationStatus, templateId, tone, pointOfView, formality, customTonePrompt, articleSizePreset } = req.body;
+      const page = contentPlanService.updatePage(req.params.pageId, {
+        keywords,
+        generationStatus,
+        templateId,
+        tone,
+        pointOfView,
+        formality,
+        customTonePrompt,
+        articleSizePreset,
+      });
       if (!page) {
         res.status(404).json({
           success: false,

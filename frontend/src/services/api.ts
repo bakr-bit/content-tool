@@ -477,7 +477,16 @@ export async function generateSinglePage(
 
 export async function updateContentPlanPage(
   pageId: string,
-  data: { keywords?: string; generationStatus?: 'pending' | 'skipped' }
+  data: {
+    keywords?: string;
+    generationStatus?: 'pending' | 'skipped';
+    templateId?: string | null;
+    tone?: string | null;
+    pointOfView?: string | null;
+    formality?: string | null;
+    customTonePrompt?: string | null;
+    articleSizePreset?: string | null;
+  }
 ): Promise<ApiResponse<import('@/types/content-plan').ContentPlanPage>> {
   return fetchApi<import('@/types/content-plan').ContentPlanPage>(
     `/content-plan/page/${pageId}`,

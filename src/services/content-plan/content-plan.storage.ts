@@ -28,6 +28,12 @@ export interface ContentPlanPageRow {
   generation_status: GenerationStatus;
   article_id: string | null;
   outline_id: string | null;
+  template_id: string | null;
+  tone: string | null;
+  point_of_view: string | null;
+  formality: string | null;
+  custom_tone_prompt: string | null;
+  article_size_preset: string | null;
   error_message: string | null;
   created_at: string;
   updated_at: string | null;
@@ -53,6 +59,12 @@ export interface ContentPlanPage {
   generationStatus: GenerationStatus;
   articleId?: string;
   outlineId?: string;
+  templateId?: string;
+  tone?: string;
+  pointOfView?: string;
+  formality?: string;
+  customTonePrompt?: string;
+  articleSizePreset?: string;
   errorMessage?: string;
   createdAt: string;
   updatedAt?: string;
@@ -103,6 +115,12 @@ function rowToPage(row: ContentPlanPageRow): ContentPlanPage {
     generationStatus: row.generation_status,
     articleId: row.article_id ?? undefined,
     outlineId: row.outline_id ?? undefined,
+    templateId: row.template_id ?? undefined,
+    tone: row.tone ?? undefined,
+    pointOfView: row.point_of_view ?? undefined,
+    formality: row.formality ?? undefined,
+    customTonePrompt: row.custom_tone_prompt ?? undefined,
+    articleSizePreset: row.article_size_preset ?? undefined,
     errorMessage: row.error_message ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at ?? undefined,
@@ -226,21 +244,65 @@ export class ContentPlanStorage {
 
   updatePage(
     pageId: string,
-    updates: { keywords?: string; generationStatus?: GenerationStatus }
+    updates: {
+      keywords?: string;
+      generationStatus?: GenerationStatus;
+      templateId?: string | null;
+      tone?: string | null;
+      pointOfView?: string | null;
+      formality?: string | null;
+      customTonePrompt?: string | null;
+      articleSizePreset?: string | null;
+    }
   ): ContentPlanPage | null {
     const now = new Date().toISOString();
     const existing = this.getPage(pageId);
     if (!existing) return null;
 
-    const keywords = updates.keywords !== undefined ? updates.keywords : existing.keywords;
-    const status = updates.generationStatus !== undefined ? updates.generationStatus : existing.generationStatus;
+    const fields: string[] = ['updated_at = ?'];
+    const values: (string | null)[] = [now];
+
+    if (updates.keywords !== undefined) {
+      fields.push('keywords = ?');
+      values.push(updates.keywords ?? null);
+    }
+    if (updates.generationStatus !== undefined) {
+      fields.push('generation_status = ?');
+      values.push(updates.generationStatus);
+    }
+    if (updates.templateId !== undefined) {
+      fields.push('template_id = ?');
+      values.push(updates.templateId);
+    }
+    if (updates.tone !== undefined) {
+      fields.push('tone = ?');
+      values.push(updates.tone);
+    }
+    if (updates.pointOfView !== undefined) {
+      fields.push('point_of_view = ?');
+      values.push(updates.pointOfView);
+    }
+    if (updates.formality !== undefined) {
+      fields.push('formality = ?');
+      values.push(updates.formality);
+    }
+    if (updates.customTonePrompt !== undefined) {
+      fields.push('custom_tone_prompt = ?');
+      values.push(updates.customTonePrompt);
+    }
+    if (updates.articleSizePreset !== undefined) {
+      fields.push('article_size_preset = ?');
+      values.push(updates.articleSizePreset);
+    }
+
+    values.push(pageId);
 
     try {
       this.db.prepare(`
         UPDATE content_plan_pages
-        SET keywords = ?, generation_status = ?, updated_at = ?
+        SET ${fields.join(', ')}
         WHERE page_id = ?
-      `).run(keywords ?? null, status, now, pageId);
+      `).run(...values);
 
       return this.getPage(pageId);
     } catch (error) {

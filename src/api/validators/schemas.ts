@@ -560,6 +560,12 @@ export const contentPlanGenerateSchema = z.object({
 export const contentPlanPageUpdateSchema = z.object({
   keywords: z.string().max(1000).optional(),
   generationStatus: z.enum(['pending', 'skipped']).optional(),
+  templateId: z.string().max(100).optional().nullable(),
+  tone: toneSchema.nullable(),
+  pointOfView: pointOfViewSchema.nullable(),
+  formality: formalitySchema.nullable(),
+  customTonePrompt: z.string().max(1000).optional().nullable(),
+  articleSizePreset: articleSizePresetSchema.optional().nullable(),
 });
 
 // Type exports

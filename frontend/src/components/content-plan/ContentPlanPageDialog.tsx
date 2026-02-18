@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { ContentPlanPage } from '@/types/content-plan';
-import type { Outline, OutlineSection } from '@/types/article';
+import type { Outline, OutlineSection, ToneOfVoice, PointOfView, Formality, ArticleSizePreset } from '@/types/article';
+import type { ArticleTemplate } from '@/types/template';
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,20 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, FileText, Play, ListTree, ChevronRight, X, Plus } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Loader2, FileText, Play, ListTree, ChevronRight, X, Plus, Settings2 } from 'lucide-react';
+import {
+  TONE_NAMES,
+  POV_NAMES,
+  FORMALITY_NAMES,
+  ARTICLE_SIZE_NAMES,
+} from '@/types/article';
 import {
   generateOutlineForPage,
   getContentPlanPage,
@@ -21,6 +35,7 @@ import {
   getOutline,
   updateOutline,
   updateContentPlanPage,
+  getTemplates,
 } from '@/services/api';
 
 interface ContentPlanPageDialogProps {
@@ -29,6 +44,8 @@ interface ContentPlanPageDialogProps {
   onOpenChange: (open: boolean) => void;
   onUpdated: () => void;
 }
+
+const NONE_VALUE = '__none__';
 
 export function ContentPlanPageDialog({
   page,
@@ -45,7 +62,25 @@ export function ContentPlanPageDialog({
   const [generatingOutline, setGeneratingOutline] = useState(false);
   const [generatingArticle, setGeneratingArticle] = useState(false);
   const [savingOutline, setSavingOutline] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Settings state
+  const [templateId, setTemplateId] = useState<string>('');
+  const [tone, setTone] = useState<string>('');
+  const [pointOfView, setPointOfView] = useState<string>('');
+  const [formality, setFormality] = useState<string>('');
+  const [articleSizePreset, setArticleSizePreset] = useState<string>('');
+  const [templates, setTemplates] = useState<ArticleTemplate[]>([]);
+
+  // Load templates on mount
+  useEffect(() => {
+    getTemplates().then((result) => {
+      if (result.success && result.data) {
+        setTemplates(result.data.templates);
+      }
+    });
+  }, []);
 
   // Load outline when page changes
   const loadOutline = useCallback(async (outlineId: string) => {
@@ -70,6 +105,12 @@ export function ContentPlanPageDialog({
       setOutline(null);
       setEditingSections(null);
       setError(null);
+      // Initialize settings from page
+      setTemplateId(page.templateId || '');
+      setTone(page.tone || '');
+      setPointOfView(page.pointOfView || '');
+      setFormality(page.formality || '');
+      setArticleSizePreset(page.articleSizePreset || '');
       if (page.outlineId) {
         loadOutline(page.outlineId);
       }
@@ -181,10 +222,43 @@ export function ContentPlanPageDialog({
     }
   };
 
+  const handleSaveSettings = async () => {
+    if (!currentPage) return;
+    setSavingSettings(true);
+    setError(null);
+    try {
+      const result = await updateContentPlanPage(currentPage.pageId, {
+        templateId: templateId || null,
+        tone: tone || null,
+        pointOfView: pointOfView || null,
+        formality: formality || null,
+        articleSizePreset: articleSizePreset || null,
+      });
+      if (result.success && result.data) {
+        setCurrentPage(result.data);
+        onUpdated();
+      } else {
+        setError(result.error?.message || 'Failed to save settings');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save settings');
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
   const originalKeywords = currentPage?.keywords
     ? currentPage.keywords.split(',').map((k) => k.trim()).filter(Boolean)
     : [];
   const hasKeywordChanges = JSON.stringify(originalKeywords) !== JSON.stringify(editingKeywords);
+
+  const hasSettingsChanges = currentPage && (
+    (templateId || '') !== (currentPage.templateId || '') ||
+    (tone || '') !== (currentPage.tone || '') ||
+    (pointOfView || '') !== (currentPage.pointOfView || '') ||
+    (formality || '') !== (currentPage.formality || '') ||
+    (articleSizePreset || '') !== (currentPage.articleSizePreset || '')
+  );
 
   const updateSectionHeading = (sectionIndex: number, heading: string) => {
     if (!editingSections) return;
@@ -293,6 +367,102 @@ export function ContentPlanPageDialog({
             {editingKeywords.length === 0 && (
               <p className="text-xs text-zinc-500">No keywords. Add at least one keyword to generate content.</p>
             )}
+          </div>
+
+          {/* Generation Settings */}
+          <div className="space-y-3 border-t border-zinc-800 pt-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium flex items-center gap-2">
+                <Settings2 className="h-4 w-4" />
+                Generation Settings
+              </h3>
+              {hasSettingsChanges && (
+                <Button size="sm" variant="outline" onClick={handleSaveSettings} disabled={savingSettings}>
+                  {savingSettings && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                  Save Settings
+                </Button>
+              )}
+            </div>
+
+            {/* Template */}
+            <div className="space-y-1">
+              <Label className="text-xs text-zinc-400">Template</Label>
+              <Select value={templateId || NONE_VALUE} onValueChange={(v) => setTemplateId(v === NONE_VALUE ? '' : v)}>
+                <SelectTrigger className="h-8 text-sm">
+                  <SelectValue placeholder="None (default)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE_VALUE}>None (default)</SelectItem>
+                  {templates.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>
+                      {t.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs text-zinc-400">Tone</Label>
+                <Select value={tone || NONE_VALUE} onValueChange={(v) => setTone(v === NONE_VALUE ? '' : v)}>
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue placeholder="Project default" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={NONE_VALUE}>Project default</SelectItem>
+                    {Object.entries(TONE_NAMES).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs text-zinc-400">Point of View</Label>
+                <Select value={pointOfView || NONE_VALUE} onValueChange={(v) => setPointOfView(v === NONE_VALUE ? '' : v)}>
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue placeholder="Project default" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={NONE_VALUE}>Project default</SelectItem>
+                    {Object.entries(POV_NAMES).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs text-zinc-400">Formality</Label>
+                <Select value={formality || NONE_VALUE} onValueChange={(v) => setFormality(v === NONE_VALUE ? '' : v)}>
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue placeholder="Project default" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={NONE_VALUE}>Project default</SelectItem>
+                    {Object.entries(FORMALITY_NAMES).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs text-zinc-400">Article Size</Label>
+                <Select value={articleSizePreset || NONE_VALUE} onValueChange={(v) => setArticleSizePreset(v === NONE_VALUE ? '' : v)}>
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue placeholder="From page type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={NONE_VALUE}>From page type</SelectItem>
+                    {Object.entries(ARTICLE_SIZE_NAMES).filter(([k]) => k !== 'custom').map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <p className="text-xs text-zinc-500">
+              Page settings override project and batch defaults.
+            </p>
           </div>
 
           {/* Outline Section */}

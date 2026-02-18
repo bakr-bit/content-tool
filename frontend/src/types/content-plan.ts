@@ -20,6 +20,12 @@ export interface ContentPlanPage {
   generationStatus: GenerationStatus;
   articleId?: string;
   outlineId?: string;
+  templateId?: string;
+  tone?: string;
+  pointOfView?: string;
+  formality?: string;
+  customTonePrompt?: string;
+  articleSizePreset?: string;
   errorMessage?: string;
   createdAt: string;
   updatedAt?: string;

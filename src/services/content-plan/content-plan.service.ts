@@ -55,7 +55,16 @@ export class ContentPlanService {
     return contentPlanStorage.getStats(projectId);
   }
 
-  updatePage(pageId: string, updates: { keywords?: string; generationStatus?: GenerationStatus }): ContentPlanPage | null {
+  updatePage(pageId: string, updates: {
+    keywords?: string;
+    generationStatus?: GenerationStatus;
+    templateId?: string | null;
+    tone?: string | null;
+    pointOfView?: string | null;
+    formality?: string | null;
+    customTonePrompt?: string | null;
+    articleSizePreset?: string | null;
+  }): ContentPlanPage | null {
     return contentPlanStorage.updatePage(pageId, updates);
   }
 
@@ -100,9 +109,19 @@ export class ContentPlanService {
       if (project.customTonePrompt) projectVoiceDefaults.customTonePrompt = project.customTonePrompt;
     }
 
+    // Build per-page overrides
+    const pageOverrides: Partial<GenerationOptionsInput> = {};
+    if (page.tone) pageOverrides.tone = page.tone as GenerationOptionsInput['tone'];
+    if (page.pointOfView) pageOverrides.pointOfView = page.pointOfView as GenerationOptionsInput['pointOfView'];
+    if (page.formality) pageOverrides.formality = page.formality as GenerationOptionsInput['formality'];
+    if (page.customTonePrompt) pageOverrides.customTonePrompt = page.customTonePrompt;
+    if (page.templateId) pageOverrides.templateId = page.templateId;
+    if (page.articleSizePreset) pageOverrides.articleSize = { preset: page.articleSizePreset as any };
+
     const options: GenerationOptionsInput = {
       ...projectVoiceDefaults,
       ...overrideOptions,
+      ...pageOverrides,
       title: page.metaTitle || undefined,
       includeKeywords: allKeywords.slice(1).length > 0 ? allKeywords.slice(1) : overrideOptions?.includeKeywords,
     };
@@ -309,17 +328,27 @@ export class ContentPlanService {
       if (project.customTonePrompt) projectVoiceDefaults.customTonePrompt = project.customTonePrompt;
     }
 
-    // Merge order: projectVoiceDefaults < overrideOptions < page-specific
+    // Build per-page voice/settings overrides (highest priority)
+    const pageOverrides: Partial<GenerationOptionsInput> = {};
+    if (page.tone) pageOverrides.tone = page.tone as GenerationOptionsInput['tone'];
+    if (page.pointOfView) pageOverrides.pointOfView = page.pointOfView as GenerationOptionsInput['pointOfView'];
+    if (page.formality) pageOverrides.formality = page.formality as GenerationOptionsInput['formality'];
+    if (page.customTonePrompt) pageOverrides.customTonePrompt = page.customTonePrompt;
+    if (page.templateId) pageOverrides.templateId = page.templateId;
+    if (page.articleSizePreset) pageOverrides.articleSize = { preset: page.articleSizePreset as any };
+
+    // Merge order: projectVoiceDefaults < overrideOptions (batch) < pageOverrides
     const options: GenerationOptionsInput = {
       ...projectVoiceDefaults,
       ...overrideOptions,
+      ...pageOverrides,
       title: page.metaTitle || undefined,
       includeKeywords: includeKeywords.length > 0 ? includeKeywords : overrideOptions?.includeKeywords,
       projectId: page.projectId,
     };
 
-    // Set article size from page type if not overridden
-    if (sizePreset && !overrideOptions?.articleSize?.preset) {
+    // Set article size from page type if not overridden at any level
+    if (sizePreset && !pageOverrides.articleSize && !overrideOptions?.articleSize?.preset) {
       options.articleSize = {
         ...overrideOptions?.articleSize,
         preset: sizePreset as any,

@@ -7,7 +7,7 @@ const logger = createChildLogger('SQLiteClient');
 
 let db: Database.Database | null = null;
 
-const SCHEMA_VERSION = 9;
+const SCHEMA_VERSION = 10;
 
 const MIGRATIONS: Record<number, string[]> = {
   1: [
@@ -184,6 +184,15 @@ const MIGRATIONS: Record<number, string[]> = {
     `ALTER TABLE projects ADD COLUMN custom_tone_prompt TEXT`,
     // Outline reference for content plan pages
     `ALTER TABLE content_plan_pages ADD COLUMN outline_id TEXT`,
+  ],
+  10: [
+    // Per-page generation settings for content plan
+    `ALTER TABLE content_plan_pages ADD COLUMN template_id TEXT`,
+    `ALTER TABLE content_plan_pages ADD COLUMN tone TEXT`,
+    `ALTER TABLE content_plan_pages ADD COLUMN point_of_view TEXT`,
+    `ALTER TABLE content_plan_pages ADD COLUMN formality TEXT`,
+    `ALTER TABLE content_plan_pages ADD COLUMN custom_tone_prompt TEXT`,
+    `ALTER TABLE content_plan_pages ADD COLUMN article_size_preset TEXT`,
   ],
 };
 
