@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { ContentPlanPage } from '@/types/content-plan';
-import type { Outline, OutlineSection, ToneOfVoice, PointOfView, Formality, ArticleSizePreset } from '@/types/article';
+import type { Outline, OutlineSection } from '@/types/article';
 import type { ArticleTemplate } from '@/types/template';
 import {
   Dialog,
