@@ -28,6 +28,7 @@ import {
   Square,
   Loader2,
   Zap,
+  ListTree,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -43,6 +44,7 @@ interface ContentPlanTableProps {
   onUpdatePage: (pageId: string, data: { keywords?: string; generationStatus?: 'pending' | 'skipped' }) => Promise<void>;
   onDeletePage: (pageId: string) => Promise<void>;
   onClearAll: () => Promise<void>;
+  onPageClick?: (page: ContentPlanPage) => void;
 }
 
 const STATUS_BADGE_VARIANT: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
@@ -73,6 +75,7 @@ export function ContentPlanTable({
   onUpdatePage,
   onDeletePage,
   onClearAll,
+  onPageClick,
 }: ContentPlanTableProps) {
   const [batchSettingsOpen, setBatchSettingsOpen] = useState(false);
   const [generatingPageId, setGeneratingPageId] = useState<string | null>(null);
@@ -141,13 +144,18 @@ export function ContentPlanTable({
               <TableHead>Keywords</TableHead>
               <TableHead className="w-[100px]">Type</TableHead>
               <TableHead className="w-[60px]">Level</TableHead>
+              <TableHead className="w-[70px]">Outline</TableHead>
               <TableHead className="w-[80px]">Article</TableHead>
               <TableHead className="w-[60px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {pages.map((page) => (
-              <TableRow key={page.pageId} className={page.generationStatus === 'skipped' ? 'opacity-50' : ''}>
+              <TableRow
+                key={page.pageId}
+                className={`${page.generationStatus === 'skipped' ? 'opacity-50' : ''} ${onPageClick ? 'cursor-pointer hover:bg-zinc-800/50' : ''}`}
+                onClick={() => onPageClick?.(page)}
+              >
                 <TableCell>
                   <Badge
                     variant={STATUS_BADGE_VARIANT[page.generationStatus]}
@@ -183,6 +191,13 @@ export function ContentPlanTable({
                 </TableCell>
                 <TableCell className="text-center text-zinc-400">{page.level ?? '-'}</TableCell>
                 <TableCell>
+                  {page.outlineId && (
+                    <Badge variant="secondary" className="text-xs gap-1">
+                      <ListTree className="h-3 w-3" />
+                    </Badge>
+                  )}
+                </TableCell>
+                <TableCell onClick={(e) => e.stopPropagation()}>
                   {page.articleId && (
                     <Link to={`/article/${page.articleId}`}>
                       <Button variant="ghost" size="sm" className="h-7 px-2">
@@ -196,7 +211,7 @@ export function ContentPlanTable({
                     </span>
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell onClick={(e) => e.stopPropagation()}>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0">

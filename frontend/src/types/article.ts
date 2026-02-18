@@ -121,6 +121,9 @@ export interface DeepResearchOptions {
   researchSource: ResearchSource;
 }
 
+// Output Format
+export type OutputFormat = 'markdown' | 'html';
+
 // Heading Case
 export type HeadingCase = 'title-case' | 'sentence-case' | 'all-caps';
 
@@ -296,6 +299,7 @@ export interface ArticleFormState {
   projectId: string;
   includeKeywords: string[];
   selectedTemplateId?: string;  // Selected article template ID
+  selectedTemplate?: import('@/types/template').ArticleTemplate;  // Full template object for UI display
 
   // Content Tab
   selectedAuthorId?: string;  // Selected author profile ID
@@ -308,6 +312,9 @@ export interface ArticleFormState {
 
   // Formatting Tab
   formatting: FormattingToggles;
+
+  // Advanced Settings
+  outputFormat: OutputFormat;
 
   // Structure Tab
   structure: StructureToggles;
@@ -338,6 +345,7 @@ export interface FullWorkflowRequest {
     formality?: Formality;
     customTonePrompt?: string;
     formatting?: Partial<FormattingToggles>;
+    outputFormat?: OutputFormat;
     structure?: Partial<StructureToggles>;
     articleSize?: Partial<ArticleSize>;
     deepResearch?: Partial<DeepResearchOptions>;
@@ -445,6 +453,11 @@ export const FORMALITY_NAMES: Record<Formality, string> = {
   'automatic': 'Automatic',
   'formal': 'Formal',
   'informal': 'Informal',
+};
+
+export const OUTPUT_FORMAT_NAMES: Record<OutputFormat, string> = {
+  'markdown': 'Markdown',
+  'html': 'HTML',
 };
 
 export const ARTICLE_SIZE_NAMES: Record<ArticleSizePreset, string> = {

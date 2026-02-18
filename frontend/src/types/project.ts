@@ -6,6 +6,10 @@ export interface Project {
   language?: string;
   authors?: string[];
   defaultToplistIds?: string[];
+  tone?: string;
+  pointOfView?: string;
+  formality?: string;
+  customTonePrompt?: string;
   createdAt: string;
   updatedAt?: string;
 }

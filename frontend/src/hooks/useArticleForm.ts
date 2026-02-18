@@ -12,8 +12,10 @@ import type {
   DeepResearchOptions,
   OutlineSection,
   FullWorkflowRequest,
+  OutputFormat,
 } from '@/types/article';
 import type { ArticleToplist } from '@/types/toplist';
+import type { ArticleTemplate } from '@/types/template';
 
 // Mapping from language to default target country
 const LANGUAGE_TO_COUNTRY: Record<Language, TargetCountry> = {
@@ -52,6 +54,7 @@ const DEFAULT_FORM_STATE: ArticleFormState = {
   projectId: '',
   includeKeywords: [],
   selectedTemplateId: undefined,
+  selectedTemplate: undefined,
 
   // Content Tab
   selectedAuthorId: undefined,
@@ -70,6 +73,9 @@ const DEFAULT_FORM_STATE: ArticleFormState = {
     quotes: true,
     lists: true,
   },
+
+  // Advanced Settings
+  outputFormat: 'markdown',
 
   // Structure Tab
   structure: {
@@ -140,6 +146,45 @@ export function useArticleForm() {
     setFormState((prev) => ({ ...prev, selectedTemplateId }));
   }, []);
 
+  /**
+   * Apply template settings to the form.
+   * Called when a template is selected to lock in template-defined values.
+   */
+  const applyTemplate = useCallback((template: ArticleTemplate | undefined) => {
+    if (!template) {
+      // When clearing template, reset to defaults
+      setFormState((prev) => ({
+        ...prev,
+        selectedTemplateId: undefined,
+        selectedTemplate: undefined,
+        articleSize: DEFAULT_FORM_STATE.articleSize,
+        structure: DEFAULT_FORM_STATE.structure,
+        tone: DEFAULT_FORM_STATE.tone,
+        pointOfView: DEFAULT_FORM_STATE.pointOfView,
+        formality: DEFAULT_FORM_STATE.formality,
+      }));
+      return;
+    }
+
+    setFormState((prev) => ({
+      ...prev,
+      selectedTemplateId: template.id,
+      selectedTemplate: template,
+      // Apply template's article size if defined
+      articleSize: template.articleSize
+        ? { ...prev.articleSize, ...template.articleSize }
+        : prev.articleSize,
+      // Apply template's structure toggles if defined
+      structure: template.structure
+        ? { ...prev.structure, ...template.structure }
+        : prev.structure,
+      // Apply suggested content settings (these are suggestions, not locks)
+      tone: template.suggestedTone || prev.tone,
+      pointOfView: template.suggestedPointOfView || prev.pointOfView,
+      formality: template.suggestedFormality || prev.formality,
+    }));
+  }, []);
+
   // Content Tab
   const setSelectedAuthorId = useCallback((selectedAuthorId: string | undefined) => {
     setFormState((prev) => ({ ...prev, selectedAuthorId }));
@@ -186,6 +231,11 @@ export function useArticleForm() {
       ...prev,
       formatting: { ...prev.formatting, [key]: !prev.formatting[key] },
     }));
+  }, []);
+
+  // Advanced Settings
+  const setOutputFormat = useCallback((outputFormat: OutputFormat) => {
+    setFormState((prev) => ({ ...prev, outputFormat }));
   }, []);
 
   // Structure Tab
@@ -290,6 +340,7 @@ export function useArticleForm() {
         formality: formState.formality,
         customTonePrompt: formState.customTonePrompt || undefined,
         formatting: formState.formatting,
+        outputFormat: formState.outputFormat !== 'markdown' ? formState.outputFormat : undefined,
         structure: formState.structure,
         articleSize: formState.articleSize,
         deepResearch: formState.deepResearch.enabled ? formState.deepResearch : undefined,
@@ -314,6 +365,7 @@ export function useArticleForm() {
     addKeyword,
     removeKeyword,
     setSelectedTemplateId,
+    applyTemplate,
 
     // Content
     setSelectedAuthorId,
@@ -327,6 +379,9 @@ export function useArticleForm() {
     // Formatting
     setFormatting,
     toggleFormatting,
+
+    // Advanced Settings
+    setOutputFormat,
 
     // Structure
     setStructure,

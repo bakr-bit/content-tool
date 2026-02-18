@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { FolderOpen, FileText, Menu, X, LogOut } from 'lucide-react';
 
 const navigation = [
-  { name: 'Projects', href: '/', icon: FolderOpen, end: true },
+  { name: 'Sites', href: '/', icon: FolderOpen, end: true },
   { name: 'Articles', href: '/articles', icon: FileText },
 ];
 

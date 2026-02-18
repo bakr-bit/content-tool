@@ -42,16 +42,16 @@ export function ProjectsPage() {
       {/* Page Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Projects</h1>
+          <h1 className="text-2xl font-bold text-white">Sites</h1>
           <p className="text-zinc-400">
-            Organize your content into projects
+            Organize your content by site
           </p>
         </div>
         <div className="flex items-center gap-2">
           {hasProjects && (
             <Button variant="outline" onClick={() => setCreateDialogOpen(true)}>
               <FolderPlus className="w-4 h-4 mr-2" />
-              New Project
+              New Site
             </Button>
           )}
           <Button onClick={() => setArticleModalOpen(true)}>
@@ -83,14 +83,14 @@ export function ProjectsPage() {
           <div className="w-16 h-16 bg-zinc-800 rounded-full flex items-center justify-center mb-4">
             <FolderPlus className="w-8 h-8 text-zinc-400" />
           </div>
-          <h2 className="text-xl font-semibold text-white mb-2">No projects yet</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">No sites yet</h2>
           <p className="text-zinc-400 text-center mb-6 max-w-md">
-            Create your first project to start organizing your articles.
-            Projects help you group related content together.
+            Create your first site to start organizing your articles.
+            Sites help you group related content together.
           </p>
           <Button onClick={() => setCreateDialogOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
-            Create New Project
+            Create New Site
           </Button>
         </div>
       )}

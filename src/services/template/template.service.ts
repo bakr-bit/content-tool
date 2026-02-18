@@ -2,6 +2,7 @@ import {
   ArticleTemplate,
   ArticleTemplateSummary,
   TemplateSection,
+  TemplateSectionSummary,
   calculateTemplateWordCount,
   countTemplateSections,
 } from '../../types/article-template';
@@ -45,7 +46,52 @@ class TemplateService {
       targetWordCount: calculateTemplateWordCount(template),
       sectionCount: countTemplateSections(template),
       isBuiltIn: template.isBuiltIn,
+      // Include settings for form application
+      articleSize: template.articleSize,
+      structure: template.structure,
+      suggestedTone: template.suggestedTone,
+      suggestedPointOfView: template.suggestedPointOfView,
+      suggestedFormality: template.suggestedFormality,
+      // Include section summaries for UI display
+      sections: this.getSectionSummaries(template),
     }));
+  }
+
+  /**
+   * Get section summaries from a template for UI display
+   */
+  private getSectionSummaries(template: ArticleTemplate): TemplateSectionSummary[] {
+    const sections: TemplateSectionSummary[] = [];
+
+    const addSection = (section: TemplateSection, isSubsection = false) => {
+      // Convert section type to readable name
+      const name = section.sectionType
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
+      sections.push({
+        id: section.id,
+        name: isSubsection ? `  ${name}` : name,
+        componentType: section.componentType,
+        wordCount: section.suggestedWordCount,
+        isRepeatable: section.isRepeatable,
+        repeatCount: section.repeatCount,
+      });
+
+      // Add subsections
+      if (section.subsections) {
+        for (const subsection of section.subsections) {
+          addSection(subsection, true);
+        }
+      }
+    };
+
+    for (const section of template.outlineSkeleton) {
+      addSection(section);
+    }
+
+    return sections;
   }
 
   /**

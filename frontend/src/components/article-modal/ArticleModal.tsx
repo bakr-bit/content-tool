@@ -11,7 +11,6 @@ import { ModalFooter } from './ModalFooter';
 import { DetailsTab } from '@/components/tabs/DetailsTab';
 import { ContentTab } from '@/components/tabs/ContentTab';
 import { FormattingTab } from '@/components/tabs/FormattingTab';
-import { StructureTab } from '@/components/tabs/StructureTab';
 import { OutlineTab } from '@/components/tabs/OutlineTab';
 import { KnowledgeTab } from '@/components/tabs/KnowledgeTab';
 import { ToplistTab } from '@/components/tabs/ToplistTab';
@@ -27,7 +26,7 @@ interface ArticleModalProps {
   defaultProjectId?: string;
 }
 
-const TAB_ORDER: TabId[] = ['details', 'toplist', 'structure', 'outline', 'content', 'knowledge', 'formatting'];
+const TAB_ORDER: TabId[] = ['details', 'toplist', 'outline', 'content', 'knowledge', 'formatting'];
 
 export function ArticleModal({ open, onOpenChange, onArticleCreated, defaultProjectId }: ArticleModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>('details');
@@ -134,8 +133,6 @@ export function ArticleModal({ open, onOpenChange, onArticleCreated, defaultProj
         return <KnowledgeTab form={form} />;
       case 'formatting':
         return <FormattingTab form={form} />;
-      case 'structure':
-        return <StructureTab form={form} />;
       case 'result':
         return <ResultTab article={article} />;
       default:

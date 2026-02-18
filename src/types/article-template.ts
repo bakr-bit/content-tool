@@ -89,6 +89,18 @@ export interface TemplateSection {
 }
 
 /**
+ * Section summary for template display
+ */
+export interface TemplateSectionSummary {
+  id: string;
+  name: string;
+  componentType: string;
+  wordCount: number;
+  isRepeatable?: boolean;
+  repeatCount?: number;
+}
+
+/**
  * Summary info for template listing (lighter weight for API responses)
  */
 export interface ArticleTemplateSummary {
@@ -100,6 +112,24 @@ export interface ArticleTemplateSummary {
   targetWordCount: number;
   sectionCount: number;
   isBuiltIn?: boolean;
+
+  /** Template's article size configuration (for applying to form) */
+  articleSize?: ArticleSize;
+
+  /** Template's structure toggles (for applying to form) */
+  structure?: Partial<StructureToggles>;
+
+  /** Suggested tone for this template type */
+  suggestedTone?: ToneOfVoice;
+
+  /** Suggested point of view */
+  suggestedPointOfView?: PointOfView;
+
+  /** Suggested formality level */
+  suggestedFormality?: Formality;
+
+  /** Summary of sections included in the template */
+  sections?: TemplateSectionSummary[];
 }
 
 /**

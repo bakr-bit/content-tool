@@ -100,6 +100,40 @@ router.post('/project/:projectId/cancel', (req: Request, res: Response, next: Ne
   }
 });
 
+// Get a single page
+router.get('/page/:pageId', (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const page = contentPlanService.getPage(req.params.pageId);
+    if (!page) {
+      res.status(404).json({
+        success: false,
+        error: { message: 'Page not found', code: 404 },
+      });
+      return;
+    }
+    res.json({ success: true, data: page });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Generate outline for a single page
+router.post('/page/:pageId/generate-outline', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await contentPlanService.generateOutlineForPage(req.params.pageId, req.body?.options);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('not found')) {
+      res.status(404).json({
+        success: false,
+        error: { message: error.message, code: 404 },
+      });
+      return;
+    }
+    next(error);
+  }
+});
+
 // Generate a single page
 router.post('/page/:pageId/generate', async (req: Request, res: Response, next: NextFunction) => {
   try {

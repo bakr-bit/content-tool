@@ -17,9 +17,18 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Loader2, ChevronDown, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { createProject } from '@/services/api';
+import { TONE_NAMES, POV_NAMES, FORMALITY_NAMES } from '@/types/article';
+import type { ToneOfVoice, PointOfView, Formality } from '@/types/article';
 
 interface CreateProjectDialogProps {
   open: boolean;
@@ -39,6 +48,10 @@ export function CreateProjectDialog({
   const [language, setLanguage] = useState('');
   const [authorInput, setAuthorInput] = useState('');
   const [authors, setAuthors] = useState<string[]>([]);
+  const [tone, setTone] = useState<string>('');
+  const [pointOfView, setPointOfView] = useState<string>('');
+  const [formality, setFormality] = useState<string>('');
+  const [customTonePrompt, setCustomTonePrompt] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +77,7 @@ export function CreateProjectDialog({
 
   const handleCreate = async () => {
     if (!name.trim()) {
-      setError('Project name is required');
+      setError('Site name is required');
       return;
     }
 
@@ -78,6 +91,10 @@ export function CreateProjectDialog({
         geo: geo.trim() || undefined,
         language: language.trim() || undefined,
         authors: authors.length > 0 ? authors : undefined,
+        tone: tone || undefined,
+        pointOfView: pointOfView || undefined,
+        formality: formality || undefined,
+        customTonePrompt: customTonePrompt.trim() || undefined,
       });
 
       if (result.success && result.data) {
@@ -86,10 +103,10 @@ export function CreateProjectDialog({
         onProjectCreated?.();
         navigate(`/projects/${result.data.projectId}`);
       } else {
-        setError(result.error?.message || 'Failed to create project');
+        setError(result.error?.message || 'Failed to create site');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create project');
+      setError(err instanceof Error ? err.message : 'Failed to create site');
     } finally {
       setIsCreating(false);
     }
@@ -102,6 +119,10 @@ export function CreateProjectDialog({
     setLanguage('');
     setAuthorInput('');
     setAuthors([]);
+    setTone('');
+    setPointOfView('');
+    setFormality('');
+    setCustomTonePrompt('');
     setShowAdvanced(false);
     setError(null);
   };
@@ -115,9 +136,9 @@ export function CreateProjectDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
+          <DialogTitle>Create New Site</DialogTitle>
           <DialogDescription>
-            Create a project to organize your articles.
+            Create a site to organize your articles.
           </DialogDescription>
         </DialogHeader>
 
@@ -137,7 +158,7 @@ export function CreateProjectDialog({
             <Label htmlFor="project-description">Description</Label>
             <Textarea
               id="project-description"
-              placeholder="Optional description for this project"
+              placeholder="Optional description for this site"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               disabled={isCreating}
@@ -212,6 +233,64 @@ export function CreateProjectDialog({
                   </div>
                 )}
               </div>
+
+              {/* Voice Settings */}
+              <div className="space-y-3 pt-2 border-t border-zinc-800">
+                <Label className="text-sm font-medium">Voice Settings</Label>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-zinc-400">Tone</Label>
+                    <Select value={tone} onValueChange={setTone}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Default" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(TONE_NAMES).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-zinc-400">Point of View</Label>
+                    <Select value={pointOfView} onValueChange={setPointOfView}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Default" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(POV_NAMES).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-zinc-400">Formality</Label>
+                    <Select value={formality} onValueChange={setFormality}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Default" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(FORMALITY_NAMES).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                {tone === 'custom' && (
+                  <div className="space-y-1">
+                    <Label className="text-xs text-zinc-400">Custom Tone Prompt</Label>
+                    <Textarea
+                      placeholder="Describe the custom tone..."
+                      value={customTonePrompt}
+                      onChange={(e) => setCustomTonePrompt(e.target.value)}
+                      disabled={isCreating}
+                      rows={2}
+                    />
+                  </div>
+                )}
+              </div>
             </CollapsibleContent>
           </Collapsible>
 
@@ -226,7 +305,7 @@ export function CreateProjectDialog({
           </Button>
           <Button onClick={handleCreate} disabled={isCreating || !name.trim()}>
             {isCreating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Create Project
+            Create Site
           </Button>
         </DialogFooter>
       </DialogContent>

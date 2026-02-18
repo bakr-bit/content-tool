@@ -7,7 +7,7 @@ const logger = createChildLogger('SQLiteClient');
 
 let db: Database.Database | null = null;
 
-const SCHEMA_VERSION = 8;
+const SCHEMA_VERSION = 9;
 
 const MIGRATIONS: Record<number, string[]> = {
   1: [
@@ -175,6 +175,15 @@ const MIGRATIONS: Record<number, string[]> = {
     `CREATE INDEX IF NOT EXISTS idx_content_plan_pages_project ON content_plan_pages(project_id)`,
     `CREATE INDEX IF NOT EXISTS idx_content_plan_pages_status ON content_plan_pages(generation_status)`,
     `CREATE INDEX IF NOT EXISTS idx_content_plan_pages_article ON content_plan_pages(article_id)`,
+  ],
+  9: [
+    // Project-level voice settings
+    `ALTER TABLE projects ADD COLUMN tone TEXT`,
+    `ALTER TABLE projects ADD COLUMN point_of_view TEXT`,
+    `ALTER TABLE projects ADD COLUMN formality TEXT`,
+    `ALTER TABLE projects ADD COLUMN custom_tone_prompt TEXT`,
+    // Outline reference for content plan pages
+    `ALTER TABLE content_plan_pages ADD COLUMN outline_id TEXT`,
   ],
 };
 

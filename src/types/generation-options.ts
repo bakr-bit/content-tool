@@ -81,6 +81,9 @@ export interface FormattingTogglesInput {
   lists?: boolean;
 }
 
+// Output Format
+export type OutputFormat = 'markdown' | 'html';
+
 export type HeadingCase =
   | 'title-case'
   | 'sentence-case'
@@ -205,6 +208,9 @@ export interface GenerationOptions {
   formatting: FormattingToggles;
   headingCase: HeadingCase;
 
+  // Output format
+  outputFormat: OutputFormat;
+
   // Structure
   structure: StructureToggles;
 
@@ -265,6 +271,7 @@ export interface GenerationOptionsInput {
   customTonePrompt?: string;
   formatting?: FormattingTogglesInput;
   headingCase?: HeadingCase;
+  outputFormat?: OutputFormat;
   structure?: StructureTogglesInput;
   articleSize?: Partial<ArticleSize>;
   callToAction?: CallToAction;

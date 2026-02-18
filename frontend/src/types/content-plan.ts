@@ -19,6 +19,7 @@ export interface ContentPlanPage {
   parentPageId?: string;
   generationStatus: GenerationStatus;
   articleId?: string;
+  outlineId?: string;
   errorMessage?: string;
   createdAt: string;
   updatedAt?: string;

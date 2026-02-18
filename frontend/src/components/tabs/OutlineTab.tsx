@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
@@ -27,17 +28,20 @@ import {
   Plus,
   Trash2,
   Table2,
+  Lock,
 } from 'lucide-react';
 import { researchAndGenerateOutline, getComponents } from '@/services/api';
 import type { UseArticleFormReturn } from '@/hooks/useArticleForm';
 import {
   LANGUAGE_NAMES,
   COMPONENT_TYPE_NAMES,
+  ARTICLE_SIZE_NAMES,
   type Outline,
   type OutlineSection,
   type Language,
   type ComponentType,
   type ComponentInfo,
+  type ArticleSizePreset,
 } from '@/types/article';
 
 // Translations for structure section titles
@@ -502,7 +506,12 @@ export function OutlineTab({ form }: OutlineTabProps) {
   const setOutlineText = form.setOutlineText;
   const outline = form.formState.outline;
 
-  const { focusKeyword, targetCountry, language, articleTitle, articleSize, includeKeywords, structure, toplists, selectedTemplateId } = form.formState;
+  const { focusKeyword, targetCountry, language, articleTitle, articleSize, includeKeywords, structure, toplists, selectedTemplateId, selectedTemplate } = form.formState;
+
+  // Debug template sections
+  console.log('OutlineTab - selectedTemplateId:', selectedTemplateId);
+  console.log('OutlineTab - selectedTemplate:', selectedTemplate);
+  console.log('OutlineTab - selectedTemplate?.sections:', selectedTemplate?.sections);
 
   // Filter toplists that are marked for inclusion
   const includedToplists = (toplists || []).filter((t) => t.includeInArticle);
@@ -741,18 +750,149 @@ export function OutlineTab({ form }: OutlineTabProps) {
 
   const isGenerating = status === 'researching' || status === 'generating';
 
+  // When a template is selected, structure settings are controlled by the template
+  const hasTemplate = !!selectedTemplateId;
+
   return (
     <div className="space-y-6 p-6">
       <div>
         <h2 className="text-lg font-semibold mb-4">Article Outline</h2>
         <p className="text-sm text-muted-foreground mb-6">
-          Generate an outline based on competitor research, or write your own.
+          Configure article structure and generate an outline based on competitor research.
           {articleTitle && (
             <span className="block mt-1">
               Title: <strong>"{articleTitle}"</strong> will influence the structure.
             </span>
           )}
         </p>
+      </div>
+
+      {/* Structure Settings */}
+      <div className="rounded-lg border p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium">Structure Settings</h3>
+          {hasTemplate && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Lock className="h-3 w-3" />
+              <span>Controlled by template</span>
+            </div>
+          )}
+        </div>
+
+        {/* Article Length */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Label className="text-sm">Article Length</Label>
+            {hasTemplate && <Lock className="h-3 w-3 text-muted-foreground" />}
+          </div>
+          <Select
+            value={articleSize.preset}
+            onValueChange={(value) =>
+              form.setArticleSize({ preset: value as ArticleSizePreset })
+            }
+            disabled={hasTemplate}
+          >
+            <SelectTrigger className={`w-full ${hasTemplate ? 'opacity-60' : ''}`}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(ARTICLE_SIZE_NAMES).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {hasTemplate && articleSize.targetWordCount && (
+            <p className="text-xs text-muted-foreground">
+              Template target: ~{articleSize.targetWordCount.toLocaleString()} words
+            </p>
+          )}
+        </div>
+
+        {/* Structure Toggles */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className={`flex items-center justify-between p-2 rounded border ${hasTemplate ? 'opacity-60' : ''}`}>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Key Takeaways</Label>
+              {hasTemplate && <Lock className="h-3 w-3 text-muted-foreground" />}
+            </div>
+            <Switch
+              checked={structure.keyTakeaways}
+              onCheckedChange={(checked) => form.setStructure({ keyTakeaways: checked })}
+              disabled={hasTemplate}
+            />
+          </div>
+          <div className={`flex items-center justify-between p-2 rounded border ${hasTemplate ? 'opacity-60' : ''}`}>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Table of Contents</Label>
+              {hasTemplate && <Lock className="h-3 w-3 text-muted-foreground" />}
+            </div>
+            <Switch
+              checked={structure.tableOfContents}
+              onCheckedChange={(checked) => form.setStructure({ tableOfContents: checked })}
+              disabled={hasTemplate}
+            />
+          </div>
+          <div className={`flex items-center justify-between p-2 rounded border ${hasTemplate ? 'opacity-60' : ''}`}>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Conclusion</Label>
+              {hasTemplate && <Lock className="h-3 w-3 text-muted-foreground" />}
+            </div>
+            <Switch
+              checked={structure.conclusion}
+              onCheckedChange={(checked) => form.setStructure({ conclusion: checked })}
+              disabled={hasTemplate}
+            />
+          </div>
+          <div className={`flex items-center justify-between p-2 rounded border ${hasTemplate ? 'opacity-60' : ''}`}>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">FAQs Section</Label>
+              {hasTemplate && <Lock className="h-3 w-3 text-muted-foreground" />}
+            </div>
+            <Switch
+              checked={structure.faqs}
+              onCheckedChange={(checked) => form.setStructure({ faqs: checked })}
+              disabled={hasTemplate}
+            />
+          </div>
+        </div>
+
+        {/* Template Sections Preview */}
+        {hasTemplate && selectedTemplate?.sections && selectedTemplate.sections.length > 0 && (
+          <div className="space-y-2 pt-2 border-t">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm">Template Sections ({selectedTemplate.sections.length})</Label>
+              <span className="text-xs text-muted-foreground">
+                ~{selectedTemplate.targetWordCount.toLocaleString()} words
+              </span>
+            </div>
+            <div className="max-h-[200px] overflow-y-auto border rounded-md">
+              <div className="divide-y">
+                {selectedTemplate.sections.map((section) => (
+                  <div
+                    key={section.id}
+                    className={`flex items-center justify-between px-3 py-1.5 text-xs ${section.name.startsWith('  ') ? 'pl-6 bg-muted/30' : ''}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={section.name.startsWith('  ') ? 'text-muted-foreground' : 'font-medium'}>
+                        {section.name.trim()}
+                      </span>
+                      {section.isRepeatable && section.repeatCount && (
+                        <Badge variant="secondary" className="text-[10px] px-1 py-0">
+                          ×{section.repeatCount}
+                        </Badge>
+                      )}
+                    </div>
+                    <Badge variant="outline" className="text-[10px] shrink-0">
+                      {section.componentType}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Generation Context */}

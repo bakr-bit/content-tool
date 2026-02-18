@@ -8,6 +8,9 @@ import {
 } from './content-plan.storage';
 import { workflowOrchestrator } from '../workflow/workflow.service';
 import { GenerationOptionsInput } from '../../types/generation-options';
+import { projectStorage, Project } from '../project/project.storage';
+import { researchService } from '../research';
+import { outlineService } from '../outline';
 
 const logger = createChildLogger('ContentPlanService');
 
@@ -66,6 +69,67 @@ export class ContentPlanService {
     return contentPlanStorage.deletePagesByProject(projectId);
   }
 
+  async generateOutlineForPage(
+    pageId: string,
+    overrideOptions?: GenerationOptionsInput
+  ): Promise<{ page: ContentPlanPage; outlineId: string }> {
+    const page = contentPlanStorage.getPage(pageId);
+    if (!page) {
+      throw new Error('Page not found');
+    }
+
+    if (!page.keywords && !page.metaTitle) {
+      throw new Error('Page must have keywords or a meta title to generate an outline');
+    }
+
+    // Extract focus keyword
+    const allKeywords = page.keywords
+      ? page.keywords.split(',').map((k) => k.trim()).filter(Boolean)
+      : [];
+    const focusKeyword = allKeywords[0] || page.metaTitle || '';
+
+    // Fetch project for voice defaults
+    const project = projectStorage.getProjectById(page.projectId);
+
+    // Build options with project voice defaults
+    const projectVoiceDefaults: Partial<GenerationOptionsInput> = {};
+    if (project) {
+      if (project.tone) projectVoiceDefaults.tone = project.tone as GenerationOptionsInput['tone'];
+      if (project.pointOfView) projectVoiceDefaults.pointOfView = project.pointOfView as GenerationOptionsInput['pointOfView'];
+      if (project.formality) projectVoiceDefaults.formality = project.formality as GenerationOptionsInput['formality'];
+      if (project.customTonePrompt) projectVoiceDefaults.customTonePrompt = project.customTonePrompt;
+    }
+
+    const options: GenerationOptionsInput = {
+      ...projectVoiceDefaults,
+      ...overrideOptions,
+      title: page.metaTitle || undefined,
+      includeKeywords: allKeywords.slice(1).length > 0 ? allKeywords.slice(1) : overrideOptions?.includeKeywords,
+    };
+
+    const geo = overrideOptions?.targetCountry || project?.geo || 'us';
+
+    logger.info({ pageId, keyword: focusKeyword }, 'Generating outline for content plan page');
+
+    // Step 1: Research
+    const research = await researchService.conductResearch({ keyword: focusKeyword, geo });
+
+    // Step 2: Generate outline
+    const outline = await outlineService.generateOutline({
+      researchId: research.researchId,
+      options,
+    });
+
+    // Step 3: Save outline reference on page
+    const updatedPage = contentPlanStorage.updatePageOutline(pageId, outline.outlineId);
+    if (!updatedPage) {
+      throw new Error('Failed to update page with outline');
+    }
+
+    logger.info({ pageId, outlineId: outline.outlineId }, 'Outline generated for content plan page');
+    return { page: updatedPage, outlineId: outline.outlineId };
+  }
+
   async generateSingle(
     pageId: string,
     overrideOptions?: GenerationOptionsInput
@@ -79,15 +143,18 @@ export class ContentPlanService {
       throw new Error('Page must have keywords or a meta title to generate an article');
     }
 
+    // Fetch project for voice defaults
+    const project = projectStorage.getProjectById(page.projectId);
+
     // Mark as generating
     contentPlanStorage.updatePageStatus(pageId, 'generating');
 
     try {
-      const options = this.buildWorkflowOptions(page, overrideOptions);
+      const workflowInput = this.buildWorkflowOptions(page, overrideOptions, project);
 
-      logger.info({ pageId, keyword: options.keyword }, 'Generating article for content plan page');
+      logger.info({ pageId, keyword: workflowInput.keyword, outlineId: workflowInput.outlineId }, 'Generating article for content plan page');
 
-      const workflow = await workflowOrchestrator.runFullWorkflow(options);
+      const workflow = await workflowOrchestrator.runFullWorkflow(workflowInput);
       const articleId = workflow.article?.articleId;
 
       if (!articleId) {
@@ -219,8 +286,9 @@ export class ContentPlanService {
 
   private buildWorkflowOptions(
     page: ContentPlanPage,
-    overrideOptions?: GenerationOptionsInput
-  ): { keyword: string; geo?: string; options?: GenerationOptionsInput } {
+    overrideOptions?: GenerationOptionsInput,
+    project?: Project | null
+  ): { keyword: string; geo?: string; options?: GenerationOptionsInput; outlineId?: string } {
     // Extract keywords: first = focus keyword, rest = includeKeywords
     const allKeywords = page.keywords
       ? page.keywords.split(',').map((k) => k.trim()).filter(Boolean)
@@ -232,7 +300,18 @@ export class ContentPlanService {
     // Map page type to article size preset
     const sizePreset = mapPageTypeToSizePreset(page.pageType);
 
+    // Build project-level voice defaults (lowest priority)
+    const projectVoiceDefaults: Partial<GenerationOptionsInput> = {};
+    if (project) {
+      if (project.tone) projectVoiceDefaults.tone = project.tone as GenerationOptionsInput['tone'];
+      if (project.pointOfView) projectVoiceDefaults.pointOfView = project.pointOfView as GenerationOptionsInput['pointOfView'];
+      if (project.formality) projectVoiceDefaults.formality = project.formality as GenerationOptionsInput['formality'];
+      if (project.customTonePrompt) projectVoiceDefaults.customTonePrompt = project.customTonePrompt;
+    }
+
+    // Merge order: projectVoiceDefaults < overrideOptions < page-specific
     const options: GenerationOptionsInput = {
+      ...projectVoiceDefaults,
       ...overrideOptions,
       title: page.metaTitle || undefined,
       includeKeywords: includeKeywords.length > 0 ? includeKeywords : overrideOptions?.includeKeywords,
@@ -251,6 +330,7 @@ export class ContentPlanService {
       keyword: focusKeyword,
       geo: overrideOptions?.targetCountry || undefined,
       options,
+      outlineId: page.outlineId,
     };
   }
 }

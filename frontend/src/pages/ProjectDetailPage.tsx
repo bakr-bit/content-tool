@@ -36,11 +36,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, ChevronLeft, Pencil, Trash2, Loader2, ChevronDown, X, Languages, Users, Upload } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Plus, ChevronLeft, Pencil, Trash2, Loader2, ChevronDown, X, Languages, Users, Upload, Mic } from 'lucide-react';
+import { TONE_NAMES, POV_NAMES, FORMALITY_NAMES } from '@/types/article';
+import type { ToneOfVoice, PointOfView, Formality } from '@/types/article';
 import { Flag } from '@/components/ui/flag';
 import { ImportArchitectureDialog } from '@/components/content-plan/ImportArchitectureDialog';
 import { ContentPlanTable } from '@/components/content-plan/ContentPlanTable';
+import { ContentPlanPageDialog } from '@/components/content-plan/ContentPlanPageDialog';
 import { useContentPlan } from '@/hooks/useContentPlan';
+import type { ContentPlanPage as ContentPlanPageType } from '@/types/content-plan';
 
 export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -77,6 +88,10 @@ export function ProjectDetailPage() {
   const [editLanguage, setEditLanguage] = useState('');
   const [editAuthorInput, setEditAuthorInput] = useState('');
   const [editAuthors, setEditAuthors] = useState<string[]>([]);
+  const [editTone, setEditTone] = useState<string>('');
+  const [editPointOfView, setEditPointOfView] = useState<string>('');
+  const [editFormality, setEditFormality] = useState<string>('');
+  const [editCustomTonePrompt, setEditCustomTonePrompt] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -86,6 +101,8 @@ export function ProjectDetailPage() {
 
   // Content plan
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [selectedPage, setSelectedPage] = useState<ContentPlanPageType | null>(null);
+  const [pageDialogOpen, setPageDialogOpen] = useState(false);
   const contentPlan = useContentPlan(projectId);
 
   const fetchProject = useCallback(async () => {
@@ -185,8 +202,12 @@ export function ProjectDetailPage() {
       setEditGeo(project.geo || '');
       setEditLanguage(project.language || '');
       setEditAuthors(project.authors || []);
+      setEditTone(project.tone || '');
+      setEditPointOfView(project.pointOfView || '');
+      setEditFormality(project.formality || '');
+      setEditCustomTonePrompt(project.customTonePrompt || '');
       setShowAdvanced(
-        !!(project.geo || project.language || project.authors?.length)
+        !!(project.geo || project.language || project.authors?.length || project.tone || project.pointOfView || project.formality)
       );
       setEditDialogOpen(true);
     }
@@ -222,6 +243,10 @@ export function ProjectDetailPage() {
         geo: editGeo.trim() || undefined,
         language: editLanguage.trim() || undefined,
         authors: editAuthors.length > 0 ? editAuthors : undefined,
+        tone: editTone || undefined,
+        pointOfView: editPointOfView || undefined,
+        formality: editFormality || undefined,
+        customTonePrompt: editCustomTonePrompt.trim() || undefined,
       });
 
       if (result.success && result.data) {
@@ -332,6 +357,16 @@ export function ProjectDetailPage() {
                     {project.authors.join(', ')}
                   </span>
                 )}
+                {(project.tone || project.pointOfView || project.formality) && (
+                  <span className="flex items-center gap-1">
+                    <Mic className="h-3.5 w-3.5" />
+                    {[
+                      project.tone && TONE_NAMES[project.tone as ToneOfVoice],
+                      project.pointOfView && POV_NAMES[project.pointOfView as PointOfView],
+                      project.formality && project.formality !== 'automatic' && FORMALITY_NAMES[project.formality as Formality],
+                    ].filter(Boolean).join(' / ')}
+                  </span>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -374,6 +409,10 @@ export function ProjectDetailPage() {
               onUpdatePage={contentPlan.updatePage}
               onDeletePage={contentPlan.deletePage}
               onClearAll={contentPlan.clearPages}
+              onPageClick={(page) => {
+                setSelectedPage(page);
+                setPageDialogOpen(true);
+              }}
             />
           </div>
         )}
@@ -417,6 +456,17 @@ export function ProjectDetailPage() {
         open={importDialogOpen}
         onOpenChange={setImportDialogOpen}
         onImport={contentPlan.importPages}
+      />
+
+      {/* Content Plan Page Dialog */}
+      <ContentPlanPageDialog
+        page={selectedPage}
+        open={pageDialogOpen}
+        onOpenChange={setPageDialogOpen}
+        onUpdated={() => {
+          contentPlan.refreshPages();
+          fetchArticles();
+        }}
       />
 
       {/* Article Modal - pre-fill projectId */}
@@ -534,6 +584,64 @@ export function ProjectDetailPage() {
                           </button>
                         </Badge>
                       ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Voice Settings */}
+                <div className="space-y-3 pt-2 border-t border-zinc-800">
+                  <Label className="text-sm font-medium">Voice Settings</Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-zinc-400">Tone</Label>
+                      <Select value={editTone} onValueChange={setEditTone}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Default" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(TONE_NAMES).map(([value, label]) => (
+                            <SelectItem key={value} value={value}>{label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-zinc-400">Point of View</Label>
+                      <Select value={editPointOfView} onValueChange={setEditPointOfView}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Default" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(POV_NAMES).map(([value, label]) => (
+                            <SelectItem key={value} value={value}>{label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-zinc-400">Formality</Label>
+                      <Select value={editFormality} onValueChange={setEditFormality}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Default" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(FORMALITY_NAMES).map(([value, label]) => (
+                            <SelectItem key={value} value={value}>{label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  {editTone === 'custom' && (
+                    <div className="space-y-1">
+                      <Label className="text-xs text-zinc-400">Custom Tone Prompt</Label>
+                      <Textarea
+                        placeholder="Describe the custom tone..."
+                        value={editCustomTonePrompt}
+                        onChange={(e) => setEditCustomTonePrompt(e.target.value)}
+                        disabled={isUpdating}
+                        rows={2}
+                      />
                     </div>
                   )}
                 </div>

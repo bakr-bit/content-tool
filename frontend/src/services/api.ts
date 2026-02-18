@@ -373,6 +373,10 @@ export async function createProject(data: {
   language?: string;
   authors?: string[];
   defaultToplistIds?: string[];
+  tone?: string;
+  pointOfView?: string;
+  formality?: string;
+  customTonePrompt?: string;
 }): Promise<ApiResponse<ProjectWithCount>> {
   return fetchApi<ProjectWithCount>('/project', {
     method: 'POST',
@@ -393,6 +397,10 @@ export async function updateProject(
     language?: string | null;
     authors?: string[] | null;
     defaultToplistIds?: string[] | null;
+    tone?: string | null;
+    pointOfView?: string | null;
+    formality?: string | null;
+    customTonePrompt?: string | null;
   }
 ): Promise<ApiResponse<ProjectWithCount>> {
   return fetchApi<ProjectWithCount>(`/project/${id}`, {
@@ -474,6 +482,24 @@ export async function updateContentPlanPage(
   return fetchApi<import('@/types/content-plan').ContentPlanPage>(
     `/content-plan/page/${pageId}`,
     { method: 'PATCH', body: JSON.stringify(data) }
+  );
+}
+
+export async function generateOutlineForPage(
+  pageId: string,
+  options?: Record<string, unknown>
+): Promise<ApiResponse<{ page: import('@/types/content-plan').ContentPlanPage; outlineId: string }>> {
+  return fetchApi<{ page: import('@/types/content-plan').ContentPlanPage; outlineId: string }>(
+    `/content-plan/page/${pageId}/generate-outline`,
+    { method: 'POST', body: JSON.stringify({ options }) }
+  );
+}
+
+export async function getContentPlanPage(
+  pageId: string
+): Promise<ApiResponse<import('@/types/content-plan').ContentPlanPage>> {
+  return fetchApi<import('@/types/content-plan').ContentPlanPage>(
+    `/content-plan/page/${pageId}`
   );
 }
 

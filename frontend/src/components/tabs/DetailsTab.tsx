@@ -10,8 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { X, Sparkles, Loader2, Bug, FileText, BookOpen, Wand2 } from 'lucide-react';
-import { COUNTRY_NAMES, LANGUAGE_NAMES, type TargetCountry, type Language } from '@/types/article';
+import { X, Sparkles, Loader2, Bug, FileText, BookOpen, Wand2, Settings2, ChevronDown } from 'lucide-react';
+import { COUNTRY_NAMES, LANGUAGE_NAMES, OUTPUT_FORMAT_NAMES, type TargetCountry, type Language, type OutputFormat } from '@/types/article';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import type { UseArticleFormReturn } from '@/hooks/useArticleForm';
 import { Flag } from '@/components/ui/flag';
 import { generateKeywords, getProjects, getTemplates } from '@/services/api';
@@ -62,7 +63,9 @@ export function DetailsTab({ form }: DetailsTabProps) {
     async function fetchTemplates() {
       try {
         const result = await getTemplates();
+        console.log('DetailsTab - Templates API response:', result);
         if (result.success && result.data) {
+          console.log('DetailsTab - First template sections:', result.data.templates[0]?.sections);
           setTemplates(result.data.templates);
         }
       } catch (error) {
@@ -141,7 +144,13 @@ export function DetailsTab({ form }: DetailsTabProps) {
         <Label>Article Template</Label>
         <Select
           value={form.formState.selectedTemplateId || 'none'}
-          onValueChange={(value) => form.setSelectedTemplateId(value === 'none' ? undefined : value)}
+          onValueChange={(value) => {
+            const template = value === 'none' ? undefined : templates.find(t => t.id === value);
+            console.log('DetailsTab - Template selected:', value);
+            console.log('DetailsTab - Full template object:', template);
+            console.log('DetailsTab - Template sections:', template?.sections);
+            form.applyTemplate(template);
+          }}
           disabled={templatesLoading}
         >
           <SelectTrigger>
@@ -259,19 +268,19 @@ export function DetailsTab({ form }: DetailsTabProps) {
         </p>
       </div>
 
-      {/* Project */}
+      {/* Site */}
       <div className="space-y-2">
-        <Label>Project</Label>
+        <Label>Site</Label>
         <Select
           value={form.formState.projectId || 'none'}
           onValueChange={(value) => form.setProjectId(value === 'none' ? '' : value)}
           disabled={projectsLoading}
         >
           <SelectTrigger>
-            <SelectValue placeholder={projectsLoading ? 'Loading...' : 'Select a project'} />
+            <SelectValue placeholder={projectsLoading ? 'Loading...' : 'Select a site'} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">No Project</SelectItem>
+            <SelectItem value="none">No Site</SelectItem>
             {projects.map((project) => (
               <SelectItem key={project.projectId} value={project.projectId}>
                 {project.name}
@@ -280,7 +289,7 @@ export function DetailsTab({ form }: DetailsTabProps) {
           </SelectContent>
         </Select>
         <p className="text-xs text-muted-foreground">
-          Optional. Assign this article to a project.
+          Optional. Assign this article to a site.
         </p>
       </div>
 
@@ -333,6 +342,38 @@ export function DetailsTab({ form }: DetailsTabProps) {
           Additional keywords to naturally include in the article content.
         </p>
       </div>
+
+      {/* Advanced Settings */}
+      <Collapsible>
+        <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group">
+          <Settings2 className="h-4 w-4" />
+          <span>Advanced Settings</span>
+          <ChevronDown className="h-3 w-3 transition-transform group-data-[state=open]:rotate-180" />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-4 space-y-4">
+          <div className="space-y-2">
+            <Label>Output Format</Label>
+            <Select
+              value={form.formState.outputFormat}
+              onValueChange={(value) => form.setOutputFormat(value as OutputFormat)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(OUTPUT_FORMAT_NAMES).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Markdown is the default. Use HTML for simpler web pages that need direct HTML output.
+            </p>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 }

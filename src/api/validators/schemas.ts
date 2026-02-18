@@ -438,6 +438,10 @@ export const projectCreateSchema = z.object({
   language: z.string().max(50).optional(),
   authors: z.array(z.string().max(100)).max(20).optional(),
   defaultToplistIds: z.array(z.string()).max(10).optional(),
+  tone: toneSchema,
+  pointOfView: pointOfViewSchema,
+  formality: formalitySchema,
+  customTonePrompt: z.string().max(1000).optional(),
 });
 
 export const projectUpdateSchema = z.object({
@@ -447,6 +451,10 @@ export const projectUpdateSchema = z.object({
   language: z.string().max(50).optional().nullable(),
   authors: z.array(z.string().max(100)).max(20).optional().nullable(),
   defaultToplistIds: z.array(z.string()).max(10).optional().nullable(),
+  tone: toneSchema.nullable(),
+  pointOfView: pointOfViewSchema.nullable(),
+  formality: formalitySchema.nullable(),
+  customTonePrompt: z.string().max(1000).optional().nullable(),
 });
 
 // Toplist schemas for CRUD operations

@@ -5,6 +5,7 @@ import {
   LANGUAGE_NAMES,
   FormattingToggles,
   CallToAction,
+  OutputFormat,
 } from '../../types/generation-options';
 import { getAuthorById } from '../author';
 import { mergeWithDefaults } from '../../config/defaults';
@@ -138,40 +139,63 @@ function getPOVInstruction(pov: string, site?: string): string {
   return povInstructions[pov] || povInstructions['automatic'];
 }
 
-function getFormattingInstructions(formatting: FormattingToggles): string {
+function getFormattingInstructions(formatting: FormattingToggles, outputFormat: OutputFormat = 'markdown'): string {
+  const isHtml = outputFormat === 'html';
   const instructions: string[] = [];
 
   if (formatting.bold) {
-    instructions.push('Use **bold** to emphasize key terms, statistics, and important takeaways');
+    instructions.push(isHtml
+      ? 'Use <strong> to emphasize key terms, statistics, and important takeaways'
+      : 'Use **bold** to emphasize key terms, statistics, and important takeaways');
   } else {
     instructions.push('Do NOT use bold formatting');
   }
 
   if (formatting.italics) {
-    instructions.push('Use *italics* sparingly for emphasis, foreign words, and titles');
+    instructions.push(isHtml
+      ? 'Use <em> sparingly for emphasis, foreign words, and titles'
+      : 'Use *italics* sparingly for emphasis, foreign words, and titles');
   } else {
     instructions.push('Do NOT use italic formatting');
   }
 
   if (formatting.lists) {
-    instructions.push('ACTIVELY use bullet points and numbered lists to break up text - aim for at least one list per major section. Lists make content scannable and engaging');
+    instructions.push(isHtml
+      ? 'ACTIVELY use <ul>/<ol> lists to break up text - aim for at least one list per major section. Lists make content scannable and engaging'
+      : 'ACTIVELY use bullet points and numbered lists to break up text - aim for at least one list per major section. Lists make content scannable and engaging');
   } else {
     instructions.push('Do NOT use bullet points or lists - write in paragraph form only');
   }
 
   if (formatting.tables) {
-    instructions.push('ACTIVELY include markdown tables to compare options, features, pros/cons, or any data that benefits from side-by-side comparison. Tables are highly engaging - use them generously');
+    instructions.push(isHtml
+      ? 'ACTIVELY include HTML <table> elements to compare options, features, pros/cons, or any data that benefits from side-by-side comparison. Tables are highly engaging - use them generously'
+      : 'ACTIVELY include markdown tables to compare options, features, pros/cons, or any data that benefits from side-by-side comparison. Tables are highly engaging - use them generously');
   } else {
     instructions.push('Do NOT include tables');
   }
 
   if (formatting.quotes) {
-    instructions.push('Include relevant quotes or callout boxes using > blockquotes for key insights');
+    instructions.push(isHtml
+      ? 'Include relevant quotes or callout boxes using <blockquote> for key insights'
+      : 'Include relevant quotes or callout boxes using > blockquotes for key insights');
   } else {
     instructions.push('Do NOT include blockquotes');
   }
 
   return instructions.join('\n- ');
+}
+
+function getOutputFormatInstructions(outputFormat: OutputFormat): string {
+  if (outputFormat === 'html') {
+    return `OUTPUT FORMAT: HTML
+- Output clean, semantic HTML (NOT Markdown)
+- Use <h1> for the article title, <h2> for main sections, <h3> for subsections
+- Use <p> for paragraphs, <ul>/<ol> for lists, <table> for tables
+- Do NOT include <html>, <head>, <body>, or <doctype> wrappers - output only the article content HTML
+- Do NOT use Markdown syntax (no #, **, *, -, etc.) - use proper HTML tags`;
+  }
+  return '';
 }
 
 export function buildSectionWriterSystemPrompt(
@@ -224,8 +248,9 @@ POINT OF VIEW: ${getPOVInstruction(resolved.pointOfView, authorSite)}
 FORMALITY: ${resolved.formality === 'formal' ? 'Use formal language, complete sentences, and professional vocabulary.' : resolved.formality === 'informal' ? 'Use conversational language, contractions, and accessible vocabulary.' : 'Match the formality to the topic.'}
 
 FORMATTING RULES:
-- ${getFormattingInstructions(resolved.formatting)}
+- ${getFormattingInstructions(resolved.formatting, resolved.outputFormat)}
 
+${getOutputFormatInstructions(resolved.outputFormat)}
 ${resolved.customTonePrompt ? `CUSTOM STYLE INSTRUCTIONS: ${resolved.customTonePrompt}` : ''}
 ${citationInstructions}
 CONTENT STRUCTURE:
@@ -312,7 +337,7 @@ ANTI-REPETITION RULES - CRITICAL:
 - Tables, lists, and examples should be UNIQUE to each section - never repeat the same table/list structure
 
 CRITICAL RULES - NEVER VIOLATE:
-1. Output ONLY the section content in Markdown. NO preamble, NO meta-commentary
+1. Output ONLY the section content in ${resolved.outputFormat === 'html' ? 'HTML' : 'Markdown'}. NO preamble, NO meta-commentary
 2. Do NOT start with "Here is...", "Sure!", "Absolutely!", "Let me...", "I'll write..."
 3. Do NOT describe your tone or approach within the content
 4. Do NOT include the section heading - it will be added separately
@@ -589,7 +614,7 @@ ${options?.templateId ? (() => {
   return constraints ? `\n⚠️ TEMPLATE CONSTRAINT FOR THIS SECTION: ${constraints}\nYou MUST follow this constraint - the content it forbids is covered in another section.` : '';
 })() : ''}
 ${section.componentType && section.componentType !== 'prose' ? `\nFORMAT REQUIREMENT: Follow the ${section.componentType} component format instructions above precisely.` : ''}
-Write the content for this section now. Output the section content only, in Markdown format. Do not include the heading.`;
+Write the content for this section now. Output the section content only, in ${resolved.outputFormat === 'html' ? 'HTML' : 'Markdown'} format. Do not include the heading.`;
 
   // Add citation reminder for section-level research
   if (sectionResearch && sectionResearch.sources.length > 0) {
@@ -642,10 +667,12 @@ TONE: ${getToneInstruction(resolved.tone, resolved.customTonePrompt)}
 POINT OF VIEW: ${getPOVInstruction(resolved.pointOfView, authorSite)}
 
 FORMATTING:
-- ${getFormattingInstructions(resolved.formatting)}
+- ${getFormattingInstructions(resolved.formatting, resolved.outputFormat)}
 - Add tables where comparisons would help readers
 - Break up any long paragraphs (5+ sentences) into shorter ones
 - Ensure varied formatting (not just paragraphs)
+
+${getOutputFormatInstructions(resolved.outputFormat)}
 
 ${resolved.structure.keyTakeaways ? 'Ensure "Key Takeaways" section exists at the top with 3-5 bullet points.' : ''}
 ${resolved.structure.faqs ? 'Ensure FAQ section has clear, direct answers (not vague).' : ''}
@@ -698,10 +725,10 @@ REMOVE/FIX THESE:
 - REPEATED INTRODUCTIONS: Each section introducing the same topic again
 
 CRITICAL OUTPUT RULES:
-1. Output ONLY the polished article in Markdown - NO preamble
+1. Output ONLY the polished article in ${resolved.outputFormat === 'html' ? 'HTML' : 'Markdown'} - NO preamble
 2. Do NOT start with "Here is...", "Sure!", "Absolutely!"
-3. Start directly with the article title (# heading)
-4. Include all headings (## for H2, ### for H3)
+3. Start directly with the article title (${resolved.outputFormat === 'html' ? '<h1>' : '# heading'})
+4. Include all headings (${resolved.outputFormat === 'html' ? '<h2> for H2, <h3> for H3' : '## for H2, ### for H3'})
 5. Preserve key information and structure`;
 }
 
@@ -740,9 +767,9 @@ Link: [${cta.buttonText || 'Learn More'}](${cta.url})
   prompt += `
 
 OUTPUT REQUIREMENTS:
-- Start DIRECTLY with the article title (# heading) - no preamble
+- Start DIRECTLY with the article title (${resolved.outputFormat === 'html' ? '<h1>' : '# heading'}) - no preamble
 - Do NOT add any introductory text before the article
-- Output ONLY the article content in clean Markdown`;
+- Output ONLY the article content in clean ${resolved.outputFormat === 'html' ? 'HTML' : 'Markdown'}`;
 
   return prompt;
 }

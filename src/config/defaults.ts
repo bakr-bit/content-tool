@@ -41,6 +41,9 @@ export const DEFAULT_GENERATION_OPTIONS: GenerationOptions = {
   formatting: DEFAULT_FORMATTING,
   headingCase: 'title-case',
 
+  // Output format
+  outputFormat: 'markdown',
+
   // Structure
   structure: DEFAULT_STRUCTURE,
 

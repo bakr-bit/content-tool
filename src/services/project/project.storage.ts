@@ -14,6 +14,10 @@ export interface ProjectRow {
   language: string | null;
   authors: string | null; // JSON array
   default_toplist_ids: string | null; // JSON array
+  tone: string | null;
+  point_of_view: string | null;
+  formality: string | null;
+  custom_tone_prompt: string | null;
   created_at: string;
   updated_at: string | null;
 }
@@ -26,6 +30,10 @@ export interface Project {
   language?: string;
   authors?: string[];
   defaultToplistIds?: string[];
+  tone?: string;
+  pointOfView?: string;
+  formality?: string;
+  customTonePrompt?: string;
   createdAt: string;
   updatedAt?: string;
 }
@@ -37,6 +45,10 @@ export interface CreateProjectInput {
   language?: string;
   authors?: string[];
   defaultToplistIds?: string[];
+  tone?: string;
+  pointOfView?: string;
+  formality?: string;
+  customTonePrompt?: string;
 }
 
 export interface UpdateProjectInput {
@@ -46,6 +58,10 @@ export interface UpdateProjectInput {
   language?: string;
   authors?: string[];
   defaultToplistIds?: string[];
+  tone?: string;
+  pointOfView?: string;
+  formality?: string;
+  customTonePrompt?: string;
 }
 
 function rowToProject(row: ProjectRow): Project {
@@ -57,6 +73,10 @@ function rowToProject(row: ProjectRow): Project {
     language: row.language ?? undefined,
     authors: row.authors ? JSON.parse(row.authors) : undefined,
     defaultToplistIds: row.default_toplist_ids ? JSON.parse(row.default_toplist_ids) : undefined,
+    tone: row.tone ?? undefined,
+    pointOfView: row.point_of_view ?? undefined,
+    formality: row.formality ?? undefined,
+    customTonePrompt: row.custom_tone_prompt ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at ?? undefined,
   };
@@ -75,8 +95,8 @@ export class ProjectStorage {
 
     try {
       this.db.prepare(`
-        INSERT INTO projects (project_id, name, description, geo, language, authors, default_toplist_ids, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO projects (project_id, name, description, geo, language, authors, default_toplist_ids, tone, point_of_view, formality, custom_tone_prompt, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         projectId,
         input.name,
@@ -85,6 +105,10 @@ export class ProjectStorage {
         input.language ?? null,
         input.authors ? JSON.stringify(input.authors) : null,
         input.defaultToplistIds ? JSON.stringify(input.defaultToplistIds) : null,
+        input.tone ?? null,
+        input.pointOfView ?? null,
+        input.formality ?? null,
+        input.customTonePrompt ?? null,
         now,
         null
       );
@@ -99,6 +123,10 @@ export class ProjectStorage {
         language: input.language,
         authors: input.authors,
         defaultToplistIds: input.defaultToplistIds,
+        tone: input.tone,
+        pointOfView: input.pointOfView,
+        formality: input.formality,
+        customTonePrompt: input.customTonePrompt,
         createdAt: now,
       };
     } catch (error) {
@@ -169,6 +197,10 @@ export class ProjectStorage {
       const language = updates.language !== undefined ? updates.language : existing.language;
       const authors = updates.authors !== undefined ? updates.authors : existing.authors;
       const defaultToplistIds = updates.defaultToplistIds !== undefined ? updates.defaultToplistIds : existing.defaultToplistIds;
+      const tone = updates.tone !== undefined ? updates.tone : existing.tone;
+      const pointOfView = updates.pointOfView !== undefined ? updates.pointOfView : existing.pointOfView;
+      const formality = updates.formality !== undefined ? updates.formality : existing.formality;
+      const customTonePrompt = updates.customTonePrompt !== undefined ? updates.customTonePrompt : existing.customTonePrompt;
 
       this.db.prepare(`
         UPDATE projects SET
@@ -178,6 +210,10 @@ export class ProjectStorage {
           language = ?,
           authors = ?,
           default_toplist_ids = ?,
+          tone = ?,
+          point_of_view = ?,
+          formality = ?,
+          custom_tone_prompt = ?,
           updated_at = ?
         WHERE project_id = ?
       `).run(
@@ -187,6 +223,10 @@ export class ProjectStorage {
         language ?? null,
         authors ? JSON.stringify(authors) : null,
         defaultToplistIds ? JSON.stringify(defaultToplistIds) : null,
+        tone ?? null,
+        pointOfView ?? null,
+        formality ?? null,
+        customTonePrompt ?? null,
         now,
         projectId
       );
@@ -201,6 +241,10 @@ export class ProjectStorage {
         language: language ?? undefined,
         authors: authors ?? undefined,
         defaultToplistIds: defaultToplistIds ?? undefined,
+        tone: tone ?? undefined,
+        pointOfView: pointOfView ?? undefined,
+        formality: formality ?? undefined,
+        customTonePrompt: customTonePrompt ?? undefined,
         createdAt: existing.createdAt,
         updatedAt: now,
       };

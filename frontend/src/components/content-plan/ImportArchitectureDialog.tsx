@@ -32,12 +32,10 @@ export function ImportArchitectureDialog({ open, onOpenChange, onImport }: Impor
   const [fileName, setFileName] = useState<string>('');
   const [importing, setImporting] = useState(false);
   const [parseError, setParseError] = useState<string | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const processFile = (file: File) => {
     setParseError(null);
     setFileName(file.name);
 
@@ -58,6 +56,41 @@ export function ImportArchitectureDialog({ open, onOpenChange, onImport }: Impor
       }
     };
     reader.readAsText(file);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    processFile(file);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && (file.name.endsWith('.csv') || file.type === 'text/csv')) {
+      processFile(file);
+    } else {
+      setParseError('Please drop a CSV file.');
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
   };
 
   const handleImport = async () => {
@@ -93,8 +126,16 @@ export function ImportArchitectureDialog({ open, onOpenChange, onImport }: Impor
         <div className="space-y-4">
           {/* File Input */}
           <div
-            className="border-2 border-dashed border-zinc-700 rounded-lg p-6 text-center cursor-pointer hover:border-zinc-500 transition-colors"
+            className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+              isDragOver
+                ? 'border-primary bg-primary/5'
+                : 'border-zinc-700 hover:border-zinc-500'
+            }`}
             onClick={() => fileInputRef.current?.click()}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
           >
             <input
               ref={fileInputRef}

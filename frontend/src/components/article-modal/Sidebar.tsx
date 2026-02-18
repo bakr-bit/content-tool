@@ -3,7 +3,6 @@ import {
   List,
   Palette,
   BookOpen,
-  LayoutList,
   Brain,
   FileOutput,
   Table2,
@@ -15,7 +14,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-export type TabId = 'details' | 'outline' | 'content' | 'knowledge' | 'formatting' | 'structure' | 'toplist' | 'result';
+export type TabId = 'details' | 'outline' | 'content' | 'knowledge' | 'formatting' | 'toplist' | 'result';
 
 interface Tab {
   id: TabId;
@@ -26,7 +25,6 @@ interface Tab {
 const TABS: Tab[] = [
   { id: 'details', label: 'Details', icon: FileText },
   { id: 'toplist', label: 'Toplist', icon: Table2 },
-  { id: 'structure', label: 'Structure', icon: LayoutList },
   { id: 'outline', label: 'Outline', icon: List },
   { id: 'content', label: 'Content', icon: Palette },
   { id: 'knowledge', label: 'Knowledge', icon: Brain },

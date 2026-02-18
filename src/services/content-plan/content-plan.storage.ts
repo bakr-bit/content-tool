@@ -27,6 +27,7 @@ export interface ContentPlanPageRow {
   parent_page_id: string | null;
   generation_status: GenerationStatus;
   article_id: string | null;
+  outline_id: string | null;
   error_message: string | null;
   created_at: string;
   updated_at: string | null;
@@ -51,6 +52,7 @@ export interface ContentPlanPage {
   parentPageId?: string;
   generationStatus: GenerationStatus;
   articleId?: string;
+  outlineId?: string;
   errorMessage?: string;
   createdAt: string;
   updatedAt?: string;
@@ -100,6 +102,7 @@ function rowToPage(row: ContentPlanPageRow): ContentPlanPage {
     parentPageId: row.parent_page_id ?? undefined,
     generationStatus: row.generation_status,
     articleId: row.article_id ?? undefined,
+    outlineId: row.outline_id ?? undefined,
     errorMessage: row.error_message ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at ?? undefined,
@@ -269,6 +272,23 @@ export class ContentPlanStorage {
       return result.changes > 0;
     } catch (error) {
       logger.error({ error, pageId }, 'Error deleting content plan page');
+      throw error;
+    }
+  }
+
+  updatePageOutline(pageId: string, outlineId: string): ContentPlanPage | null {
+    const now = new Date().toISOString();
+
+    try {
+      this.db.prepare(`
+        UPDATE content_plan_pages
+        SET outline_id = ?, updated_at = ?
+        WHERE page_id = ?
+      `).run(outlineId, now, pageId);
+
+      return this.getPage(pageId);
+    } catch (error) {
+      logger.error({ error, pageId }, 'Error updating page outline');
       throw error;
     }
   }

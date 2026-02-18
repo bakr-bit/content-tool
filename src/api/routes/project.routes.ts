@@ -92,11 +92,12 @@ router.put(
   validate(projectUpdateSchema),
   async (req: Request<{ id: string }, {}, ProjectUpdateBody>, res: Response, next: NextFunction) => {
     try {
-      const { name, description, geo, language, authors, defaultToplistIds } = req.body;
+      const { name, description, geo, language, authors, defaultToplistIds, tone, pointOfView, formality, customTonePrompt } = req.body;
 
       // Check if at least one field is provided
       const hasUpdate = name !== undefined || description !== undefined || geo !== undefined ||
-        language !== undefined || authors !== undefined || defaultToplistIds !== undefined;
+        language !== undefined || authors !== undefined || defaultToplistIds !== undefined ||
+        tone !== undefined || pointOfView !== undefined || formality !== undefined || customTonePrompt !== undefined;
 
       if (!hasUpdate) {
         res.status(400).json({
@@ -114,6 +115,10 @@ router.put(
         language: language ?? undefined,
         authors: authors ?? undefined,
         defaultToplistIds: defaultToplistIds ?? undefined,
+        tone: tone ?? undefined,
+        pointOfView: pointOfView ?? undefined,
+        formality: formality ?? undefined,
+        customTonePrompt: customTonePrompt ?? undefined,
       };
 
       const updated = await projectService.updateProject(req.params.id, updates);

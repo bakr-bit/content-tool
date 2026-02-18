@@ -19,7 +19,7 @@ export class ArticleEditor {
     logger.info({ sectionCount: sections.length }, 'Starting article editing pass');
 
     // Combine sections into full article
-    const fullArticle = this.combineSections(sections, outline);
+    const fullArticle = this.combineSections(sections, outline, options);
 
     const systemPrompt = buildArticleEditorSystemPrompt(options);
     const userPrompt = buildArticleEditorUserPrompt(fullArticle, outline, options);
@@ -68,11 +68,12 @@ export class ArticleEditor {
     return editedContent;
   }
 
-  private combineSections(sections: GeneratedSection[], outline: Outline): string {
+  private combineSections(sections: GeneratedSection[], outline: Outline, options?: GenerationOptionsInput): string {
     const lines: string[] = [];
+    const isHtml = options?.outputFormat === 'html';
 
     // Add title (use outline.title which comes from user input or LLM)
-    lines.push(`# ${outline.title}`);
+    lines.push(isHtml ? `<h1>${outline.title}</h1>` : `# ${outline.title}`);
     lines.push('');
 
     // Find the level for each section from the outline
@@ -89,8 +90,12 @@ export class ArticleEditor {
 
     for (const section of sections) {
       const level = sectionLevels.get(section.id) || 2;
-      const headingPrefix = '#'.repeat(level);
-      lines.push(`${headingPrefix} ${section.heading}`);
+      if (isHtml) {
+        lines.push(`<h${level}>${section.heading}</h${level}>`);
+      } else {
+        const headingPrefix = '#'.repeat(level);
+        lines.push(`${headingPrefix} ${section.heading}`);
+      }
       lines.push('');
       lines.push(section.content);
       lines.push('');
