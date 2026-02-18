@@ -12,13 +12,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Loader2, FileText, Play, ListTree, ChevronRight } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Loader2, FileText, Play, ListTree, ChevronRight, X, Plus } from 'lucide-react';
 import {
   generateOutlineForPage,
   getContentPlanPage,
   generateSinglePage,
   getOutline,
   updateOutline,
+  updateContentPlanPage,
 } from '@/services/api';
 
 interface ContentPlanPageDialogProps {
@@ -37,6 +39,9 @@ export function ContentPlanPageDialog({
   const [currentPage, setCurrentPage] = useState<ContentPlanPage | null>(null);
   const [outline, setOutline] = useState<Outline | null>(null);
   const [editingSections, setEditingSections] = useState<OutlineSection[] | null>(null);
+  const [editingKeywords, setEditingKeywords] = useState<string[]>([]);
+  const [keywordInput, setKeywordInput] = useState('');
+  const [savingKeywords, setSavingKeywords] = useState(false);
   const [generatingOutline, setGeneratingOutline] = useState(false);
   const [generatingArticle, setGeneratingArticle] = useState(false);
   const [savingOutline, setSavingOutline] = useState(false);
@@ -58,6 +63,10 @@ export function ContentPlanPageDialog({
   useEffect(() => {
     if (open && page) {
       setCurrentPage(page);
+      setEditingKeywords(
+        page.keywords ? page.keywords.split(',').map((k) => k.trim()).filter(Boolean) : []
+      );
+      setKeywordInput('');
       setOutline(null);
       setEditingSections(null);
       setError(null);
@@ -133,6 +142,50 @@ export function ContentPlanPageDialog({
     }
   };
 
+  const handleAddKeyword = () => {
+    const trimmed = keywordInput.trim();
+    if (trimmed && !editingKeywords.includes(trimmed)) {
+      setEditingKeywords([...editingKeywords, trimmed]);
+      setKeywordInput('');
+    }
+  };
+
+  const handleRemoveKeyword = (kw: string) => {
+    setEditingKeywords(editingKeywords.filter((k) => k !== kw));
+  };
+
+  const handleKeywordKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddKeyword();
+    }
+  };
+
+  const handleSaveKeywords = async () => {
+    if (!currentPage) return;
+    setSavingKeywords(true);
+    setError(null);
+    try {
+      const keywordsStr = editingKeywords.join(', ');
+      const result = await updateContentPlanPage(currentPage.pageId, { keywords: keywordsStr });
+      if (result.success && result.data) {
+        setCurrentPage(result.data);
+        onUpdated();
+      } else {
+        setError(result.error?.message || 'Failed to save keywords');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save keywords');
+    } finally {
+      setSavingKeywords(false);
+    }
+  };
+
+  const originalKeywords = currentPage?.keywords
+    ? currentPage.keywords.split(',').map((k) => k.trim()).filter(Boolean)
+    : [];
+  const hasKeywordChanges = JSON.stringify(originalKeywords) !== JSON.stringify(editingKeywords);
+
   const updateSectionHeading = (sectionIndex: number, heading: string) => {
     if (!editingSections) return;
     const updated = [...editingSections];
@@ -161,10 +214,6 @@ export function ContentPlanPageDialog({
 
   if (!currentPage) return null;
 
-  const keywords = currentPage.keywords
-    ? currentPage.keywords.split(',').map((k) => k.trim()).filter(Boolean)
-    : [];
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[700px] max-h-[85vh] flex flex-col">
@@ -180,15 +229,6 @@ export function ContentPlanPageDialog({
         <div className="flex-1 overflow-y-auto space-y-4 py-2">
           {/* Page Info */}
           <div className="space-y-2">
-            {keywords.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {keywords.map((kw, i) => (
-                  <Badge key={i} variant={i === 0 ? 'default' : 'secondary'} className="text-xs">
-                    {kw}
-                  </Badge>
-                ))}
-              </div>
-            )}
             <div className="flex flex-wrap gap-4 text-sm text-zinc-400">
               {currentPage.pageType && (
                 <span>Type: <Badge variant="outline" className="text-xs ml-1">{currentPage.pageType}</Badge></span>
@@ -202,6 +242,56 @@ export function ContentPlanPageDialog({
             )}
             {currentPage.notes && (
               <p className="text-xs text-zinc-500 italic">{currentPage.notes}</p>
+            )}
+          </div>
+
+          {/* Keywords */}
+          <div className="space-y-2 border-t border-zinc-800 pt-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-medium">Keywords</Label>
+              {hasKeywordChanges && (
+                <Button size="sm" variant="outline" onClick={handleSaveKeywords} disabled={savingKeywords}>
+                  {savingKeywords && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                  Save Keywords
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Add keyword..."
+                value={keywordInput}
+                onChange={(e) => setKeywordInput(e.target.value)}
+                onKeyDown={handleKeywordKeyDown}
+                className="h-8 text-sm"
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleAddKeyword}
+                disabled={!keywordInput.trim()}
+                className="h-8"
+              >
+                <Plus className="h-3 w-3" />
+              </Button>
+            </div>
+            {editingKeywords.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {editingKeywords.map((kw, i) => (
+                  <Badge key={i} variant={i === 0 ? 'default' : 'secondary'} className="text-xs gap-1">
+                    {kw}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveKeyword(kw)}
+                      className="ml-0.5 hover:text-destructive"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            )}
+            {editingKeywords.length === 0 && (
+              <p className="text-xs text-zinc-500">No keywords. Add at least one keyword to generate content.</p>
             )}
           </div>
 
