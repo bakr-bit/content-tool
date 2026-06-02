@@ -28,9 +28,14 @@ router.post(
         toplistEntryCounts: options?.toplists?.map(t => t.entries?.length || 0) || [],
       }, 'Full generation request received');
 
-      const workflow = await workflowOrchestrator.runFullWorkflow({ keyword, geo, options, outlineId });
+      // Kick off generation in the background and return the workflow id
+      // immediately. The client polls GET /workflow/:id for progress. Running
+      // the full pipeline (minutes) inside the request would exceed proxy/
+      // tunnel timeouts (~100s), leaving the client hanging while the backend
+      // still finished and saved a draft on each retry (duplicate articles).
+      const workflow = workflowOrchestrator.startFullWorkflow({ keyword, geo, options, outlineId });
 
-      res.status(201).json({
+      res.status(202).json({
         success: true,
         data: workflow,
       });

@@ -35,11 +35,41 @@ interface FullWorkflowOptions {
 type ExtendedWorkflowStatus = WorkflowStatus | 'deep-researching' | 'gap-analyzing' | 'section-researching';
 
 export class WorkflowOrchestrator {
-  async runFullWorkflow(input: FullWorkflowOptions): Promise<WorkflowState> {
-    const { keyword, geo = 'us', options, outlineId: existingOutlineId } = input;
-
+  /**
+   * Register a workflow and run it in the background, returning the initial
+   * (pending) state immediately. Callers poll GET /workflow/:id for progress.
+   * This keeps the HTTP request short instead of holding it open for the
+   * entire multi-minute generation (which proxies/tunnels time out at ~100s).
+   */
+  startFullWorkflow(input: FullWorkflowOptions): WorkflowState {
     const workflowId = uuidv4();
     const workflow: WorkflowState = {
+      workflowId,
+      status: 'pending',
+      keyword: input.keyword,
+      geo: input.geo ?? 'us',
+      startedAt: new Date().toISOString(),
+    };
+
+    workflowStore.set(workflowId, workflow);
+
+    // Fire-and-forget: run the pipeline in the background. Errors are already
+    // recorded on the workflow (status: 'failed') inside runFullWorkflow.
+    this.runFullWorkflow(input, workflowId).catch((error) => {
+      logger.error(
+        { workflowId, error: error instanceof Error ? error.message : String(error) },
+        'Background workflow failed'
+      );
+    });
+
+    return workflow;
+  }
+
+  async runFullWorkflow(input: FullWorkflowOptions, existingWorkflowId?: string): Promise<WorkflowState> {
+    const { keyword, geo = 'us', options, outlineId: existingOutlineId } = input;
+
+    const workflowId = existingWorkflowId ?? uuidv4();
+    const workflow: WorkflowState = workflowStore.get(workflowId) ?? {
       workflowId,
       status: 'pending',
       keyword,

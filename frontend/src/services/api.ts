@@ -199,16 +199,33 @@ export async function generateKeywords(
 export async function pollWorkflowUntilComplete(
   workflowId: string,
   onStatusChange?: (status: WorkflowState) => void,
-  intervalMs = 2000
+  intervalMs = 2000,
+  timeoutMs = 10 * 60 * 1000 // 10 minutes
 ): Promise<WorkflowState> {
   return new Promise((resolve, reject) => {
+    const deadline = Date.now() + timeoutMs;
+    // Tolerate transient poll failures (e.g. a tunnel blip) instead of
+    // aborting a generation that is still running on the backend.
+    let consecutiveErrors = 0;
+    const maxConsecutiveErrors = 5;
+
     const poll = async () => {
+      if (Date.now() > deadline) {
+        reject(new Error('Generation timed out. The article may still finish in the background — check the Articles list shortly.'));
+        return;
+      }
+
       const result = await getWorkflow(workflowId);
 
       if (!result.success || !result.data) {
-        reject(new Error(result.error?.message || 'Failed to get workflow status'));
+        if (++consecutiveErrors >= maxConsecutiveErrors) {
+          reject(new Error(result.error?.message || 'Failed to get workflow status'));
+          return;
+        }
+        setTimeout(poll, intervalMs);
         return;
       }
+      consecutiveErrors = 0;
 
       const workflow = result.data;
       onStatusChange?.(workflow);
