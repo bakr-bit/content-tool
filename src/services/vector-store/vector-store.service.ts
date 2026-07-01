@@ -3,7 +3,7 @@ import { ScrapedPage, ExtractedFact } from '../../types';
 import { getEmbeddingProvider, isEmbeddingEnabled } from '../../integrations/embeddings';
 import { VectorStoreError } from '../../utils/errors';
 import { createChildLogger } from '../../utils/logger';
-import { supabaseVectorClient } from './supabase-client';
+import { localVectorClient as vectorClient } from './local-vector-client';
 import { chunkText, generateContentHash } from './chunker';
 import {
   ContentType,
@@ -19,7 +19,7 @@ export class VectorStoreService {
    * Check if the vector store is enabled and configured
    */
   isEnabled(): boolean {
-    return isEmbeddingEnabled() && supabaseVectorClient.isConfigured();
+    return isEmbeddingEnabled() && vectorClient.isConfigured();
   }
 
   /**
@@ -42,7 +42,7 @@ export class VectorStoreService {
       embedding = result.embedding;
     }
 
-    return supabaseVectorClient.upsert({
+    return vectorClient.upsert({
       ...doc,
       embedding,
     });
@@ -87,7 +87,7 @@ export class VectorStoreService {
       };
     });
 
-    return supabaseVectorClient.upsertBatch(
+    return vectorClient.upsertBatch(
       docsWithEmbeddings.map(d => ({
         ...d,
         embedding: d.embedding!,
@@ -127,7 +127,7 @@ export class VectorStoreService {
     }
 
     try {
-      return await supabaseVectorClient.searchByEmbedding(embedding, options);
+      return await vectorClient.searchByEmbedding(embedding, options);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       logger.warn({ error: message }, 'Search by embedding failed');
@@ -139,7 +139,7 @@ export class VectorStoreService {
    * Check if a document already exists
    */
   async exists(contentHash: string, contentType: ContentType): Promise<boolean> {
-    return supabaseVectorClient.exists(contentHash, contentType);
+    return vectorClient.exists(contentHash, contentType);
   }
 
   /**
@@ -150,14 +150,14 @@ export class VectorStoreService {
       return 0;
     }
 
-    return supabaseVectorClient.deleteBySource(sourceUrl);
+    return vectorClient.deleteBySource(sourceUrl);
   }
 
   /**
    * Clean up expired documents
    */
   async cleanupExpired(): Promise<number> {
-    return supabaseVectorClient.cleanupExpired();
+    return vectorClient.cleanupExpired();
   }
 
   /**
